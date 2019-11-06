@@ -1,0 +1,108 @@
+
+/*
+IDEA:
+
+In the future we will have AR glasses, and we will also just
+be able to place our 10 fingers on any surface to touch type.
+Let's make use of the eye gaze feature of AR, and let the
+keyboard consist just of 10 comfortably arranged home keys.
+
+Type with 10 fingers on 10 keys.
+
+Each finger remains dedicated to a key.
+
+Use gaze tracking to disambiguate
+which word is being typed: A list of
+possible completion words is always shown.
+When correct word is in view, move gaze
+to a zone that corresponds to that word,
+and hit a key to complete the word.
+
+	qwert yuiop
+	asdfg hjkl 
+	zxcvb nm   
+
+Create equivalence classes of words.
+
+Here are the QWERTY keys naturally mapped to the 10 fingers:
+
+ Left Left  Left   Left  Left    Right Right Right  Right Right
+Pinky Ring Middle Index Thumb    Thumb Index Middle Ring  Pinky
+----- ---- ------ ----- -----    ----- ----- ------ ----- -----
+ qaz   wsx   edc   rfv   tgb      yhn   ujm    ik    ol    p
+
+Here are some word ambiguities for a common phrase:
+
+now is the time for all good men to come to the aid of their party
+how                 zoo told jen go dome go         or       
+
+Disambiguation shows only words with the number of letters you've typed:
+
+                            --- all ---
+            now is the time for 
+	                    --- zoo ---
+
+Six zones are shown, indicating directions NW,N,NE,SW,S,SE.
+Gazing off into any of those six directions and hitting a key completes the word.
+
+If there are 1,2,3,4,5 or 6 possibilities, respectively, the gaze direction options are:
+
+    1 1 1   1 1 1    2 1 3   1 1 2    1 2 3   1 2 3
+    1 1 1   2 2 2    2 1 3   3 4 4    4 2 5   4 5 6
+
+Need to write a program that lists all the "typonyms" for every word.
+It would be good to know what is the maximum number of typonyms for any word:
+
+for word in words:
+   words[word].typonyms = []
+   loop through all typonyms of word
+      if typonym != word
+         for word2 in words
+               words[word].typonyms.push(word2)
+
+To form all typonyms
+   recursive through number of letters in word, starting with index == 0
+      at each level of recursion, loop through letternyms, varying letter at current index
+         if index < word.length
+            call self recursively with incremented index
+
+
+Try using these physical keys to test
+
+      TAB 2  3  r  v    m  i  0  -  ]
+
+       Q  W  E  R  T    -  U  I  O  P
+       A  S  D  F  G    -  H  J  K  L
+       Z  X  C  V  -    -  B  N  M  Y
+
+       1  2  3  4  5    6  7  8  9  0
+
+
+i-2 02 vm3 v003 r-r T-- v--3 03i r- 3-03 v- vm3 Ti3 -r vm30r ]Trvm
+
+now is the time for all good men to come to the aid of their party
+
+892 82 573 5893 494 100 5003 938 59 3993 59 573 183 04 57384 01450
+
+
+Counting only up to 5 letter words:
+
+1 4517
+2 1040
+3 260
+4 52
+5 16
+6 7
+
+
+Counting only up to 6 letter words:
+
+1 10926
+2 1569
+3 338
+4 60
+5 17
+6 7
+
+
+
