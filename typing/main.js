@@ -34,7 +34,7 @@ var tcpserver = net.createServer(function(client) {
 		var e = {
 		   eventType: "onkeydown",
 		   event: {
-			  keyCode: 'q'
+			  keyCode: data
 		}};
 
 		console.log("cur ws:" + curWS);

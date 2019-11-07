@@ -23,15 +23,16 @@ function Server() {
 			   //(events_canvas[obj.eventType])(obj.event);
 			   var event = document.createEvent("HTMLEvents");
 				event.initEvent("keydown", true, false);
-				event.key = 'q';
+				event.key = obj.event.keyCode;
 				document.dispatchEvent(event);
 				
 				 sleep(50).then(() => {
 					// Do something after the sleep!
 					event.initEvent("keyup", true, false);
-					event.key = 'q';
+					event.key = obj.event.keyCode;
 					document.dispatchEvent(event);
 				});
+				
 				
 			   return;
             }
