@@ -125,7 +125,9 @@ let wordCount = {};
    let maxKeys = 0, keyMap = 0;
 
    window.addEventListener('keydown', e => {
+	   console.log("keydown " + e.key);
       let n = keys.indexOf(e.key);
+	  console.log(n);
       if (n >= 0)
          state[n] = 1;
       if (n == 5)
@@ -143,7 +145,9 @@ let wordCount = {};
 
    let letterMap = [ 1, 2, 4, 8, 1|2, 2|4, 4|8, 1|4, 2|8, 1|8, 1|2|4, 2|4|8, 1|2|4|8 ];
    window.addEventListener('keyup', e => {
+	   console.log("keyup " + e.key);
       let n = ('q34tbnu90[').indexOf(e.key);
+	  console.log(n);
       if (n >= 0) {
          state[n] = 0;
 

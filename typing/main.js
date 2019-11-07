@@ -16,7 +16,7 @@ app.use(parser.urlencoded({ extended: true }));
 
 let httpserver = http.Server(app);
 
-
+var curWS;
 var tcpserver = net.createServer(function(client) {
 
     console.log('Client connect. Client local address : ' + client.localAddress + ':' + client.localPort + '. client remote address : ' + client.remoteAddress + ':' + client.remotePort);
@@ -30,6 +30,16 @@ var tcpserver = net.createServer(function(client) {
 
         // Print received client data and length.
         console.log('Receive client send data : ' + data + ', data size : ' + client.bytesRead);
+		
+		var e = {
+		   eventType: "onkeydown",
+		   event: {
+			  keyCode: 'q'
+		}};
+
+		console.log("cur ws:" + curWS);
+		if(curWS)
+			curWS.send(JSON.stringify(e));
 
         // Server send data back to client use client net.Socket object.
         //client.end('Server received data : ' + data + ', send back to client data size : ' + client.bytesWritten);
@@ -80,14 +90,15 @@ tcpserver.listen(27015, function () {
 
 });
 
-var curWS;
+
 
 httpserver.listen(parseInt(port, 10), () =>
    console.log('HTTP server listening on port %d', httpserver.address().port)
 );
 
 try {
-   let WebSocket = require('ws').Server;
+   let WebSocket = require('ws').Server
+   console.log("test websocket");
    let wss = new WebSocket({ port: 14285 });
    let sockets = [];
 
@@ -102,6 +113,8 @@ try {
 //         ws.send(JSON.stringify({global: "displayListener", value: true }));
 
 		// supposed to be related to C++
+		curWS = ws;
+		console.log("cur ws:" + curWS);
          /*
 		 holojam.on('keyEvent', (flake) => {
             var type = flake.ints[1];
