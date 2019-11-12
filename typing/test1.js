@@ -56105,7 +56105,7 @@ var wordList = [
         Generate all variations.
         Add all variations to allWords
 */
-   let allKeyChars = [ 'qaz','wsx','edc','rfv','tg','','uhb','ijn','okm','ply' ];
+   let allKeyChars = [ 'qaz','wsx','edc','rfv','tg','','ujn','ikm','olh','pyb' ];
    let count = [0,0,0,0,0,0,0,0];
    let allWords = [];
 
@@ -56152,4 +56152,6 @@ var wordList = [
 
    for (let n = 0 ; n < count.length ; n++)
       console.log(n + 1, count[n]);
+  
+  console.log("finished");
 

@@ -17,12 +17,13 @@ let wordCount = {};
 
    let wordMap = {};
    let possibleWords = [];
-   let keyGroups = 'qaz   ,wsx   ,edc   ,rfvtgb,      ,yhujn ,ikm   ,ol    ,p     ';
+   //'qaz','wsx','edc','rfv','tg','','ujn','ikm','olh','pyb'
+   let keyGroups = 'qaz,wsx,edc,rfv,tg ,ujn,ikm,olh,pyb';
    let digits = '123456789';
    let wordToKey = word => {
       let key = '';
       for (let i = 0 ; i < word.length ; i++) {
-		let j = Math.floor(keyGroups.indexOf(word.charAt(i)) / 7);
+		let j = Math.floor(keyGroups.indexOf(word.charAt(i)) / 4);
 		key += digits.substring(j, j+1);
       }
       return key;
@@ -89,18 +90,18 @@ let wordCount = {};
          let right = i >= 5;
          let ix = i + right;
          let x = w / 13 * (ix + 1);
-         rect(state[i] ? 'rgb(200,200,200)' : 'rgb(240,240,240)', x, Y(i), w / 13, w / 3, true);
-         rect('black', x, Y(i), w / 13, w / 3);
+         rect(state[i] ? 'rgb(200,200,200)' : 'rgb(240,240,240)', x, Y(i), w / 13, w / 6, true);
+         rect('black', x, Y(i), w / 13, w / 6);
          context.fillStyle = 'rgb(160,200,255)';
-	 drawText(keys.substring(i,i+1).toUpperCase(), x, Y(i) + w / 3 + h/17, -.7);
+	 drawText(keys.substring(i,i+1).toUpperCase(), x, Y(i) + w / 6 + h/17, -.7);
       }
       context.fillStyle = 'black';
       for (let i = 0 ; i < 10 ; i++) {
          let right = i >= 5;
          let ix = i + right;
          let x = w / 13 * (ix + 1);
-		 for (let row = 0 ; row < 6 ; row++) {
-			let ch = keyGroups.charAt(7 * i + row);
+		 for (let row = 0 ; row < 3 ; row++) {
+			let ch = keyGroups.charAt(4 * i + row);
 				context.fillText(ch, x + w/40 + w/13 * right, row * h / 15 + Y(ix) + h / 17);
 		 }
       }
@@ -110,7 +111,7 @@ let wordCount = {};
          for (let n = 0 ; n < possibleWords.length ; n++) {
 	    let word = possibleWords[n];
 	    let x = w/4 * (arr[n] % 3 + 1);
-	    let y = h*13/16 + w/18 * Math.floor(arr[n] / 3);
+	    let y = h*3/4 + w/7 * Math.floor(arr[n] / 3);
             drawText(possibleWords[n], x, y, .5);
          }
       }
