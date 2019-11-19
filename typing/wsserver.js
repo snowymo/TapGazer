@@ -18,7 +18,7 @@ function Server() {
 
             var obj = JSON.parse(event.data);
 
-            if (obj.eventType) {
+            if (obj.eventType == "onkeydown") {
 			   obj.event.preventDefault = function() { };
 			   //(events_canvas[obj.eventType])(obj.event);
 			   var event = document.createEvent("HTMLEvents");
@@ -35,7 +35,18 @@ function Server() {
 				
 				
 			   return;
-            }
+            }else if(obj.eventType == "ongaze"){
+				obj.event.preventDefault = function() { };
+			   //(events_canvas[obj.eventType])(obj.event);
+			   var event = document.createEvent("HTMLEvents");
+				event.initEvent("gaze", true, false);
+				event.x = obj.event.x;
+				event.y = obj.event.y;
+				console.log(event);
+				document.dispatchEvent(event);
+				
+			   return;
+			}
          };
          return this.socket;
       };

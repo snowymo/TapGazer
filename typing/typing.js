@@ -142,9 +142,12 @@ let wordCount = {};
       maxKeys = Math.max(maxKeys, nKeys);
       for (let i = 0 ; i < state.length ; i++)
          keyMap |= state[i] << i;
+	 // update index every time type down
+	 wordMapIndex = 0;
    });
 
    let letterMap = [ 1, 2, 4, 8, 1|2, 2|4, 4|8, 1|4, 2|8, 1|8, 1|2|4, 2|4|8, 1|2|4|8 ];
+   let wordMapIndex = 0;
    window.addEventListener('keyup', e => {
 	   console.log("keyup " + e.key);
       let n = ('q34tbnu90[').indexOf(e.key);
@@ -160,8 +163,11 @@ let wordCount = {};
 	    maxKeys = keyMap = 0;
 
 	 if (n == 5) {
+		 // zhenyi
+		 // 0 in wordMap[mapKey][0] means the index of the candidates
+		 // we should receive focus coordinates from tobii 4c 
 	    S = mapKey == '' ? S.substring(0, S.lastIndexOf(' '))
-	                     : S + (S.length ? ' ' : '') + wordMap[mapKey][0];
+	                     : S + (S.length ? ' ' : '') + wordMap[mapKey][wordMapIndex];
             updateText();
 	    mapKey = '';
 	    possibleWords = [];
@@ -191,5 +197,36 @@ let wordCount = {};
             }
          }
       }
+   });
+   // zhenyi
+   predefined_coord = {
+	   1: [120, 384],
+		 0: [294, 400],
+		 2: [429, 384],
+		 3: [101, 475],
+		 4: [281, 465],
+		 5: [439, 477]
+   };
+	   
+   window.addEventListener('gaze', e => {
+	   console.log("gaze " + e.x + "," + e.y);
+	   // the current index layout is 1 0 2 \\ 3 4 5
+		 // the approximate coords are:
+		 // 1: 133, 396
+		 // 0: 293, 389
+		 // 2: 455 407
+		 // 3: 101, 477
+		 // 4: 281, 468
+		 // 5: 439, 478
+		 for(var i = 0; i < 6; i++){
+			 var dis = Math.sqrt(Math.pow(e.x - predefined_coord[i][0],2) + Math.pow(e.y - predefined_coord[i][1],2));
+			 console.log(i + " dis " + dis);
+			 if( dis < 30 ){
+				 wordMapIndex = i;
+				 break;
+			 }else{
+				 wordMapIndex = 0;
+			 }
+		 }
    });
    drawCanvases([canvas1]);

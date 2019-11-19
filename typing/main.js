@@ -27,19 +27,37 @@ var tcpserver = net.createServer(function(client) {
 
     // When receive client data.
     client.on('data', function (data) {
+		
 
         // Print received client data and length.
-        console.log('Receive client send data : ' + data + ', data size : ' + client.bytesRead);
+        console.log('Receive client send data : ' + data + ', data size : ' + data.length + " " + client.bytesRead);
 		
-		var e = {
-		   eventType: "onkeydown",
-		   event: {
-			  keyCode: data
-		}};
-
 		console.log("cur ws:" + curWS);
-		if(curWS)
-			curWS.send(JSON.stringify(e));
+		
+		if(data.length > 10){
+			// it is from tobii 4c
+			//var x = data.split(" ")[0];
+			console.log("ongaze");
+			var e = {
+				eventType: "ongaze",
+				event:{
+					x: data.split(" ")[0],
+					y: data.split(" ")[1]
+				}
+			};
+			if(curWS)
+				curWS.send(JSON.stringify(e));
+		}
+		else if(data.length > 1){
+			// it is from sensel
+			var e = {
+			   eventType: "onkeydown",
+			   event: {
+				  keyCode: data
+			}};
+			if(curWS)
+				curWS.send(JSON.stringify(e));
+		}
 
         // Server send data back to client use client net.Socket object.
         //client.end('Server received data : ' + data + ', send back to client data size : ' + client.bytesWritten);
@@ -78,7 +96,7 @@ tcpserver.listen(27015, function () {
 
     var serverInfoJson = JSON.stringify(serverInfo);
 
-    console.log('TCP server listen on address : ' + serverInfoJson);
+    console.log('sensel TCP server listen on address : ' + serverInfoJson);
 
     tcpserver.on('close', function () {
         console.log('TCP server socket is closed.');
@@ -89,7 +107,6 @@ tcpserver.listen(27015, function () {
     });
 
 });
-
 
 
 httpserver.listen(parseInt(port, 10), () =>
