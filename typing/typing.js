@@ -90,10 +90,10 @@ let wordCount = {};
          let right = i >= 5;
          let ix = i + right;
          let x = w / 13 * (ix + 1);
-         rect(state[i] ? 'rgb(200,200,200)' : 'rgb(240,240,240)', x, Y(i), w / 13, w / 6, true);
-         rect('black', x, Y(i), w / 13, w / 6);
+         rect(state[i] ? 'rgb(200,200,200)' : 'rgb(240,240,240)', x, Y(i)+w/6, w / 13, w / 6, true);
+         rect('black', x, Y(i)+w/6, w / 13, w / 6);
          context.fillStyle = 'rgb(160,200,255)';
-	 drawText(keys.substring(i,i+1).toUpperCase(), x, Y(i) + w / 6 + h/17, -.7);
+	 drawText(keys.substring(i,i+1).toUpperCase(), x, Y(i) + w / 6 + h/17 +w/6, -.7);
       }
       context.fillStyle = 'black';
       for (let i = 0 ; i < 10 ; i++) {
@@ -102,7 +102,7 @@ let wordCount = {};
          let x = w / 13 * (ix + 1);
 		 for (let row = 0 ; row < 3 ; row++) {
 			let ch = keyGroups.charAt(4 * i + row);
-				context.fillText(ch, x + w/40 + w/13 * right, row * h / 15 + Y(ix) + h / 17);
+				context.fillText(ch, x + w/40 + w/13 * right, row * h / 15 + Y(ix) + h / 17+w/6);
 		 }
       }
       if (possibleWords) {
@@ -111,7 +111,7 @@ let wordCount = {};
          for (let n = 0 ; n < possibleWords.length ; n++) {
 	    let word = possibleWords[n];
 	    let x = w/4 * (arr[n] % 3 + 1);
-	    let y = h*3/4 + w/7 * Math.floor(arr[n] / 3);
+	    let y = h*1/4 + w/7 * Math.floor(arr[n] / 3);
             drawText(possibleWords[n], x, y, .5);
          }
       }
@@ -218,15 +218,17 @@ let wordCount = {};
 		 // 3: 101, 477
 		 // 4: 281, 468
 		 // 5: 439, 478
+		 var minDis = 40;
 		 for(var i = 0; i < 6; i++){
 			 var dis = Math.sqrt(Math.pow(e.x - predefined_coord[i][0],2) + Math.pow(e.y - predefined_coord[i][1],2));
 			 console.log(i + " dis " + dis);
-			 if( dis < 30 ){
+			 if( dis < minDis ){
+				 minDis = dis;
 				 wordMapIndex = i;
-				 break;
-			 }else{
-				 wordMapIndex = 0;
 			 }
+		 }
+		 if(minDis == 40){
+			 wordMapIndex = 0;
 		 }
    });
    drawCanvases([canvas1]);
