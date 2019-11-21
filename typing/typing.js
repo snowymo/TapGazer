@@ -73,6 +73,16 @@ let wordCount = {};
       [1,0,2,3,4,5],
    ];
 
+	var defaultIndex = 0;
+   let reverseArrangement = [
+   		[defaultIndex,0,defaultIndex,defaultIndex,defaultIndex,defaultIndex],
+   		[defaultIndex,0,defaultIndex,defaultIndex,defaultIndex,defaultIndex],
+   		[1,0,2,defaultIndex,defaultIndex,defaultIndex],
+   		[1,0,2,3,defaultIndex,defaultIndex],
+   		[1,0,2,3,defaultIndex,4],
+   		[1,0,2,3,4,5],
+   ];
+
    let state = [0,0,0,0,0,0,0,0,0,0];
    canvas1.width = 600;
    canvas1.height = 450;
@@ -111,7 +121,7 @@ let wordCount = {};
          for (let n = 0 ; n < possibleWords.length ; n++) {
 	    let word = possibleWords[n];
 	    let x = w/4 * (arr[n] % 3 + 1);
-	    let y = h*1/4 + w/7 * Math.floor(arr[n] / 3);
+	    let y = h*1/4 + w/10 * Math.floor(arr[n] / 3);
             drawText(possibleWords[n], x, y, .5);
          }
       }
@@ -166,8 +176,9 @@ let wordCount = {};
 		 // zhenyi
 		 // 0 in wordMap[mapKey][0] means the index of the candidates
 		 // we should receive focus coordinates from tobii 4c 
+		 var indexOfWord = reverseArrangement[possibleWords.length-1][wordMapIndex];
 	    S = mapKey == '' ? S.substring(0, S.lastIndexOf(' '))
-	                     : S + (S.length ? ' ' : '') + wordMap[mapKey][wordMapIndex];
+	                     : S + (S.length ? ' ' : '') + wordMap[mapKey][indexOfWord];
             updateText();
 	    mapKey = '';
 	    possibleWords = [];
@@ -200,25 +211,25 @@ let wordCount = {};
    });
    // zhenyi
    predefined_coord = {
-	   1: [120, 384],
-		 0: [294, 400],
-		 2: [429, 384],
-		 3: [101, 475],
-		 4: [281, 465],
-		 5: [439, 477]
+	   0: [194, 200],
+		 1: [346, 227],
+		 2: [502, 223],
+		 3: [196, 275],
+		 4: [341, 284],
+		 5: [511, 277]
    };
 	   
    window.addEventListener('gaze', e => {
 	   console.log("gaze " + e.x + "," + e.y);
 	   // the current index layout is 1 0 2 \\ 3 4 5
 		 // the approximate coords are:
-		 // 1: 133, 396
-		 // 0: 293, 389
+		 // 0: 133, 396
+		 // 1: 293, 389
 		 // 2: 455 407
 		 // 3: 101, 477
 		 // 4: 281, 468
 		 // 5: 439, 478
-		 var minDis = 40;
+		 var minDis = 35;
 		 for(var i = 0; i < 6; i++){
 			 var dis = Math.sqrt(Math.pow(e.x - predefined_coord[i][0],2) + Math.pow(e.y - predefined_coord[i][1],2));
 			 console.log(i + " dis " + dis);
@@ -227,8 +238,8 @@ let wordCount = {};
 				 wordMapIndex = i;
 			 }
 		 }
-		 if(minDis == 40){
-			 wordMapIndex = 0;
+		 if(minDis == 35){
+			 wordMapIndex = 1;
 		 }
    });
    drawCanvases([canvas1]);
