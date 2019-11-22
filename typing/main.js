@@ -57,6 +57,15 @@ var tcpserver = net.createServer(function(client) {
 			}};
 			if(curWS)
 				curWS.send(JSON.stringify(e));
+		}else if(data.length == 1){
+			// focus data
+			var e = {
+			   eventType: "onfocus",
+			   event: {
+				  id: data
+			}};
+			if(curWS)
+				curWS.send(JSON.stringify(e));
 		}
 
         // Server send data back to client use client net.Socket object.

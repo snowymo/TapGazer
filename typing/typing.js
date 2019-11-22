@@ -73,7 +73,7 @@ let wordCount = {};
       [1,0,2,3,4,5],
    ];
 
-	var defaultIndex = 0;
+	var defaultIndex = 1;
    let reverseArrangement = [
    		[defaultIndex,0,defaultIndex,defaultIndex,defaultIndex,defaultIndex],
    		[defaultIndex,0,defaultIndex,defaultIndex,defaultIndex,defaultIndex],
@@ -153,11 +153,11 @@ let wordCount = {};
       for (let i = 0 ; i < state.length ; i++)
          keyMap |= state[i] << i;
 	 // update index every time type down
-	 wordMapIndex = 0;
+	 
    });
 
    let letterMap = [ 1, 2, 4, 8, 1|2, 2|4, 4|8, 1|4, 2|8, 1|8, 1|2|4, 2|4|8, 1|2|4|8 ];
-   let wordMapIndex = 0;
+   let wordMapIndex = defaultIndex;
    window.addEventListener('keyup', e => {
 	   console.log("keyup " + e.key);
       let n = ('q34tbnu90[').indexOf(e.key);
@@ -176,12 +176,14 @@ let wordCount = {};
 		 // zhenyi
 		 // 0 in wordMap[mapKey][0] means the index of the candidates
 		 // we should receive focus coordinates from tobii 4c 
+		 console.log("wordMapIndex:" + wordMapIndex);
 		 var indexOfWord = reverseArrangement[possibleWords.length-1][wordMapIndex];
 	    S = mapKey == '' ? S.substring(0, S.lastIndexOf(' '))
 	                     : S + (S.length ? ' ' : '') + wordMap[mapKey][indexOfWord];
             updateText();
 	    mapKey = '';
 	    possibleWords = [];
+		wordMapIndex = defaultIndex;
          }
 	 else {
 	    let ch = keyDigits.charAt(n);
@@ -239,7 +241,15 @@ let wordCount = {};
 			 }
 		 }
 		 if(minDis == 35){
-			 wordMapIndex = 1;
+			 wordMapIndex = defaultIndex;
 		 }
+   });
+   
+   window.addEventListener('focus', e => {
+	   
+	   wordMapIndex = parseInt(e.id);
+	   if(Number.isNaN(wordMapIndex))
+		   wordMapIndex = defaultIndex;
+	   console.log("focus " + wordMapIndex);
    });
    drawCanvases([canvas1]);

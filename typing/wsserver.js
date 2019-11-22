@@ -46,6 +46,16 @@ function Server() {
 				document.dispatchEvent(event);
 				
 			   return;
+			}else if(obj.eventType == "onfocus"){
+				obj.event.preventDefault = function() { };
+				//(events_canvas[obj.eventType])(obj.event);
+				var event = document.createEvent("HTMLEvents");
+				event.initEvent("focus", true, false);
+				event.id = obj.event.id;
+				console.log(event);
+				document.dispatchEvent(event);
+				
+			   return;
 			}
          };
          return this.socket;
