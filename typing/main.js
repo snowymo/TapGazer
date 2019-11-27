@@ -37,16 +37,19 @@ var tcpserver = net.createServer(function(client) {
 		if(data.length > 10){
 			// it is from tobii 4c
 			//var x = data.split(" ")[0];
-			console.log("ongaze");
-			var e = {
-				eventType: "ongaze",
-				event:{
-					x: data.split(" ")[0],
-					y: data.split(" ")[1]
-				}
-			};
-			if(curWS)
-				curWS.send(JSON.stringify(e));
+			var words = data.split(" ");
+			if(words.length == 2){
+				console.log("ongaze");
+				var e = {
+					eventType: "ongaze",
+					event:{
+						x: data.split(" ")[0],
+						y: data.split(" ")[1]
+					}
+				};
+				if(curWS)
+					curWS.send(JSON.stringify(e));
+			}
 		}
 		else if(data.length > 1){
 			// it is from sensel

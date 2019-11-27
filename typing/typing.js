@@ -178,6 +178,9 @@ let wordCount = {};
 		 // we should receive focus coordinates from tobii 4c 
 		 console.log("wordMapIndex:" + wordMapIndex);
 		 var indexOfWord = reverseArrangement[possibleWords.length-1][wordMapIndex];
+		 if(indexOfWord > (possibleWords.length-1)){
+			 indexOfWord = 0;
+		 }
 	    S = mapKey == '' ? S.substring(0, S.lastIndexOf(' '))
 	                     : S + (S.length ? ' ' : '') + wordMap[mapKey][indexOfWord];
             updateText();
