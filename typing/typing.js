@@ -136,7 +136,7 @@ let wordCount = {};
    let maxKeys = 0, keyMap = 0;
 
    window.addEventListener('keydown', e => {
-	   console.log("keydown " + e.key);
+	  console.log("keydown " + e.key);
       let n = keys.indexOf(e.key);
 	  console.log(n);
       if (n >= 0)
@@ -174,16 +174,21 @@ let wordCount = {};
 
 	 if (n == 5) {
 		 // zhenyi
-		 // 0 in wordMap[mapKey][0] means the index of the candidates
-		 // we should receive focus coordinates from tobii 4c 
-		 console.log("wordMapIndex:" + wordMapIndex);
-		 var indexOfWord = reverseArrangement[possibleWords.length-1][wordMapIndex];
-		 if(indexOfWord > (possibleWords.length-1)){
-			 indexOfWord = 0;
+		 if(possibleWords){
+			 // 0 in wordMap[mapKey][0] means the index of the candidates
+			 // we should receive focus coordinates from tobii 4c 
+			 console.log("wordMapIndex:" + wordMapIndex + " possibleWords:" + possibleWords);
+			 var indexOfWord = reverseArrangement[possibleWords.length-1][wordMapIndex];
+			 if(indexOfWord > (possibleWords.length-1)){
+				 indexOfWord = 0;
+			 }
+			S = mapKey == '' ? S.substring(0, S.lastIndexOf(' '))
+							 : S + (S.length ? ' ' : '') + wordMap[mapKey][indexOfWord];
+			updateText();
+		 }else{
+			 console.log("no possibleWords");
 		 }
-	    S = mapKey == '' ? S.substring(0, S.lastIndexOf(' '))
-	                     : S + (S.length ? ' ' : '') + wordMap[mapKey][indexOfWord];
-            updateText();
+		 
 	    mapKey = '';
 	    possibleWords = [];
 		wordMapIndex = defaultIndex;
