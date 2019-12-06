@@ -51,22 +51,24 @@ var tcpserver = net.createServer(function(client) {
 					curWS.send(JSON.stringify(e));
 			}
 		}
-		else if(data.length > 1){
+		else if(data.length == 9){
+			// focus data
+			var e = {
+			   eventType: "onfocus",
+			   event: {
+				  id: data[8]
+			}};
+			if(curWS)
+				curWS.send(JSON.stringify(e));
+		}
+		else if(data.length == 1){
 			// it is from sensel
 			var e = {
 			   eventType: "onkeydown",
 			   event: {
 				  keyCode: data
 			}};
-			if(curWS)
-				curWS.send(JSON.stringify(e));
-		}else if(data.length == 1){
-			// focus data
-			var e = {
-			   eventType: "onfocus",
-			   event: {
-				  id: data
-			}};
+			console.log("send through websocket:" + e);
 			if(curWS)
 				curWS.send(JSON.stringify(e));
 		}
