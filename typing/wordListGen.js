@@ -11,6 +11,11 @@ fs.readFile(filename, 'utf8', function(err, data) {
 	var file = fs.createWriteStream('words_alpha.js');
 	file.on('error', function(err) { /* error handling */ });
 	file.write("let wordList = [\n");
+	textByLine.sort(function(a, b){
+	  // ASC  -> a.length - b.length
+	  // DESC -> b.length - a.length
+	  return a.length - b.length || a.localeCompare(b);
+	});
 	textByLine.forEach(function(word) { 
 		file.write("\'" + word.slice(0, -1) + '\',\n'); 
 	});
