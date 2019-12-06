@@ -1,16 +1,16 @@
 let wordCount = {};
-   for (let n = 0 ; n < pnp.length ; n++) {
-      let line = pnp[n];
-      if (line.length > 0) {
-         let words = line.split(' ');
-	 for (let i = 0 ; i < words.length ; i++) {
-	    let word = words[i];
-	    if (wordCount[word] === undefined)
-	       wordCount[word] = 0;
-            wordCount[word]++;
-	 }
-      }
-   }
+	for (let n = 0 ; n < pnp.length ; n++) {
+		let line = pnp[n];
+		if (line.length > 0) {
+			let words = line.split(' ');
+			for (let i = 0 ; i < words.length ; i++) {
+				let word = words[i];
+				if (wordCount[word] === undefined)
+					wordCount[word] = 0;
+				wordCount[word]++;
+			}
+		}
+	}
 
    let keys = 'q34tbnu90[';
    let S = '';
@@ -117,7 +117,7 @@ let wordCount = {};
       }
       if (possibleWords) {
          context.fillStyle = 'red';
-	 let arr = arrangement[possibleWords.length - 1];
+		 let arr = arrangement[possibleWords.length - 1];
          for (let n = 0 ; n < possibleWords.length ; n++) {
 	    let word = possibleWords[n];
 	    let x = w/4 * (arr[n] % 3 + 1);
@@ -214,7 +214,7 @@ let wordCount = {};
             }
             else {
 	       mapKey += keyDigits.charAt(n);
-	       possibleWords = wordMap[mapKey];
+		   possibleWords = wordMap[mapKey] ? wordMap[mapKey].slice(0, Math.min(wordMap[mapKey].length, arrangement.length)) : wordMap[mapKey];
             }
          }
       }

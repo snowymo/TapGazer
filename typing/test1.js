@@ -1,4 +1,4 @@
-var wordList = [
+var curWordList = [
 'a',
 'i',
 'ad',
@@ -56105,31 +56105,36 @@ var wordList = [
         Generate all variations.
         Add all variations to allWords
 */
+
+function calculate(wordList){
    let allKeyChars = [ 'qaz','wsx','edc','rfv','tg','','ujn','ikm','olh','pyb' ];
    let count = [0,0,0,0,0,0,0,0];
    let allWords = [];
 
    let variations = word => {
-      let words = [ word ];
-      for (let i = 0 ; i < word.length ; i++) {
-         for (let n = 0 ; n < words.length ; n++) {
-	    let word = words[n];
-	    let c = word.charAt(i);
+		let words = [ word ];
+		for (let i = 0 ; i < word.length ; i++) {
+			for (let n = 0 ; n < words.length ; n++) {
+				let word = words[n];
+				let c = word.charAt(i);
 
-	    let keyChars = null;
-	    for (let k = 0 ; k < allKeyChars.length && ! keyChars ; k++)
-	       if (allKeyChars[k].indexOf(c) >= 0)
-	          keyChars = allKeyChars[k];
-            
-	    let prefix  = word.substring(0, i);
-	    let postfix = word.substring(i+1, word.length);
-	    for (let j = 0 ; j < keyChars.length ; j++) {
-	       let newWord = prefix + keyChars.substring(j,j+1) + postfix;
-	       if (! words.includes(newWord))
-	          words.push(newWord);
-	    }
-	 }
-      }
+				let keyChars = null;
+				for (let k = 0 ; k < allKeyChars.length && ! keyChars ; k++){
+					if (allKeyChars[k].indexOf(c) >= 0){
+						keyChars = allKeyChars[k];
+					}
+				}
+
+				let prefix  = word.substring(0, i);
+				let postfix = word.substring(i+1, word.length);
+				for (let j = 0 ; j < keyChars.length ; j++) {
+					let newWord = prefix + keyChars.substring(j,j+1) + postfix;
+					if (! words.includes(newWord)){
+						words.push(newWord);
+					}
+				}
+			}
+		}
       let realWords = [];
       for (let n = 0 ; n < words.length ; n++)
          if (wordList.includes(words[n]))
@@ -56154,4 +56159,19 @@ var wordList = [
       console.log(n + 1, count[n]);
   
   console.log("finished");
-
+}
+console.log("curWordList.length:" + curWordList.length);
+var fs = require('fs');
+var filename = "./words_alpha.txt"; // download from https://github.com/dwyl/english-words
+fs.readFile(filename, 'utf8', function(err, data) {
+  if (err) throw err;
+  console.log('OK: ' + filename);
+  var myWordList = data.split("\r\n");
+  myWordList.sort(function(a, b){
+	  return a.length - b.length || a.localeCompare(b);
+	});
+  console.log("myWordList.length:" + myWordList.length);
+  //console.log(myWordList.slice(0,10));
+  //calculate(curWordList);  
+  calculate(myWordList);  
+});
