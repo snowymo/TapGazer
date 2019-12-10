@@ -56162,11 +56162,14 @@ function calculate(wordList){
 }
 console.log("curWordList.length:" + curWordList.length);
 var fs = require('fs');
-var filename = "./words_alpha.txt"; // download from https://github.com/dwyl/english-words
+//var filename = "./words_alpha.txt"; // download from https://github.com/dwyl/english-words
+var filename = "./30k.txt"; // download from https://github.com/first20hours/google-10000-english
 fs.readFile(filename, 'utf8', function(err, data) {
   if (err) throw err;
   console.log('OK: ' + filename);
-  var myWordList = data.split("\r\n");
+  //var myWordList = data.split("\r\n");
+  //var myWordList = data.split("\n");
+  var myWordList = data.split("\t\n");
   myWordList.sort(function(a, b){
 	  return a.length - b.length || a.localeCompare(b);
 	});

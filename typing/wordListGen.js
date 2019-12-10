@@ -1,6 +1,9 @@
 var fs = require("fs");
 var textByLine = [];
-var filename = "./words_alpha.txt"; // download from https://github.com/dwyl/english-words
+//var filename = "./words_alpha.txt"; // download from https://github.com/dwyl/english-words
+//var filename = "./google-10000-english-usa-no-swears.txt"; // download from https://github.com/first20hours/google-10000-english
+var filename = "./30k.txt"; // download from https://github.com/derekchuank/high-frequency-vocabulary
+
 fs.readFile(filename, 'utf8', function(err, data) {
   if (err) throw err;
   console.log('OK: ' + filename);
@@ -17,7 +20,12 @@ fs.readFile(filename, 'utf8', function(err, data) {
 	  return a.length - b.length || a.localeCompare(b);
 	});
 	textByLine.forEach(function(word) { 
-		file.write("\'" + word.slice(0, -1) + '\',\n'); 
+//		file.write("\'" + word.slice(0, -1) + '\',\n');  // for removing \r
+		if(word.length > 0 && !word.startsWith("#")){
+			word = word.replace("'","\'").replace(" ","").replace(/\t/g,"");
+			file.write("\'" + word + '\',\n'); 
+		}
+			
 	});
 	file.write("];");
 	file.end();
