@@ -56108,7 +56108,7 @@ var curWordList = [
 
 function calculate(wordList){
    let allKeyChars = [ 'qaz','wsx','edc','rfv','tg','','ujn','ikm','olh','pyb' ];
-   let count = [0,0,0,0,0,0,0,0];
+   let count = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
    let allWords = [];
 
    let variations = word => {
@@ -56163,13 +56163,14 @@ function calculate(wordList){
 console.log("curWordList.length:" + curWordList.length);
 var fs = require('fs');
 //var filename = "./words_alpha.txt"; // download from https://github.com/dwyl/english-words
-var filename = "./30k.txt"; // download from https://github.com/first20hours/google-10000-english
+//var filename = "google-10000-english-usa-no-swears.txt" download from https://github.com/first20hours/google-10000-english
+var filename = "./20k.txt"; // 
 fs.readFile(filename, 'utf8', function(err, data) {
   if (err) throw err;
   console.log('OK: ' + filename);
   //var myWordList = data.split("\r\n");
-  //var myWordList = data.split("\n");
-  var myWordList = data.split("\t\n");
+  var myWordList = data.split("\n");
+//   var myWordList = data.split("\t\n");
   myWordList.sort(function(a, b){
 	  return a.length - b.length || a.localeCompare(b);
 	});
