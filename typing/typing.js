@@ -66,23 +66,29 @@ for (let key in wordMap)
    console.log(histogram);
 */
 let arrangement = [
-   [1],
-   [1, 4],
-   [1, 0, 2],
-   [1, 0, 2, 4],
-   [1, 0, 2, 3, 5],
-   [1, 0, 2, 3, 4, 5]
+   [4],
+   [4, 3],
+   [4, 3, 5],
+   [4, 3, 5, 1],
+   [4, 3, 5, 1, 7],
+   [4, 3, 5, 1, 7, 0],
+   [4, 3, 5, 1, 7, 0, 2],
+   [4, 3, 5, 1, 7, 0, 2, 6],
+   [4, 3, 5, 1, 7, 0, 2, 6, 8]
 ];
 
-var defaultIndex = 1;
-let reverseArrangement = [
-   [defaultIndex, 0, defaultIndex, defaultIndex, defaultIndex, defaultIndex],
-   [defaultIndex, 0, defaultIndex, defaultIndex, defaultIndex, defaultIndex],
-   [1, 0, 2, defaultIndex, defaultIndex, defaultIndex],
-   [1, 0, 2, 3, defaultIndex, defaultIndex],
-   [1, 0, 2, 3, defaultIndex, 4],
-   [1, 0, 2, 3, 4, 5]
-];
+var defaultIndex = 4;
+let reverseArrangement = [];
+for(let i = 0; i < 9; i++){
+   let currow = [];
+   for(let j = 0; j < 9; j++){
+      currow.push(defaultIndex);
+   }
+   for(let j = 0; j < arrangement[i].length; j++){
+      currow[arrangement[i][j]] = j;
+   }
+   reverseArrangement.push(currow);
+};
 
 let state = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let preKeyDown = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
