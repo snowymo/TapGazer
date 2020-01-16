@@ -18,8 +18,8 @@ config = {'q': 'a', 'a': 'a', 'z': 'a',
 freq_dict = get_frequency_dict("en", wordlist='best')
 
 tapping_dict = {}
-
 word_rank = {}
+completed_numbers = {}
 
 def find_rank(word, dict):
     for idx, item in enumerate(dict):
@@ -45,6 +45,8 @@ def add_to_map(typing, word):
 def generate_tap_map(test_dict, count):
     # go through the dictionary (300k words), add each one to its one-tap two-tap until n-tap buckets, and sort it with the freq
     cur_count = 0
+    largest_cand_number = 0
+    largest_cand_input_string = ""
     for word in test_dict:
         word = word.lower()
         if len(word) == 0:
@@ -71,11 +73,25 @@ def generate_tap_map(test_dict, count):
         if not_supported is False:
             # sorted(tapping_dict[cur_typing], reverse=True)
             word_rank[word] = len(tapping_dict[cur_typing])
+            if len(word) == len(cur_typing):
+                if cur_typing in completed_numbers:
+                    completed_numbers[cur_typing].append(word)
+                    # record the largest list number in this dictionary
+                    if len(completed_numbers[cur_typing]) > largest_cand_number:
+                        largest_cand_number = len(completed_numbers[cur_typing])
+                        largest_cand_input_string = cur_typing
+                else:
+                    completed_numbers[cur_typing] = [word]
             if len(word) == len(cur_typing) and word_rank[word] > 9 and len(word) > 1:
                 print("dangerous word\t" + cur_typing +"\t"+ word +"\t"+ str(word_rank[word]))
             if cur_count == count:
                 break
             cur_count = cur_count + 1
+    print("largest_cand_result", largest_cand_number, largest_cand_input_string, completed_numbers[largest_cand_input_string])
+    for item in completed_numbers:
+        if len(completed_numbers[item]) > 9:
+            print(item + "\t" + str(len(completed_numbers[item])) + "\t" + str(completed_numbers[item]))
+    print("\n")
     # sort each item in tapping_dict
     for tapping in tapping_dict:
         sorted(tapping, reverse = True)
@@ -119,9 +135,13 @@ if __name__ == "__main__":
     f = open("wiki100k-result.txt", "w")
     f.write(str(tapping_dict))
     f.close()
+    f = open("wiki100k-cand.txt", "w")
+    f.write(str(completed_numbers))
+    f.close()
 
     tapping_dict = {}
     word_rank = {}
+    completed_numbers = {}
     # google-10000-english-usa-no-swears
     print("\nprocessing 10000-no-swear.txt")
     with open('google-10000-english-usa-no-swears.txt', encoding="utf-8") as f:
@@ -137,6 +157,9 @@ if __name__ == "__main__":
     # write to file
     f = open("noswear10k-result.txt", "w")
     f.write(str(tapping_dict))
+    f.close()
+    f = open("noswear10k-cand.txt", "w")
+    f.write(str(completed_numbers))
     f.close()
 
 
