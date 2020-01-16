@@ -38,15 +38,21 @@ def find_finger(key):
 def add_to_map(typing, word):
     # add word to the value of keyword typing
     if typing in tapping_dict:
-        tapping_dict[typing][word] = freq_dict[word.lower()]
+        tapping_dict[typing][word] = word_frequency(word, 'en')#freq_dict[word.lower()]
     else:
-        tapping_dict[typing] = {word: freq_dict[word.lower()]}
+        tapping_dict[typing] = {word: word_frequency(word, 'en')}#freq_dict[word.lower()]}
 
 def generate_tap_map(test_dict, count):
     # go through the dictionary (300k words), add each one to its one-tap two-tap until n-tap buckets, and sort it with the freq
     cur_count = 0
     for word in test_dict:
+        word = word.lower()
         if len(word) == 0:
+            continue
+
+        # if the word already showed up as upper case or lower case before, ignore it
+        if word in word_rank:
+            # print(word + " exists already")
             continue
 
         not_supported = False
@@ -65,8 +71,8 @@ def generate_tap_map(test_dict, count):
         if not_supported is False:
             # sorted(tapping_dict[cur_typing], reverse=True)
             word_rank[word] = len(tapping_dict[cur_typing])
-            if word_rank[word] > 9 and len(word) > 1:
-                print("dangerous word", word, word_rank[word])
+            if len(word) == len(cur_typing) and word_rank[word] > 9 and len(word) > 1:
+                print("dangerous word\t" + cur_typing +"\t"+ word +"\t"+ str(word_rank[word]))
             if cur_count == count:
                 break
             cur_count = cur_count + 1
@@ -83,7 +89,8 @@ if __name__ == "__main__":
     # wordlist: which set of word frequencies to use. Current options are 'small', 'large', and 'best'.
     # minimum: If the word is not in the list or has a frequency lower than minimum, return minimum instead. You may want to set this to the minimum value contained in the wordlist, to avoid a discontinuity where the wordlist ends.
     # word_frequency(word, lang, wordlist='best', minimum=0.0)
-    freq_cafe = word_frequency('I', 'en')
+    freq_cafe = word_frequency('ok', 'en')
+    print("ok freq", freq_cafe)
 
     # zipf_frequency is a variation on word_frequency that aims to return the word frequency on a human-friendly logarithmic scale.
     freq_the = zipf_frequency('the', 'en')
@@ -95,15 +102,23 @@ if __name__ == "__main__":
     count = 1000
     # not using dict, too many weird words. Let's use wiki-100k.txt
     # we need to feed the word in the order of freq, to save time for sorting
-    print("processing 30k.txt")
-    with open('30k.txt', encoding="utf-8") as f:
+    print("processing wiki100k.txt")
+    with open('wiki-100k.txt', encoding="utf-8") as f:
         wiki100k = f.read().splitlines()
     # remove spaces
     wiki100k = [line.replace(' ', '') for line in wiki100k]
     wiki100k = [line.replace('\t', '') for line in wiki100k]
+    wiki100k = [line.replace('\'', '') for line in wiki100k]
+    for idx, item in enumerate(wiki100k):
+        wiki100k[idx] = wiki100k[idx].lower()
+    count = len(wiki100k)
     # resort
     sorted(wiki100k, key=functools.cmp_to_key(compare))
     generate_tap_map(wiki100k, count)
+    # write to file
+    f = open("wiki100k-result.txt", "w")
+    f.write(str(tapping_dict))
+    f.close()
 
     tapping_dict = {}
     word_rank = {}
@@ -114,7 +129,14 @@ if __name__ == "__main__":
     # remove spaces
     noswear10k = [line.replace(' ', '') for line in noswear10k]
     noswear10k = [line.replace('\t', '') for line in noswear10k]
+    for idx, item in enumerate(noswear10k):
+        noswear10k[idx] = noswear10k[idx].lower()
+    count = len(noswear10k)
     sorted(noswear10k, key=functools.cmp_to_key(compare))
     generate_tap_map(noswear10k, count)
+    # write to file
+    f = open("noswear10k-result.txt", "w")
+    f.write(str(tapping_dict))
+    f.close()
 
 
