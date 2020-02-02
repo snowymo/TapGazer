@@ -166,8 +166,11 @@ if __name__ == "__main__":
     f.close()
     # try json so javascript maybe can read it directly
 
-
+    # save the result without freq
+    inputstring_word_map = {}
+    for inputstring in tapping_dict:
+        inputstring_word_map[inputstring] = [*tapping_dict[inputstring].keys()]
     with open('noswear10k-result.json', 'w') as fp:
-        json.dump(tapping_dict, fp)
+        json.dump(inputstring_word_map, fp)
 
 
