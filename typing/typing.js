@@ -17,8 +17,13 @@ let S = "";
 let wordMap = {};
 let possibleWords = [];
 //'qaz','wsx','edc','rfv','tg','','ujn','ikm','olh','pyb'
-let keyGroups = "qaz,wsx,edc,rfv,tg ,ujn,ikm,olh,pyb";
+//"qaz,wsx,edc,rfv,tg ,ujn,ikm,olh,pyb"
+let keyGroups = ["qaz","wsx","edc","rfvtgb","","","yhnujm","ik","ol","p"];
 let digits = "123456789";
+// this generates the input string from the word in dictionary,
+// we probably don't need that anymore because we are using the candidates generation from python
+// also because we need to... let me rewrite all the logic maybe
+// we need to support word completion. So it is not enough to have a wordToKey, we should have a KeyToWord.
 let wordToKey = word => {
    let key = "";
    for (let i = 0; i < word.length; i++) {
@@ -27,13 +32,14 @@ let wordToKey = word => {
    }
    return key;
 };
+// wordMap will have the map that input string -> word, so let's have that directly from python
 for (let n = 0; n < wordList.length; n++) {
    let word = wordList[n];
    let mapKey = wordToKey(word);
    if (!wordMap[mapKey]) wordMap[mapKey] = [];
    wordMap[mapKey].push(word);
 }
-
+// sort by freq, we can sort that first
 for (let key in wordMap)
    wordMap[key].sort(
       (a, b) =>
@@ -65,6 +71,7 @@ for (let key in wordMap)
       histogram[wordMap[key].length - 1]++;
    console.log(histogram);
 */
+// we probably need to show them rows by rows? maybe put the center the one with the most probability
 let arrangement = [
    [4],
    [4, 3],
@@ -110,6 +117,7 @@ function updatePreKeyDown(){
 
 canvas1.width = 600;
 canvas1.height = 450;
+// showing progress should happen here
 canvas1.update = g => {
    let w = canvas1.width,
       h = canvas1.height;
