@@ -1,7 +1,7 @@
 #https://pypi.org/project/wordfreq/
 #
 import functools
-
+import json
 from wordfreq import *
 
 config = {'q': 'a', 'a': 'a', 'z': 'a',
@@ -99,6 +99,11 @@ def generate_tap_map(test_dict, count):
 def compare(item1, item2):
     return word_frequency(item2.lower(), 'en') - word_frequency(item1.lower(), 'en')
 
+def reset_containers():
+    tapping_dict = {}
+    word_rank = {}
+    completed_numbers = {}
+
 if __name__ == "__main__":
     # word: a Unicode string containing the word to look up. Ideally the word is a single token according to our tokenizer, but if not, there is still hope -- see Tokenization below.
     # lang: the BCP 47 or ISO 639 code of the language to use, such as 'en'.
@@ -118,30 +123,28 @@ if __name__ == "__main__":
     count = 1000
     # not using dict, too many weird words. Let's use wiki-100k.txt
     # we need to feed the word in the order of freq, to save time for sorting
-    print("processing wiki100k.txt")
-    with open('wiki-100k.txt', encoding="utf-8") as f:
-        wiki100k = f.read().splitlines()
-    # remove spaces
-    wiki100k = [line.replace(' ', '') for line in wiki100k]
-    wiki100k = [line.replace('\t', '') for line in wiki100k]
-    wiki100k = [line.replace('\'', '') for line in wiki100k]
-    for idx, item in enumerate(wiki100k):
-        wiki100k[idx] = wiki100k[idx].lower()
-    count = len(wiki100k)
-    # resort
-    sorted(wiki100k, key=functools.cmp_to_key(compare))
-    generate_tap_map(wiki100k, count)
-    # write to file
-    f = open("wiki100k-result.txt", "w")
-    f.write(str(tapping_dict))
-    f.close()
-    f = open("wiki100k-cand.txt", "w")
-    f.write(str(completed_numbers))
-    f.close()
+    # print("processing wiki100k.txt")
+    # with open('wiki-100k.txt', encoding="utf-8") as f:
+    #     wiki100k = f.read().splitlines()
+    # # remove spaces
+    # wiki100k = [line.replace(' ', '') for line in wiki100k]
+    # wiki100k = [line.replace('\t', '') for line in wiki100k]
+    # wiki100k = [line.replace('\'', '') for line in wiki100k]
+    # for idx, item in enumerate(wiki100k):
+    #     wiki100k[idx] = wiki100k[idx].lower()
+    # count = len(wiki100k)
+    # # resort
+    # sorted(wiki100k, key=functools.cmp_to_key(compare))
+    # generate_tap_map(wiki100k, count)
+    # # write to file
+    # f = open("wiki100k-result.txt", "w")
+    # f.write(str(tapping_dict))
+    # f.close()
+    # f = open("wiki100k-cand.txt", "w")
+    # f.write(str(completed_numbers))
+    # f.close()
 
-    tapping_dict = {}
-    word_rank = {}
-    completed_numbers = {}
+    reset_containers()
     # google-10000-english-usa-no-swears
     print("\nprocessing 10000-no-swear.txt")
     with open('google-10000-english-usa-no-swears.txt', encoding="utf-8") as f:
@@ -161,5 +164,10 @@ if __name__ == "__main__":
     f = open("noswear10k-cand.txt", "w")
     f.write(str(completed_numbers))
     f.close()
+    # try json so javascript maybe can read it directly
+
+
+    with open('noswear10k-result.json', 'w') as fp:
+        json.dump(tapping_dict, fp)
 
 
