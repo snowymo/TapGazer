@@ -16,36 +16,43 @@ let S = "";
 
 let wordMap = {};
 let possibleWords = [];
+
+let keyboardOffset = 18;
+let candOffset = 24;
 //'qaz','wsx','edc','rfv','tg','','ujn','ikm','olh','pyb'
 //"qaz,wsx,edc,rfv,tg ,ujn,ikm,olh,pyb"
-let keyGroups = ["qaz","wsx","edc","rfvtgb","","","yhnujm","ik","ol","p"];
+let keyGroups = ["qaz","wsx","edc","rfvtgb","","","yhnuj","mik","ol","p"];
 let digits = "123456789";
 // this generates the input string from the word in dictionary,
 // we probably don't need that anymore because we are using the candidates generation from python
 // also because we need to... let me rewrite all the logic maybe
 // we need to support word completion. So it is not enough to have a wordToKey, we should have a KeyToWord.
-let wordToKey = word => {
-   let key = "";
-   for (let i = 0; i < word.length; i++) {
-      let j = Math.floor(keyGroups.indexOf(word.charAt(i)) / 4);
-      key += digits.substring(j, j + 1);
-   }
-   return key;
-};
-// wordMap will have the map that input string -> word, so let's have that directly from python
-for (let n = 0; n < wordList.length; n++) {
-   let word = wordList[n];
-   let mapKey = wordToKey(word);
-   if (!wordMap[mapKey]) wordMap[mapKey] = [];
-   wordMap[mapKey].push(word);
-}
-// sort by freq, we can sort that first
-for (let key in wordMap)
-   wordMap[key].sort(
-      (a, b) =>
-         (wordCount[b] === undefined ? 0 : wordCount[b]) -
-         (wordCount[a] === undefined ? 0 : wordCount[a])
-   );
+// let wordToKey = word => {
+//    let key = "";
+//    for (let i = 0; i < word.length; i++) {
+//       let j = Math.floor(keyGroups.indexOf(word.charAt(i)) / 4);
+//       key += digits.substring(j, j + 1);
+//    }
+//    return key;
+// };
+// wordMap will have the map from input string -> word, so let's have that directly from python
+// for (let n = 0; n < wordList.length; n++) {
+//    let word = wordList[n];
+//    let mapKey = wordToKey(word);
+//    if (!wordMap[mapKey]) wordMap[mapKey] = [];
+//    wordMap[mapKey].push(word);
+// }
+// // sort by freq, we can sort that first
+// for (let key in wordMap)
+//    wordMap[key].sort(
+//       (a, b) =>
+//          (wordCount[b] === undefined ? 0 : wordCount[b]) -
+//          (wordCount[a] === undefined ? 0 : wordCount[a])
+//    );
+
+
+   // var test = dictionary["fjd"][0];
+   // console.log("TEST TEST:", test);
 /*
    let count = 0, best = 0;
    for (let n = 0 ; n < pnp.length ; n++) {
@@ -122,10 +129,19 @@ canvas1.update = g => {
    let w = canvas1.width,
       h = canvas1.height;
    let Y = i =>
-      w / 10 +
+      w / keyboardOffset +
       (w / 13) * (0.8 + 3 * Math.pow((i < 5 ? i - 1.5 : 7.5 - i) / 4, 2));
    let drawText = (text, x, y, dx) =>
       context.fillText(text, x - context.measureText(text).width * dx, y);
+   let drawColorText = (text, x, y, dx, n) =>{
+      context.fillStyle = "green";
+      var typedText = text.substr(0,n);
+      context.fillText(typedText, x - context.measureText(text).width * dx, y);
+      context.fillStyle = "red";
+      var guessText = text.substr(n);
+      context.fillText(guessText, x - context.measureText(text).width * dx + context.measureText(typedText).width * dx*2, y);
+   }
+      
 
    var context = canvas1.getContext("2d");
    context.font = Math.floor(h / 15) + "px Courier";
@@ -135,41 +151,51 @@ canvas1.update = g => {
    for (let i = 0; i < 10; i++) {
       let right = i >= 5;
       let ix = i + right;
-      let x = (w / 13) * (ix + 1);
+      
+      let x = (w / 13) * (i + 1);
+      // need to have a dynamic column here
       rect(
          state[i] ? "rgb(200,200,200)" : "rgb(240,240,240)",
          x,
          Y(i) + w / 6,
          w / 13,
-         w / 6,
+         w / 3,//height of each col
          true
       );
       // draw previous key down
       if(i != 5 && !state[i] && preKeyDown[i]){
-         rect("green" , x, Y(i) + w / 6, w / 13, w / 6);
+         rect("green" , x, Y(i) + w / 6, w / 13, w / 3);
       }         
       else{
-         rect("black" , x, Y(i) + w / 6, w / 13, w / 6);
+         rect("black" , x, Y(i) + w / 6, w / 13, w / 3);
       }
 
       context.fillStyle = "rgb(160,200,255)";
       drawText(
          keys.substring(i, i + 1).toUpperCase(),
          x,
-         Y(i) + w / 6 + h / 17 + w / 6,
+         Y(i) + w / 6 + h / 17 + w / 3,
          -0.7
       );
    }
    context.fillStyle = "black";
-   for (let i = 0; i < 10; i++) {
-      let right = i >= 5;
-      let ix = i + right;
-      let x = (w / 13) * (ix + 1);
-      for (let row = 0; row < 3; row++) {
-         let ch = keyGroups.charAt(4 * i + row);
+   for (let col = 0; col < 10; col++) {
+      // let right = col >= 5;
+      let ix = col;
+      let x = (w / 13) * (col + 1);
+      // for (let row = 0; row < 3; row++) {
+      //    let ch = keyGroups.charAt(4 * i + row);
+      //    context.fillText(
+      //       ch,
+      //       x + w / 40 + (w / 13) * right,
+      //       (row * h) / 15 + Y(ix) + h / 17 + w / 6
+      //    );
+      // }
+      for(let row = 0; row < keyGroups[col].length; row++){
+         let ch = keyGroups[col][row];
          context.fillText(
             ch,
-            x + w / 40 + (w / 13) * right,
+            x + w / 40,
             (row * h) / 15 + Y(ix) + h / 17 + w / 6
          );
       }
@@ -180,13 +206,14 @@ canvas1.update = g => {
       for (let n = 0; n < possibleWords.length; n++) {
          let word = possibleWords[n];
          let x = (w / 4) * ((arr[n] % 3) + 1);
-         let y = (h * 1) / 4 + (w / 10) * Math.floor(arr[n] / 3);
-         drawText(possibleWords[n], x, y, 0.5);
+         let y = (h * 1) / 4 + (w / candOffset) * Math.floor(arr[n] / 3);
+         // show progress here, green means the progress and red means the completion
+         drawColorText(possibleWords[n], x, y, 0.5, mapKey.length);
       }
    }
 };
 
-let keyDigits = "12345 6789";
+let keyDigits = "asdf  jkl;";
 
 let mapKey = "";
 let isDeleteWord = false;
@@ -244,6 +271,7 @@ window.addEventListener("keyup", e => {
       for (let i = 0; i < state.length; i++) nKeys += state[i];
       if (nKeys == 0) maxKeys = keyMap = 0;
 
+      // enter
       if (n == 5) {
          // zhenyi
          if (possibleWords) {
@@ -260,7 +288,7 @@ window.addEventListener("keyup", e => {
             S =
                mapKey == ""
                   ? S.substring(0, S.lastIndexOf(" "))
-                  : S + (S.length ? " " : "") + wordMap[mapKey][indexOfWord];
+                  : S + (S.length ? " " : "") + dictionary[mapKey][indexOfWord];
             updateText();
          } else {
             console.log("no possibleWords");
@@ -269,8 +297,20 @@ window.addEventListener("keyup", e => {
          mapKey = "";
          possibleWords = [];
          wordMapIndex = defaultIndex;
-      } else {
-         let ch = keyDigits.charAt(n);
+      } else if(n == 4 && mapKey.length > 1){
+         // delete
+         mapKey = mapKey.substr(0, mapKey.length-2);
+         possibleWords = dictionary[mapKey]
+               ? dictionary[mapKey].slice(
+                  0,
+                  Math.min(dictionary[mapKey].length, arrangement.length)
+               )
+               : dictionary[mapKey];
+        } 
+        else{
+         // regular typing
+         // let ch = keyDigits.charAt(n);
+         // don't understand
          if (state[5]) {
             if (nKeys == 1) {
                if (altKeyState == 16) S += " ";
@@ -285,12 +325,12 @@ window.addEventListener("keyup", e => {
             }
          } else {
             mapKey += keyDigits.charAt(n);
-            possibleWords = wordMap[mapKey]
-               ? wordMap[mapKey].slice(
+            possibleWords = dictionary[mapKey]
+               ? dictionary[mapKey].slice(
                   0,
-                  Math.min(wordMap[mapKey].length, arrangement.length)
+                  Math.min(dictionary[mapKey].length, arrangement.length)
                )
-               : wordMap[mapKey];
+               : dictionary[mapKey];
          }
       }
    }

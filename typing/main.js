@@ -16,6 +16,10 @@ app.use(parser.urlencoded({ extended: true }));
 
 let httpserver = http.Server(app);
 
+// my input string to word map
+const dictionary = require('../freq/noswear10k-result.json');
+// probably just for now, create a new handler that client ask the server to retrieve the result for each key in the dictionary
+
 var curWS;
 var tcpserver = net.createServer(function(client) {
 
