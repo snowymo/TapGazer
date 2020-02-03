@@ -297,15 +297,20 @@ window.addEventListener("keyup", e => {
          mapKey = "";
          possibleWords = [];
          wordMapIndex = defaultIndex;
-      } else if(n == 4 && mapKey.length > 1){
+      } else if(n == 4){
          // delete
-         mapKey = mapKey.substr(0, mapKey.length-2);
+         if(mapKey.length > 1){
+            mapKey = mapKey.substr(0, mapKey.length-1);
          possibleWords = dictionary[mapKey]
                ? dictionary[mapKey].slice(
                   0,
                   Math.min(dictionary[mapKey].length, arrangement.length)
                )
                : dictionary[mapKey];
+         }else{
+            mapKey = "";
+            possibleWords = [];
+         }
         } 
         else{
          // regular typing
