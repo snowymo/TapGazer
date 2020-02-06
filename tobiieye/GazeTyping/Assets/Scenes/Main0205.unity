@@ -254,6 +254,7 @@ MonoBehaviour:
   wordDictCount: 0
   testInputString: 
   candTextMesh: {fileID: 937957201}
+  currentCandidates: []
 --- !u!1 &226186160
 GameObject:
   m_ObjectHideFlags: 0
@@ -1010,6 +1011,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 960451796}
+  - component: {fileID: 960451797}
   m_Layer: 0
   m_Name: InputSection
   m_TagString: Untagged
@@ -1033,6 +1035,21 @@ Transform:
   m_Father: {fileID: 390078815}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &960451797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 960451795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a16f7e448df2b344817dea7021a08e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputTextMesh: {fileID: 1127345312}
+  wordListLoader: {fileID: 132433878}
+  currentInputString: 
 --- !u!1 &1074810789
 GameObject:
   m_ObjectHideFlags: 0

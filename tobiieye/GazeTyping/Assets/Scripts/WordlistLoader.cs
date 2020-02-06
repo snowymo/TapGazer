@@ -18,11 +18,13 @@ public class WordlistLoader : MonoBehaviour {
     public int wordDictCount;
     public string testInputString;
     public TextMesh candTextMesh;
+    public string[] currentCandidates;
 
     // Start is called before the first frame update
     void Start()
     {
         wordDict = new Dictionary<string, string[]>();
+        currentCandidates = new string[20];
 
         string wordlistPath = "Assets/Resources/noswear10k-result.json";
         wordlistContent = File.ReadAllText(wordlistPath);
@@ -62,6 +64,16 @@ public class WordlistLoader : MonoBehaviour {
         // turn ";" to "p"
         inputString = inputString.Replace(";", "p");
         return wordDict[inputString];
+    }
+
+    public void UpdateCandidates(string inputString)
+    {
+        // turn ";" to "p"
+        inputString = inputString.Replace(";", "p");
+        candTextMesh.text = wordDict[inputString][0]; // for now
+        for(int i = 0; i < Mathf.Max(currentCandidates.Length, wordDict[inputString].Length); i++) {
+            currentCandidates[i] = wordDict[inputString][i];
+        }
     }
 
     // Update is called once per frame
