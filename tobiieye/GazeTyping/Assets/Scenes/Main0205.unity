@@ -369,7 +369,7 @@ TextMesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 318798826}
-  m_Text: "y i o  \nh k l p\nn m o \nu     \nj     \n"
+  m_Text: "y i o  \nh k l p\nn m   \nu     \nj     \n"
   m_OffsetZ: 0
   m_CharacterSize: 1
   m_LineSpacing: 1
@@ -1022,6 +1022,7 @@ GameObject:
   - component: {fileID: 1074810790}
   - component: {fileID: 1074810792}
   - component: {fileID: 1074810791}
+  - component: {fileID: 1074810793}
   m_Layer: 0
   m_Name: Phrase
   m_TagString: Untagged
@@ -1102,6 +1103,21 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &1074810793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1074810789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3cdb29ba22313d4eb2d8d24a9ef8a6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  phrases: []
+  phraseCount: 0
+  textMesh: {fileID: 1074810791}
 --- !u!1 &1127345310
 GameObject:
   m_ObjectHideFlags: 0
