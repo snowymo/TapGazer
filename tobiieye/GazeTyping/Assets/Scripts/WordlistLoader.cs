@@ -19,6 +19,7 @@ public class WordlistLoader : MonoBehaviour {
     public string testInputString;
     public TextMesh candTextMesh;
     public string[] currentCandidates;
+    public CandidateHandler candidateHandler;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +29,7 @@ public class WordlistLoader : MonoBehaviour {
 
         string wordlistPath = "Assets/Resources/noswear10k-result.json";
         wordlistContent = File.ReadAllText(wordlistPath);
+        candTextMesh.text = "";
 
         // test
         wordlistContent = wordlistContent.Replace(";", "p");
@@ -63,24 +65,44 @@ public class WordlistLoader : MonoBehaviour {
     {
         // turn ";" to "p"
         inputString = inputString.Replace(";", "p");
-        return wordDict[inputString];
+        if (wordDict.ContainsKey(inputString)) {
+            return wordDict[inputString];
+        }
+        else {
+            Debug.LogWarning("no candidates for " + inputString);
+            return new string[0];
+        }            
+    }
+
+    public void ResetCandidates()
+    {
+        candTextMesh.text = "";
+        candidateHandler.ResetCandidates();
     }
 
     public void UpdateCandidates(string inputString)
     {
         // turn ";" to "p"
+        if (!wordDict.ContainsKey(inputString)) {
+            Debug.LogWarning("no candidates for " + inputString);
+        }
         inputString = inputString.Replace(";", "p");
+        if (!wordDict.ContainsKey(inputString)) {
+            Debug.LogWarning("no candidates for " + inputString);
+            return;
+        }
         candTextMesh.text = wordDict[inputString][0]; // for now
-        for(int i = 0; i < Mathf.Max(currentCandidates.Length, wordDict[inputString].Length); i++) {
+        for(int i = 0; i < Mathf.Min(currentCandidates.Length, wordDict[inputString].Length); i++) {
             currentCandidates[i] = wordDict[inputString][i];
         }
+        candidateHandler.UpdateCandidates(currentCandidates);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            candTextMesh.text = GetCandidates(testInputString)[0]; // for now
-        }
+        //if (Input.GetKeyDown(KeyCode.Space)) {
+        //    candTextMesh.text = GetCandidates(testInputString)[0]; // for now
+        //}
     }
 }

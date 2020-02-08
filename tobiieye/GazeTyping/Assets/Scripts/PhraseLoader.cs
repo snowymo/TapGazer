@@ -10,6 +10,8 @@ public class PhraseLoader : MonoBehaviour
     public TextMesh textMesh;
 
     private int curPhraseIndex;
+    private string[] curPhrases;
+    private int curTypingPhrase;
 
     // Start is called before the first frame update
     void Start()
@@ -28,12 +30,14 @@ public class PhraseLoader : MonoBehaviour
             }
         }
         curPhraseIndex = 0;
+        curTypingPhrase = 0;
         UpdatePhrase();
     }
 
     public void NextPhrases()
     {
         ++curPhraseIndex;
+        curTypingPhrase = 0;
         UpdatePhrase();
     }
 
@@ -48,15 +52,54 @@ public class PhraseLoader : MonoBehaviour
         // update current phrases (5 phrases) to TextMesh
         curPhraseIndex = Mathf.Max(0, curPhraseIndex);
         curPhraseIndex = Mathf.Min(phraseCount-1, curPhraseIndex);
-        textMesh.text = phrases[curPhraseIndex];
+        ColorCurrentTypingPhrase();
+    }
+
+    private void ColorCurrentTypingPhrase()
+    {
+        string curText = phrases[curPhraseIndex];
+        curPhrases = curText.Split(new char[] { ' ' });
+        string newText = "";
+        for(int i = 0; i < curTypingPhrase; i++) {
+            newText += "<color=green>" + curPhrases[i] + "</color> ";
+        }
+        if(curTypingPhrase < curPhrases.Length)
+            newText += "<color=blue>" + curPhrases[curTypingPhrase] + "</color> ";
+        for (int i = curTypingPhrase+1; i<curPhrases.Length; i++) {
+            newText += curPhrases[i] + " ";
+        }
+        textMesh.text = newText; 
+    }
+
+    public bool IsCurrentTypingCorrect(string candidate)
+    {
+        if(candidate == curPhrases[curTypingPhrase]) {
+            // move to next word
+            if(curTypingPhrase < (curPhrases.Length-1)) {
+                ++curTypingPhrase;
+                ColorCurrentTypingPhrase();
+                Debug.Log("next word");
+            }
+            else {
+                // move to next phrase
+                Debug.Log("next phrase");
+                NextPhrases();
+                ColorCurrentTypingPhrase();
+            }
+            return true;
+        }
+        else {
+            // just wrong
+            return false;
+        }
     }
 
     private void Update()
     {
         // test NextPhrases
-        if (Input.GetKeyDown("n")) {
+        if (Input.GetKeyDown(KeyCode.Space)) {
             NextPhrases();
-        }else if (Input.GetKeyDown("p")) {
+        }else if (Input.GetKeyDown(KeyCode.Backspace)) {
             PrevPhrases();
         }
     }

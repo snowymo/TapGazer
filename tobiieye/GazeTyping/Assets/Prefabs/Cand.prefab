@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 4572935356711387945}
   - component: {fileID: 4572935356711387947}
   - component: {fileID: 4572935356711387944}
+  - component: {fileID: 2415017329370709277}
   m_Layer: 0
   m_Name: Cand0Text
   m_TagString: Untagged
@@ -183,6 +184,19 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4278190080
+--- !u!114 &2415017329370709277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4572935356711387958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b211c5b497d5544b20e07e056413dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CandText: {fileID: 4572935356711387944}
 --- !u!1 &5033345055598638332
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,8 +206,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3382318313462507023}
+  - component: {fileID: 708987957261683016}
   m_Layer: 0
-  m_Name: Cand0
+  m_Name: Cand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -215,3 +230,16 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &708987957261683016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5033345055598638332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b211c5b497d5544b20e07e056413dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CandText: {fileID: 4572935356711387944}

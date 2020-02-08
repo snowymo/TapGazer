@@ -214,6 +214,7 @@ GameObject:
   m_Component:
   - component: {fileID: 132433877}
   - component: {fileID: 132433878}
+  - component: {fileID: 132433879}
   m_Layer: 0
   m_Name: CandidateSection
   m_TagString: Untagged
@@ -255,6 +256,21 @@ MonoBehaviour:
   testInputString: 
   candTextMesh: {fileID: 937957201}
   currentCandidates: []
+  candidateHandler: {fileID: 132433879}
+--- !u!114 &132433879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 132433876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79b69d3536cbe2a4e837d876c1f78f70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CandidatePrefab: {fileID: 5033345055598638332, guid: 4bfd18e4b93e7d048a510518912d1a79,
+    type: 3}
 --- !u!1 &226186160
 GameObject:
   m_ObjectHideFlags: 0
@@ -1049,6 +1065,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputTextMesh: {fileID: 1127345312}
   wordListLoader: {fileID: 132433878}
+  phraseLoader: {fileID: 1074810793}
   currentInputString: 
 --- !u!1 &1074810789
 GameObject:
