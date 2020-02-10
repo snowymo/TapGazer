@@ -17,8 +17,9 @@ public class Candidate : MonoBehaviour
         
     }
 
-    public void SetCandidateText(string text)
+    public void SetCandidateText(string text, int progress = 0)
     {
-        CandText.text = text;
+        // update the color of first #progress# characters to blue and the rest to red
+        CandText.text = "<color=blue>" + text.Substring(0, progress) + "</color><color=red>" + text.Substring(progress) + "</color>";
     }
 }

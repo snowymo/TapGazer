@@ -32,11 +32,11 @@ public class CandidateHandler : MonoBehaviour
         }
     }
 
-    public void UpdateCandidates(string[] candidates)
+    public void UpdateCandidates(string[] candidates, int progress)
     {
         int candNum = Mathf.Min(candidates.Length-1, CandidateCount);
         for (int i = 0; i < candNum; i++) {
-            candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i+1]);
+            candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i+1], progress);
         }
         for(int i = candNum; i < CandidateCount; i++) {
             candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");

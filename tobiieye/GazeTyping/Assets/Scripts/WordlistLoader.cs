@@ -20,6 +20,7 @@ public class WordlistLoader : MonoBehaviour {
     public TextMesh candTextMesh;
     public string[] currentCandidates;
     public CandidateHandler candidateHandler;
+    private int currentProgress; // the number of the string was typed
 
     // Start is called before the first frame update
     void Start()
@@ -76,12 +77,14 @@ public class WordlistLoader : MonoBehaviour {
 
     public void ResetCandidates()
     {
+        currentProgress = 0;
         candTextMesh.text = "";
         candidateHandler.ResetCandidates();
     }
 
     public void UpdateCandidates(string inputString)
     {
+        currentProgress = inputString.Length;
         // turn ";" to "p"
         if (!wordDict.ContainsKey(inputString)) {
             Debug.LogWarning("no candidates for " + inputString);
@@ -91,11 +94,12 @@ public class WordlistLoader : MonoBehaviour {
             Debug.LogWarning("no candidates for " + inputString);
             return;
         }
-        candTextMesh.text = wordDict[inputString][0]; // for now
+        candTextMesh.text = "<color=blue>" + wordDict[inputString][0].Substring(0, currentProgress) + "</color><color=red>"
+            + wordDict[inputString][0].Substring(currentProgress) + "</color>"; // for now
         for(int i = 0; i < Mathf.Min(currentCandidates.Length, wordDict[inputString].Length); i++) {
             currentCandidates[i] = wordDict[inputString][i];
         }
-        candidateHandler.UpdateCandidates(currentCandidates);
+        candidateHandler.UpdateCandidates(currentCandidates, currentProgress);
     }
 
     // Update is called once per frame
