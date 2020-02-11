@@ -12,7 +12,7 @@ public class InputHandler : MonoBehaviour
     private Dictionary<string, string> mapInput2InputString;
 
     public string currentInputString; // to save current input string, refresh it when click 'enter'
-    private int gazeResultIndex;
+    public CandidateHandler candidateHandler;
 
     // Start is called before the first frame update
     void Start()
@@ -28,8 +28,6 @@ public class InputHandler : MonoBehaviour
         mapInput2InputString.Add("9", "k");
         mapInput2InputString.Add("0", "l");
         mapInput2InputString.Add("[", ";");
-
-        gazeResultIndex = 0;
     }
 
     // Update is called once per frame
@@ -52,9 +50,9 @@ public class InputHandler : MonoBehaviour
                 }
                 else if(inputStringTemplate[i] == "n") {
                     // enter
-                    inputTextMesh.text += wordListLoader.currentCandidates[gazeResultIndex] + " "; // 0 for now, 0 should be replaced by gaze result
+                    inputTextMesh.text += wordListLoader.currentCandidates[candidateHandler.GazedCandidate] + " "; // 0 for now, 0 should be replaced by gaze result
                     // check if correct
-                    phraseLoader.IsCurrentTypingCorrect(wordListLoader.currentCandidates[gazeResultIndex]);
+                    phraseLoader.IsCurrentTypingCorrect(wordListLoader.currentCandidates[candidateHandler.GazedCandidate]);
                     // flush input
                     currentInputString = "";
                 }

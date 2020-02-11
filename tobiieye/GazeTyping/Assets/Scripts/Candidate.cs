@@ -1,10 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Tobii.XR.Examples;
 using UnityEngine;
 
 public class Candidate : MonoBehaviour
 {
-    public TextMesh CandText;
+    public TMPro.TextMeshPro CandText;
+    public HandlerFocusAtGaze handlerFocusAtGaze;
+    public int candidateIndex = 0;
+    public CandidateHandler candidateHandler;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,7 +18,16 @@ public class Candidate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (handlerFocusAtGaze.GetGaze())
+        {
+            CandText.fontStyle = TMPro.FontStyles.Underline;
+            candidateHandler.GazedCandidate = candidateIndex;
+        }
+        else
+        {
+            CandText.fontStyle = TMPro.FontStyles.Normal;
+            //candidateHandler.GazedCandidate = 0;
+        }
     }
 
     public void SetCandidateText(string text, int progress = 0)

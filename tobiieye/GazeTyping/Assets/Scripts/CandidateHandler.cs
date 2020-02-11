@@ -11,6 +11,7 @@ public class CandidateHandler : MonoBehaviour
     float CandidateWidth = 4.0f;
     float CandidateHeight = -1.5f;
     int CandidatePerRow = 5;
+    public int GazedCandidate = 0; // index of the candidate being gazed
 
     private List<GameObject> candidateObjects;
 
@@ -28,6 +29,8 @@ public class CandidateHandler : MonoBehaviour
             go.name = "Cand" + (i+1).ToString();
             go.transform.localPosition = new Vector3(-8f+(i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight-1.5f, 0);
             go.GetComponent<Candidate>().SetCandidateText("");
+            go.GetComponent<Candidate>().candidateIndex = i+1;
+            go.GetComponent<Candidate>().candidateHandler = this;
             candidateObjects.Add(go);
         }
     }
