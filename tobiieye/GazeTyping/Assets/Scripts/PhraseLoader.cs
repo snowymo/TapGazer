@@ -13,11 +13,16 @@ public class PhraseLoader : MonoBehaviour
     private string[] curPhrases;
     private int curTypingPhrase;
 
+    public string phrasePath;
+
     // Start is called before the first frame update
     void Start()
     {
         // load phrase file into string lists, line by line
-        string phrasePath = "Assets/Resources/phrases2.txt";        
+        if (phrasePath == "")
+            phrasePath = Application.dataPath + "/Resources/phrases2.txt";
+        else
+            phrasePath = Application.dataPath + "/Resources/" + phrasePath;
         using (StreamReader sr = new StreamReader(phrasePath)) {
             phraseCount = File.ReadAllLines(phrasePath).Length;
             phrases = new string[phraseCount];
@@ -73,7 +78,7 @@ public class PhraseLoader : MonoBehaviour
 
     public bool IsCurrentTypingCorrect(string candidate)
     {
-        if(candidate == curPhrases[curTypingPhrase]) {
+        if(candidate.Equals(curPhrases[curTypingPhrase], System.StringComparison.InvariantCultureIgnoreCase)) {
             // move to next word
             if(curTypingPhrase < (curPhrases.Length-1)) {
                 ++curTypingPhrase;

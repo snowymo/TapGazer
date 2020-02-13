@@ -21,6 +21,7 @@ public class WordlistLoader : MonoBehaviour {
     public string[] currentCandidates;
     public CandidateHandler candidateHandler;
     private int currentProgress; // the number of the string was typed
+    public string wordlistPath;
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +29,10 @@ public class WordlistLoader : MonoBehaviour {
         wordDict = new Dictionary<string, string[]>();
         currentCandidates = new string[20];
 
-        string wordlistPath = "Assets/Resources/noswear10k-result.json";
+        if (wordlistPath == "")
+            wordlistPath = Application.dataPath + "/Resources/noswear10k-result.json";
+        else
+            wordlistPath = Application.dataPath + "/Resources/" + wordlistPath;
         wordlistContent = File.ReadAllText(wordlistPath);
         candText0.SetCandidateText("");
 
