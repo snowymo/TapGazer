@@ -104,6 +104,33 @@ def reset_containers():
     word_rank = {}
     completed_numbers = {}
 
+def check_with_phrases():
+    # try to output the candidate ranking for all the words in phrase2.txt
+    with open('phrases2.txt', encoding="utf-8") as f:
+        phrasesDict = f.read().splitlines()
+    for idx1, item in enumerate(phrasesDict):
+        currentPhrase = item.lower().split()
+        # go through currentPhrase
+        for idx2, currentWord in enumerate(currentPhrase):
+            # check the rank of currentWord
+            cur_typing = ""
+            for _, char in enumerate(currentWord):
+                # find the corresponding finger based on the char
+                cur_finger = find_finger(char)
+                cur_typing += cur_finger
+            inputString = cur_typing
+            # go through the result of inputString in completed_numbers,
+            if inputString not in completed_numbers:
+                # print(currentWord + " not in the dictionary")
+                print(currentWord)
+                continue
+            for idx3, candidate in enumerate(completed_numbers[inputString]):
+                if candidate.lower() == currentWord.lower():
+                    # idx3 is the rank
+                    if idx3 > 10:
+                        print("word: " + currentWord + " : " + str(idx3))
+                    break
+
 if __name__ == "__main__":
     # word: a Unicode string containing the word to look up. Ideally the word is a single token according to our tokenizer, but if not, there is still hope -- see Tokenization below.
     # lang: the BCP 47 or ISO 639 code of the language to use, such as 'en'.
@@ -157,6 +184,8 @@ if __name__ == "__main__":
     count = len(noswear10k)
     sorted(noswear10k, key=functools.cmp_to_key(compare))
     generate_tap_map(noswear10k, count)
+    #
+    check_with_phrases()
     # write to file
     f = open("noswear10k-result.txt", "w")
     f.write(str(tapping_dict))
@@ -186,6 +215,8 @@ if __name__ == "__main__":
     count = len(noswear10k)
     sorted(noswear10k, key=functools.cmp_to_key(compare))
     generate_tap_map(noswear10k, count)
+    #
+    check_with_phrases()
     # write to file
     f = open("30k-result.txt", "w")
     f.write(str(tapping_dict))
@@ -193,6 +224,7 @@ if __name__ == "__main__":
     f = open("30k-cand.txt", "w")
     f.write(str(completed_numbers))
     f.close()
+
     # try json so javascript maybe can read it directly
 
     # save the result without freq
@@ -201,3 +233,8 @@ if __name__ == "__main__":
         inputstring_word_map[inputstring] = [*tapping_dict[inputstring].keys()]
     with open('30k-result.json', 'w') as fp:
         json.dump(inputstring_word_map, fp)
+
+
+
+
+
