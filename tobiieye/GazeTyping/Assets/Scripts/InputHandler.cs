@@ -55,6 +55,8 @@ public class InputHandler : MonoBehaviour
                     phraseLoader.IsCurrentTypingCorrect(wordListLoader.currentCandidates[candidateHandler.GazedCandidate]);
                     // flush input
                     currentInputString = "";
+                    // flush candidates
+                    candidateHandler.ResetCandidates();
                 }
                 else {
                     // regular input
