@@ -8,10 +8,11 @@ public class CandidateHandler : MonoBehaviour
     public GameObject CandidatePrefab;
 
     int CandidateCount = 10;
-    float CandidateWidth = 4.0f;
+    float CandidateWidth = 4.0f; // roughly it fits for 5-character word
     float CandidateHeight = -1.5f;
     int CandidatePerRow = 5;
     public int GazedCandidate = 0; // index of the candidate being gazed
+    float perWidth = 0.6f;
 
     private List<GameObject> candidateObjects;
 
@@ -37,12 +38,24 @@ public class CandidateHandler : MonoBehaviour
 
     public void UpdateCandidates(string[] candidates, int progress)
     {
+        // we need to update the position at the same time
+        // calculate the word length for both lines, find the longer one
+        // or find the longest candidate, use that as the template, and re-calculate the width and place them
+        int maxLength = candidates[0].Length;
+        for(int i = 1; i < candidates.Length; i++)
+        {
+            if (candidates[i].Length > maxLength)
+                maxLength = candidates[i].Length;
+        }
+        CandidateWidth = perWidth * maxLength;
         int candNum = Mathf.Min(candidates.Length-1, CandidateCount);
         for (int i = 0; i < candNum; i++) {
             candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i+1], progress);
+            candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 1.5f, 0);
         }
         for(int i = candNum; i < CandidateCount; i++) {
             candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
+            candidateObjects[i].transform.localPosition = new Vector3(-8f * CandidateWidth + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 1.5f, 0);
         }
     }
 
@@ -56,6 +69,6 @@ public class CandidateHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
