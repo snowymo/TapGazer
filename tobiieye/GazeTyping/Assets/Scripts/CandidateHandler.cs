@@ -12,7 +12,7 @@ public class CandidateHandler : MonoBehaviour
     float CandidateHeight = -1.5f;
     int CandidatePerRow = 5;
     public int GazedCandidate = 0; // index of the candidate being gazed
-    float perWidth = 0.6f;
+    float perWidth = 0.57f;
 
     private List<GameObject> candidateObjects;
 
@@ -42,7 +42,7 @@ public class CandidateHandler : MonoBehaviour
         // calculate the word length for both lines, find the longer one
         // or find the longest candidate, use that as the template, and re-calculate the width and place them
         int maxLength = candidates[0].Length;
-        for(int i = 1; i < candidates.Length; i++)
+        for(int i = 1; i < Mathf.Min(11,candidates.Length); i++)
         {
             if (candidates[i].Length > maxLength)
                 maxLength = candidates[i].Length;
