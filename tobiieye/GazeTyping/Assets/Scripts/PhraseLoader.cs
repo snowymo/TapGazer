@@ -7,9 +7,10 @@ public class PhraseLoader : MonoBehaviour
 {
     public string[] phrases;
     public int phraseCount;
-    public TextMesh textMesh;
+    public TMPro.TextMeshPro textMesh;
 
     private int curPhraseIndex;
+    [SerializeField]
     private string[] curPhrases;
     private int curTypingPhrase;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
-    public TextMesh inputTextMesh;
+    public TMPro.TextMeshPro inputTextMesh;
     public WordlistLoader wordListLoader;
     public PhraseLoader phraseLoader;
 
@@ -38,19 +38,20 @@ public class InputHandler : MonoBehaviour
                 // process the key down
                 if(inputStringTemplate[i] == "b") {
                     // delete
-                    if(currentInputString.Length > 1) {
+                    candidateHandler.ResetCandidates();
+                    if (currentInputString.Length > 1) {
                         currentInputString = currentInputString.Substring(0, currentInputString.Length - 1);
                         wordListLoader.UpdateCandidates(currentInputString);
                     }
                     else {
                         // reset candidates
                         currentInputString = "";
-                        wordListLoader.ResetCandidates();
+                        //wordListLoader.ResetCandidates();
                     }                    
                 }
                 else if(inputStringTemplate[i] == "n") {
                     // enter
-                    inputTextMesh.text += wordListLoader.currentCandidates[candidateHandler.GazedCandidate] + " "; // 0 for now, 0 should be replaced by gaze result
+                    inputTextMesh.text = wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result
                     // check if correct
                     phraseLoader.IsCurrentTypingCorrect(wordListLoader.currentCandidates[candidateHandler.GazedCandidate]);
                     // flush input
@@ -61,6 +62,7 @@ public class InputHandler : MonoBehaviour
                 else {
                     // regular input
                     currentInputString += mapInput2InputString[inputStringTemplate[i]];
+                    candidateHandler.ResetCandidates();
                     wordListLoader.UpdateCandidates(currentInputString);
                 }
                 break;
