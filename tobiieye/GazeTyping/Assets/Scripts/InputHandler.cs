@@ -14,6 +14,8 @@ public class InputHandler : MonoBehaviour
     public string currentInputString; // to save current input string, refresh it when click 'enter'
     public CandidateHandler candidateHandler;
 
+    public GameObject[] selectedFingers;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,24 +35,31 @@ public class InputHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        for(int i = 0; i < inputStringTemplate.Length; i++) {
-            if (Input.GetKeyDown(inputStringTemplate[i])) {
+        for (int i = 0; i < inputStringTemplate.Length; i++)
+        {
+            if (Input.GetKeyDown(inputStringTemplate[i]))
+            {
                 // process the key down
-                if(inputStringTemplate[i] == "b") {
+                selectedFingers[i].SetActive(true);
+                if (inputStringTemplate[i] == "b")
+                {
                     // delete
                     candidateHandler.ResetCandidates();
-                    if (currentInputString.Length > 1) {
+                    if (currentInputString.Length > 1)
+                    {
                         currentInputString = currentInputString.Substring(0, currentInputString.Length - 1);
                         wordListLoader.UpdateCandidates(currentInputString);
                     }
-                    else {
+                    else
+                    {
                         // reset candidates
                         //wordListLoader.candText0.SetCandidateText("");
                         currentInputString = "";
                         //wordListLoader.ResetCandidates();
-                    }                    
+                    }
                 }
-                else if(inputStringTemplate[i] == "n") {
+                else if (inputStringTemplate[i] == "n")
+                {
                     // enter
                     inputTextMesh.text = wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result
                     // check if correct
@@ -61,7 +70,8 @@ public class InputHandler : MonoBehaviour
                     //wordListLoader.candText0.SetCandidateText("");
                     candidateHandler.ResetCandidates();
                 }
-                else {
+                else
+                {
                     // regular input
                     currentInputString += mapInput2InputString[inputStringTemplate[i]];
                     //wordListLoader.candText0.SetCandidateText("");
@@ -69,6 +79,11 @@ public class InputHandler : MonoBehaviour
                     wordListLoader.UpdateCandidates(currentInputString);
                 }
                 break;
+            }
+            if (Input.GetKeyUp(inputStringTemplate[i]))
+            {
+                // process the key down
+                selectedFingers[i].SetActive(false);
             }
         }
     }
