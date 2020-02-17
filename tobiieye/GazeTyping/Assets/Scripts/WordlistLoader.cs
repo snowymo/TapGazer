@@ -17,7 +17,7 @@ public class WordlistLoader : MonoBehaviour {
     private dynamic wordlistJson;
     public int wordDictCount;
     public string testInputString;
-    public Candidate candText0;
+    //public Candidate candText0;
     public string[] currentCandidates;
     public CandidateHandler candidateHandler;
     private int currentProgress; // the number of the string was typed
@@ -34,7 +34,7 @@ public class WordlistLoader : MonoBehaviour {
         else
             wordlistPath = Application.dataPath + "/Resources/" + wordlistPath;
         wordlistContent = File.ReadAllText(wordlistPath);
-        candText0.SetCandidateText("");
+        //candText0.SetCandidateText("");
 
         // test
         wordlistContent = wordlistContent.Replace(";", "p");
@@ -82,7 +82,7 @@ public class WordlistLoader : MonoBehaviour {
     public void ResetCandidates()
     {
         currentProgress = 0;
-        candText0.SetCandidateText("");
+        //candText0.SetCandidateText("");
         candidateHandler.ResetCandidates();
     }
 
@@ -98,7 +98,7 @@ public class WordlistLoader : MonoBehaviour {
             Debug.LogWarning("no candidates for " + inputString);
             return;
         }
-        candText0.SetCandidateText(wordDict[inputString][0], currentProgress); // for now
+        //candText0.SetCandidateText(wordDict[inputString][0], currentProgress); // for now
         for(int i = 0; i < Mathf.Min(currentCandidates.Length, wordDict[inputString].Length); i++) {
             currentCandidates[i] = wordDict[inputString][i];
         }

@@ -45,7 +45,7 @@ public class InputHandler : MonoBehaviour
                     }
                     else {
                         // reset candidates
-                        wordListLoader.candText0.SetCandidateText("");
+                        //wordListLoader.candText0.SetCandidateText("");
                         currentInputString = "";
                         //wordListLoader.ResetCandidates();
                     }                    
@@ -58,13 +58,13 @@ public class InputHandler : MonoBehaviour
                     // flush input
                     currentInputString = "";
                     // flush candidates
-                    wordListLoader.candText0.SetCandidateText("");
+                    //wordListLoader.candText0.SetCandidateText("");
                     candidateHandler.ResetCandidates();
                 }
                 else {
                     // regular input
                     currentInputString += mapInput2InputString[inputStringTemplate[i]];
-                    wordListLoader.candText0.SetCandidateText("");
+                    //wordListLoader.candText0.SetCandidateText("");
                     candidateHandler.ResetCandidates();
                     wordListLoader.UpdateCandidates(currentInputString);
                 }

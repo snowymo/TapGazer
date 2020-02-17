@@ -7,7 +7,7 @@ public class CandidateHandler : MonoBehaviour
 
     public GameObject CandidatePrefab;
 
-    int CandidateCount = 10;
+    int CandidateCount = 11;
     float CandidateWidth = 4.0f; // roughly it fits for 5-character word
     float CandidateHeight = -1.5f;
     int CandidatePerRow = 5;
@@ -25,12 +25,26 @@ public class CandidateHandler : MonoBehaviour
     void Start()
     {
         candidateObjects = new List<GameObject>();
-        for(int i = 0; i < CandidateCount; i++) {
-            GameObject go = Instantiate(CandidatePrefab, transform);
-            go.name = "Cand" + (i+1).ToString();
-            go.transform.localPosition = new Vector3(-8f+(i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight-1.5f, 0);
+        CreateRowLayout();
+    }
+
+    void CreateRowLayout()
+    {
+        // the first one is placed in the center
+        GameObject go = Instantiate(CandidatePrefab, transform);
+        go.name = "Cand0";
+        go.GetComponent<Candidate>().SetCandidateText("");
+        go.GetComponent<Candidate>().candidateIndex = 0;
+        go.GetComponent<Candidate>().candidateHandler = this;
+        candidateObjects.Add(go);
+        // the rest are placed in two rows
+        for (int i = 0; i < CandidateCount-1; i++)
+        {
+            go = Instantiate(CandidatePrefab, transform);
+            go.name = "Cand" + (i + 1).ToString();
+            go.transform.localPosition = new Vector3(-8f + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 1.5f, 0);
             go.GetComponent<Candidate>().SetCandidateText("");
-            go.GetComponent<Candidate>().candidateIndex = i+1;
+            go.GetComponent<Candidate>().candidateIndex = i + 1;
             go.GetComponent<Candidate>().candidateHandler = this;
             candidateObjects.Add(go);
         }
@@ -48,14 +62,17 @@ public class CandidateHandler : MonoBehaviour
                 maxLength = candidates[i].Length;
         }
         CandidateWidth = perWidth * maxLength;
-        int candNum = Mathf.Min(candidates.Length-1, CandidateCount);
-        for (int i = 0; i < candNum; i++) {
-            candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i+1], progress);
-            candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 1.5f, 0);
+        int candNum = Mathf.Min(candidates.Length, CandidateCount);
+
+        // row layout
+        candidateObjects[0].GetComponent<Candidate>().SetCandidateText(candidates[0], progress);
+        for (int i = 1; i < candNum; i++) {
+            candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i], progress);
+            candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + ((i-1) % CandidatePerRow) * CandidateWidth, (i-1) / CandidatePerRow * CandidateHeight - 1.5f, 0);
         }
         for(int i = candNum; i < CandidateCount; i++) {
             candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
-            candidateObjects[i].transform.localPosition = new Vector3(-8f * CandidateWidth + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 1.5f, 0);
+            candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight - 1.5f, 0);
         }
     }
 
