@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 62838941869395292}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.13, y: 3.62, z: 23.2}
+  m_LocalPosition: {x: -1.57, y: 3.62, z: 23.2}
   m_LocalScale: {x: 0.3366, y: 1, z: 0.07890635}
   m_Children: []
   m_Father: {fileID: 7278979371177433762}
@@ -105,7 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7bfd2150ed560419b0fdc51dc30440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightColor: {r: 0.93582594, g: 1, b: 0.5518868, a: 1}
+  HighlightColor: {r: 1, g: 1, b: 1, a: 1}
   AnimationTime: 0.1
 --- !u!1 &91376414941986153
 GameObject:
@@ -184,7 +184,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 182726082071109459}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.13, y: 3.62, z: 23.2}
+  m_LocalPosition: {x: -1.61, y: 3.62, z: 23.2}
   m_LocalScale: {x: 0.3366, y: 1, z: 0.07890635}
   m_Children: []
   m_Father: {fileID: 6352905887551719692}
@@ -261,7 +261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7bfd2150ed560419b0fdc51dc30440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightColor: {r: 0.93582594, g: 1, b: 0.5518868, a: 1}
+  HighlightColor: {r: 1, g: 1, b: 1, a: 1}
   AnimationTime: 0.1
 --- !u!1 &346211241781784984
 GameObject:
@@ -382,8 +382,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -493,7 +493,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 467456984716900194}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.13, y: 3.62, z: 23.2}
+  m_LocalPosition: {x: 1.63, y: 3.62, z: 23.2}
   m_LocalScale: {x: 0.3366, y: 1, z: 0.07890635}
   m_Children: []
   m_Father: {fileID: 202729066113702489}
@@ -570,7 +570,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7bfd2150ed560419b0fdc51dc30440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightColor: {r: 0.93582594, g: 1, b: 0.5518868, a: 1}
+  HighlightColor: {r: 1, g: 1, b: 1, a: 1}
   AnimationTime: 0.1
 --- !u!1 &523772938546566591
 GameObject:
@@ -740,8 +740,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -851,7 +851,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1016278069454363486}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.13, y: 3.62, z: 23.2}
+  m_LocalPosition: {x: -1.57, y: 3.62, z: 23.2}
   m_LocalScale: {x: 0.3366, y: 1, z: 0.07890635}
   m_Children: []
   m_Father: {fileID: 219642743968694047}
@@ -928,7 +928,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7bfd2150ed560419b0fdc51dc30440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightColor: {r: 0.93582594, g: 1, b: 0.5518868, a: 1}
+  HighlightColor: {r: 1, g: 1, b: 1, a: 1}
   AnimationTime: 0.1
 --- !u!1 &1545682887173073066
 GameObject:
@@ -1147,8 +1147,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1349,8 +1349,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1649,8 +1649,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1760,7 +1760,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3999365202776958953}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.13, y: 3.62, z: 23.2}
+  m_LocalPosition: {x: 1.7, y: 3.62, z: 23.2}
   m_LocalScale: {x: 0.3366, y: 1, z: 0.07890635}
   m_Children: []
   m_Father: {fileID: 4878253877923972410}
@@ -1837,7 +1837,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7bfd2150ed560419b0fdc51dc30440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightColor: {r: 0.93582594, g: 1, b: 0.5518868, a: 1}
+  HighlightColor: {r: 1, g: 1, b: 1, a: 1}
   AnimationTime: 0.1
 --- !u!1 &4244479542086772836
 GameObject:
@@ -1944,7 +1944,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7bfd2150ed560419b0fdc51dc30440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightColor: {r: 0.93582594, g: 1, b: 0.5518868, a: 1}
+  HighlightColor: {r: 1, g: 1, b: 1, a: 1}
   AnimationTime: 0.1
 --- !u!1 &4662193962816903557
 GameObject:
@@ -1974,7 +1974,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4662193962816903557}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.13, y: 3.62, z: 23.2}
+  m_LocalPosition: {x: -1.53, y: 3.62, z: 23.2}
   m_LocalScale: {x: 0.3366, y: 1, z: 0.07890635}
   m_Children: []
   m_Father: {fileID: 6469967216128644395}
@@ -2051,7 +2051,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7bfd2150ed560419b0fdc51dc30440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightColor: {r: 0.93582594, g: 1, b: 0.5518868, a: 1}
+  HighlightColor: {r: 1, g: 1, b: 1, a: 1}
   AnimationTime: 0.1
 --- !u!1 &4900344287203674307
 GameObject:
@@ -2179,7 +2179,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5243120403183395249}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.13, y: 3.62, z: 23.2}
+  m_LocalPosition: {x: 1.63, y: 3.62, z: 23.2}
   m_LocalScale: {x: 0.3366, y: 1, z: 0.07890635}
   m_Children: []
   m_Father: {fileID: 8094930212201571933}
@@ -2256,7 +2256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7bfd2150ed560419b0fdc51dc30440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightColor: {r: 0.93582594, g: 1, b: 0.5518868, a: 1}
+  HighlightColor: {r: 1, g: 1, b: 1, a: 1}
   AnimationTime: 0.1
 --- !u!1 &5481148636474462827
 GameObject:
@@ -2327,7 +2327,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5627305981478664347}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.13, y: 3.62, z: 23.2}
+  m_LocalPosition: {x: 1.63, y: 3.62, z: 23.2}
   m_LocalScale: {x: 0.3366, y: 1, z: 0.07890635}
   m_Children: []
   m_Father: {fileID: 6333256068731390177}
@@ -2404,7 +2404,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7bfd2150ed560419b0fdc51dc30440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightColor: {r: 0.93582594, g: 1, b: 0.5518868, a: 1}
+  HighlightColor: {r: 1, g: 1, b: 1, a: 1}
   AnimationTime: 0.1
 --- !u!1 &5667132249701336675
 GameObject:
@@ -2525,8 +2525,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2636,7 +2636,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5970152514202948635}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.13, y: 3.62, z: 23.2}
+  m_LocalPosition: {x: -1.56, y: 3.62, z: 23.2}
   m_LocalScale: {x: 0.3366, y: 1, z: 0.07890635}
   m_Children: []
   m_Father: {fileID: 475798685353877331}
@@ -2713,7 +2713,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7bfd2150ed560419b0fdc51dc30440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightColor: {r: 0.93582594, g: 1, b: 0.5518868, a: 1}
+  HighlightColor: {r: 1, g: 1, b: 1, a: 1}
   AnimationTime: 0.1
 --- !u!1 &5988754421781292144
 GameObject:
@@ -2834,8 +2834,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3085,8 +3085,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3287,8 +3287,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3489,8 +3489,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3649,7 +3649,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8388885564763973977}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.13, y: 3.62, z: 23.2}
+  m_LocalPosition: {x: 1.67, y: 3.62, z: 23.2}
   m_LocalScale: {x: 0.3366, y: 1, z: 0.07890635}
   m_Children: []
   m_Father: {fileID: 3904899528141925366}
@@ -3726,7 +3726,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7bfd2150ed560419b0fdc51dc30440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightColor: {r: 0.93582594, g: 1, b: 0.5518868, a: 1}
+  HighlightColor: {r: 1, g: 1, b: 1, a: 1}
   AnimationTime: 0.1
 --- !u!1 &8674102784886364170
 GameObject:
@@ -3847,8 +3847,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
