@@ -65,10 +65,17 @@ public class CandidateHandler : MonoBehaviour
         int candNum = Mathf.Min(candidates.Length, CandidateCount);
 
         // row layout
-        candidateObjects[0].GetComponent<Candidate>().SetCandidateText(candidates[0], progress);
-        for (int i = 1; i < candNum; i++) {
-            candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i], progress);
-            candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + ((i-1) % CandidatePerRow) * CandidateWidth, (i-1) / CandidatePerRow * CandidateHeight - 1.5f, 0);
+        
+        for (int i = 0; i < candNum; i++) {
+            if(i == 0)
+            {
+                candidateObjects[0].GetComponent<Candidate>().SetCandidateText(candidates[0], progress);
+            }
+            else
+            {
+                candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i], progress);
+                candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight - 1.5f, 0);
+            }            
         }
         for(int i = candNum; i < CandidateCount; i++) {
             candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
