@@ -456,12 +456,13 @@ MonoBehaviour:
     type: 3}
   FanLayoutCandidatePrefab: {fileID: 5481148636474462827, guid: c94a1712159f4d342833da14744a60be,
     type: 3}
+  CandidateCount: 11
   GazedCandidate: 0
   fanRadius: 1
   verticalScale: 1
   fanAngle: 30
   textHeight: 0.2
-  candidateLayout: 1
+  candidateLayout: 3
 --- !u!1 &226186160
 GameObject:
   m_ObjectHideFlags: 0

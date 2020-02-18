@@ -7,6 +7,7 @@ public class CandidateHandler : MonoBehaviour
 
     public GameObject CandidatePrefab, FanLayoutCandidatePrefab;
 
+    [SerializeField]
     int CandidateCount = 11;
     float CandidateWidth = 4.0f; // roughly it fits for 5-character word
     float CandidateHeight = -1.5f;
@@ -19,7 +20,7 @@ public class CandidateHandler : MonoBehaviour
     public float textHeight = 0.8f;
     Dictionary<int, int> fanHorizontalMap;
 
-    public enum CandLayout { ROW, FAN};
+    public enum CandLayout { ROW, FAN, BYCOL, LEXIC};
     public CandLayout candidateLayout;
 
     private List<GameObject> candidateObjects;
@@ -35,12 +36,18 @@ public class CandidateHandler : MonoBehaviour
         candidateObjects = new List<GameObject>();
         if(candidateLayout == CandLayout.ROW)
             CreateRowLayout();
-        else
+        else if(candidateLayout == CandLayout.FAN)
             updateFanLayout();
+        else if(candidateLayout == CandLayout.LEXIC)
+        {
+            CreateRowLayout();
+            // order the candidates by lexical order
+        }
     }
 
     void CreateRowLayout()
     {
+        CandidateCount = 11;
         // the first one is placed in the center
         GameObject go = Instantiate(CandidatePrefab, transform);
         go.name = "Cand0";
@@ -63,6 +70,7 @@ public class CandidateHandler : MonoBehaviour
 
     void updateFanLayout()
     {
+        CandidateCount = 11;
         // the first one is placed in the center
         GameObject fanLayout = Instantiate(FanLayoutCandidatePrefab, transform);
         // fill the list with FanLayoutCandidatePrefab
@@ -153,12 +161,60 @@ public class CandidateHandler : MonoBehaviour
         }
     }
 
+    List<string> sortHelp = new List<string>();
+    void UpdateLexicalCandidate(string[] candidates, int progress)
+    {
+        // we need to update the position at the same time
+        // calculate the word length for both lines, find the longer one
+        // or find the longest candidate, use that as the template, and re-calculate the width and place them
+        int maxLength = candidates[0].Length;
+        for (int i = 1; i < Mathf.Min(11, candidates.Length); i++)
+        {
+            if (candidates[i].Length > maxLength)
+                maxLength = candidates[i].Length;
+        }
+        CandidateWidth = perWidth * maxLength;
+        int candNum = Mathf.Min(candidates.Length, CandidateCount);
+
+        // reorder the candidates except the first one
+        sortHelp = new List<string>(candidates);
+        List<string> restList = sortHelp.GetRange(1, candNum-1);
+        restList.Sort();
+        for (int i = 0; i < restList.Count; i++)
+        {
+            candidates[i+1] = restList[i];
+        }
+
+        // row layout
+        for (int i = 0; i < candNum; i++)
+        {
+            if (i == 0)
+            {
+                candidateObjects[0].GetComponent<Candidate>().SetCandidateText(candidates[0], progress);
+            }
+            else
+            {
+                candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i], progress);
+                candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight - 1.5f, 0);
+            }
+        }
+        for (int i = candNum; i < CandidateCount; i++)
+        {
+            candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
+            candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight - 1.5f, 0);
+        }
+    }
+
     public void UpdateCandidates(string[] candidates, int progress)
     {
         if (candidateLayout == CandLayout.ROW)
             UpdateRowLayoutCandidate(candidates, progress);
-        else
+        else if(candidateLayout == CandLayout.FAN)
             UpdateFanLayoutCandidate(candidates, progress);
+        else if(candidateLayout == CandLayout.LEXIC)
+        {
+            UpdateLexicalCandidate(candidates, progress);
+        }
     }
 
     public void ResetCandidates()
