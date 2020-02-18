@@ -22,12 +22,15 @@ public class WordlistLoader : MonoBehaviour {
     public CandidateHandler candidateHandler;
     private int currentProgress; // the number of the string was typed
     public string wordlistPath;
+    [SerializeField]
+    private int preloadedCandidates; // 20 for regular option, but actually 11 is enough lol. 48 for by-column option, in case we want it to be 6*8
 
     // Start is called before the first frame update
     void Start()
     {
+        preloadedCandidates = 54;
         wordDict = new Dictionary<string, string[]>();
-        currentCandidates = new string[20];
+        currentCandidates = new string[preloadedCandidates];
 
         if (wordlistPath == "")
             wordlistPath = Application.dataPath + "/Resources/noswear10k-result.json";
@@ -53,7 +56,7 @@ public class WordlistLoader : MonoBehaviour {
             }
             else {
                 string[] cands = temp.Split(new char[] { ',' });
-                string[] first20cand = new string[Mathf.Min(cands.Length, 20)];
+                string[] first20cand = new string[Mathf.Min(cands.Length, preloadedCandidates)];
                 Array.Copy(cands, first20cand, first20cand.Length);
                 wordDict.Add(item.Key, first20cand);
             }                

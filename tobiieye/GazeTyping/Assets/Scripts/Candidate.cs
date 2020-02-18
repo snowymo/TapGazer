@@ -9,10 +9,17 @@ public class Candidate : MonoBehaviour
     public HandlerFocusAtGaze handlerFocusAtGaze;
     public int candidateIndex = 0;
     public CandidateHandler candidateHandler;
-    // Start is called before the first frame update
-    void Start()
+
+    string removeFormat(string richtext)
     {
-        
+        // there should be several '<' and '>' in the string
+        while(richtext.IndexOf('<') != -1)
+        {
+            int start = richtext.IndexOf('<');
+            int end = richtext.IndexOf('>');
+            richtext = richtext.Remove(start, end - start+1);
+        }
+        return richtext;
     }
 
     // Update is called once per frame
@@ -22,6 +29,7 @@ public class Candidate : MonoBehaviour
         {
             CandText.fontStyle = TMPro.FontStyles.Underline;
             candidateHandler.GazedCandidate = candidateIndex;
+            candidateHandler.CurrentGazedText = removeFormat(CandText.text);
         }
         else
         {

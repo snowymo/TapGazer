@@ -19,11 +19,20 @@ public class CandidateHandler : MonoBehaviour
     public float fanAngle = 30f;
     public float textHeight = 0.8f;
     Dictionary<int, int> fanHorizontalMap;
+    List<List<string>> candidateColumns;
 
     public enum CandLayout { ROW, FAN, BYCOL, LEXIC};
     public CandLayout candidateLayout;
 
     private List<GameObject> candidateObjects;
+    public string CurrentGazedText;
+
+    // map btw regular keys and input string
+    Dictionary<char, int> mapKey2Column = new Dictionary<char, int>()
+    {
+        {'q',0}, { 'a',0},{'z',0}, {'w',1}, {'s',1}, {'x',1}, {'e',2}, {'d', 2}, {'c', 2}, {'r', 3}, {'f', 3}, {'v', 3}, {'t',3}, {'g', 3}, {'b',3},
+        {'y',4}, { 'h',4},{'n',4}, {'u',4}, {'j',4}, {'i',5}, {'k',5}, {'m', 5}, {'o', 6}, {'l', 6}, {'p', 7}
+    };
 
     // show the prefab at the corresponding place
     // step 1: show the candidates directly, maybe 10 for now,
@@ -42,6 +51,9 @@ public class CandidateHandler : MonoBehaviour
         {
             CreateRowLayout();
             // order the candidates by lexical order
+        }else if(candidateLayout == CandLayout.BYCOL)
+        {
+            CreateColumnLayout();
         }
     }
 
@@ -63,6 +75,31 @@ public class CandidateHandler : MonoBehaviour
             go.transform.localPosition = new Vector3(-8f + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 1.5f, 0);
             go.GetComponent<Candidate>().SetCandidateText("");
             go.GetComponent<Candidate>().candidateIndex = i + 1;
+            go.GetComponent<Candidate>().candidateHandler = this;
+            candidateObjects.Add(go);
+        }
+    }
+
+    void CreateColumnLayout()
+    {
+        // 8 columns + 1
+        CandidatePerRow = 9;
+        CandidateCount = CandidatePerRow * 6;
+        
+        candidateColumns = new List<List<string>>();
+        for(int i = 0; i < CandidatePerRow; i++)
+        {
+            candidateColumns.Add(new List<string>());
+        }
+
+        // the rest are placed in two rows
+        for (int i = 0; i < CandidateCount; i++)
+        {
+            GameObject go = Instantiate(CandidatePrefab, transform);
+            go.name = "Cand" + i.ToString();
+            go.transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow-1) / 2 + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 1.5f, 0);
+            go.GetComponent<Candidate>().SetCandidateText("");
+            go.GetComponent<Candidate>().candidateIndex = i;
             go.GetComponent<Candidate>().candidateHandler = this;
             candidateObjects.Add(go);
         }
@@ -205,6 +242,59 @@ public class CandidateHandler : MonoBehaviour
         }
     }
 
+    int candidateNumberPerColumn = 6;
+    int[] maxLength;
+    
+    void UpdateByColumnCandidate(string[] candidates, int progress)
+    {
+        // we need to update the position at the same time
+        // step 1, feed the candidates column by column,
+        // step 2, record the maximum length for each column
+        int candNum = Mathf.Min(candidates.Length, CandidateCount);
+        maxLength = new int[CandidatePerRow];
+        int longestCand = 0;
+        // reset the candidateColumn
+        for (int i = 0; i < CandidatePerRow; i++)
+        {
+            candidateColumns[i].Clear();
+        }
+
+        // by column layout
+        for(int i = 0; i < candNum; i++)
+        {
+            // check the next character for each candidate, and then put it into the correct bucket
+            // turn regular char to input string
+            // if it is completed candidates, put it in the center lol
+            int columnIndex = 4;
+            if (candidates[i].Length > progress)
+            {
+                columnIndex = mapKey2Column[candidates[i][progress]];
+                columnIndex = columnIndex > 3 ? columnIndex + 1 : columnIndex;
+            }
+            
+            if (candidateColumns[columnIndex].Count < candidateNumberPerColumn)
+            {
+                candidateColumns[columnIndex].Add(candidates[i]);
+                maxLength[columnIndex] = Mathf.Max(maxLength[columnIndex], candidates[i].Length);
+                longestCand = Mathf.Max(longestCand, candidates[i].Length);
+            }                        
+        }
+
+        // calculate the longest word per column and change the position
+        CandidateWidth = perWidth * longestCand;
+        for (int i = 0; i < candidateColumns.Count; i++)
+        {
+            candidateColumns[i].Sort();
+            for (int j = 0; j < candidateColumns[i].Count; j++)
+            {
+                candidateObjects[i + j * candidateNumberPerColumn].GetComponent<Candidate>().SetCandidateText(candidateColumns[i][j], progress);
+//                CandidateWidth = perWidth * longestCand;
+                candidateObjects[i + j * candidateNumberPerColumn].transform.localPosition = 
+                    new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + i * CandidateWidth, j * CandidateHeight, 0);
+            }
+        }
+    }
+
     public void UpdateCandidates(string[] candidates, int progress)
     {
         if (candidateLayout == CandLayout.ROW)
@@ -214,6 +304,9 @@ public class CandidateHandler : MonoBehaviour
         else if(candidateLayout == CandLayout.LEXIC)
         {
             UpdateLexicalCandidate(candidates, progress);
+        }else if(candidateLayout == CandLayout.BYCOL)
+        {
+            UpdateByColumnCandidate(candidates, progress);
         }
     }
 

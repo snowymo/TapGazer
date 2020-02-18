@@ -61,9 +61,9 @@ public class InputHandler : MonoBehaviour
                 else if (inputStringTemplate[i] == "n")
                 {
                     // enter
-                    inputTextMesh.text = wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result
+                    inputTextMesh.text = candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result
                     // check if correct
-                    phraseLoader.IsCurrentTypingCorrect(wordListLoader.currentCandidates[candidateHandler.GazedCandidate]);
+                    phraseLoader.IsCurrentTypingCorrect(candidateHandler.CurrentGazedText/*wordListLoader.currentCandidates[candidateHandler.GazedCandidate]*/);
                     // flush input
                     currentInputString = "";
                     // flush candidates

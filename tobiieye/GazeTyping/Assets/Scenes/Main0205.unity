@@ -440,6 +440,7 @@ MonoBehaviour:
   currentCandidates: []
   candidateHandler: {fileID: 132433879}
   wordlistPath: 30k-result.json
+  preloadedCandidates: 48
 --- !u!114 &132433879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -462,7 +463,8 @@ MonoBehaviour:
   verticalScale: 1
   fanAngle: 30
   textHeight: 0.2
-  candidateLayout: 3
+  candidateLayout: 2
+  CurrentGazedText: 
 --- !u!1 &226186160
 GameObject:
   m_ObjectHideFlags: 0
@@ -1695,7 +1697,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 617092276}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.45, z: 0}
+  m_LocalPosition: {x: 0, y: -7.41, z: -1.81}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 226186161}
@@ -2770,8 +2772,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1327282771}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.13, y: 0.48, z: 23.3}
-  m_LocalScale: {x: 6, y: 1, z: 0.22}
+  m_LocalPosition: {x: -0.13, y: -1.8, z: 23.3}
+  m_LocalScale: {x: 6, y: 1, z: 1.14}
   m_Children: []
   m_Father: {fileID: 132433877}
   m_RootOrder: 2
@@ -3017,7 +3019,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1476959233}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 3.87}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1631793427}
