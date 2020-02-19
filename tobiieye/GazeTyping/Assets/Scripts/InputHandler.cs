@@ -18,6 +18,8 @@ public class InputHandler : MonoBehaviour
 
     public GameObject helpInfo;
 
+    public HandAnimationCtrl handModel;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,7 +44,12 @@ public class InputHandler : MonoBehaviour
             if (Input.GetKeyDown(inputStringTemplate[i]))
             {
                 // process the key down
-                selectedFingers[i].SetActive(true);
+                //selectedFingers[i].SetActive(true);
+                // hand animation
+                if (i < 5)
+                    handModel.PressLeftFingers(i);
+                else
+                    handModel.PressRightFingers(i - 5);
                 helpInfo.SetActive(false);
                 if (inputStringTemplate[i] == "b")
                 {
