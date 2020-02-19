@@ -84,7 +84,7 @@ public class CandidateHandler : MonoBehaviour
     {
         // 8 columns + 1
         CandidatePerRow = 9;
-        CandidateCount = CandidatePerRow * 6;
+        CandidateCount = CandidatePerRow * candidateNumberPerColumn;
         
         candidateColumns = new List<List<string>>();
         for(int i = 0; i < CandidatePerRow; i++)
@@ -274,9 +274,12 @@ public class CandidateHandler : MonoBehaviour
             
             if (candidateColumns[columnIndex].Count < candidateNumberPerColumn)
             {
-                candidateColumns[columnIndex].Add(candidates[i]);
-                maxLength[columnIndex] = Mathf.Max(maxLength[columnIndex], candidates[i].Length);
-                longestCand = Mathf.Max(longestCand, candidates[i].Length);
+                if(candidates[i].Length > 0)
+                {
+                    candidateColumns[columnIndex].Add(candidates[i]);
+                    maxLength[columnIndex] = Mathf.Max(maxLength[columnIndex], candidates[i].Length);
+                    longestCand = Mathf.Max(longestCand, candidates[i].Length);
+                }                
             }                        
         }
 
@@ -290,6 +293,11 @@ public class CandidateHandler : MonoBehaviour
                 candidateObjects[i + j * candidateNumberPerColumn].GetComponent<Candidate>().SetCandidateText(candidateColumns[i][j], progress);
 //                CandidateWidth = perWidth * longestCand;
                 candidateObjects[i + j * candidateNumberPerColumn].transform.localPosition = 
+                    new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + i * CandidateWidth, j * CandidateHeight, 0);
+            }
+            for (int j = candidateColumns[i].Count; j < candidateNumberPerColumn; j++)
+            {
+                candidateObjects[i + j * candidateNumberPerColumn].transform.localPosition =
                     new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + i * CandidateWidth, j * CandidateHeight, 0);
             }
         }

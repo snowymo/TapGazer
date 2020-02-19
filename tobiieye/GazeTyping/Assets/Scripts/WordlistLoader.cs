@@ -102,8 +102,13 @@ public class WordlistLoader : MonoBehaviour {
             return;
         }
         //candText0.SetCandidateText(wordDict[inputString][0], currentProgress); // for now
-        for(int i = 0; i < Mathf.Min(currentCandidates.Length, wordDict[inputString].Length); i++) {
+        int i = 0;
+        for (; i < Mathf.Min(currentCandidates.Length, wordDict[inputString].Length); i++) {
             currentCandidates[i] = wordDict[inputString][i];
+        }
+        for (; i < Mathf.Max(currentCandidates.Length, wordDict[inputString].Length); i++)
+        {
+            currentCandidates[i] = "";
         }
         candidateHandler.UpdateCandidates(currentCandidates, currentProgress);
     }
