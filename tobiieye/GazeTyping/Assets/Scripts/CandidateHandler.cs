@@ -285,20 +285,21 @@ public class CandidateHandler : MonoBehaviour
 
         // calculate the longest word per column and change the position
         CandidateWidth = perWidth * longestCand;
+        float hoffset = (CandidatePerRow - 1.0f) / 2f * -CandidateWidth;
         for (int i = 0; i < candidateColumns.Count; i++)
         {
             candidateColumns[i].Sort();
             for (int j = 0; j < candidateColumns[i].Count; j++)
             {
-                candidateObjects[i + j * candidateNumberPerColumn].GetComponent<Candidate>().SetCandidateText(candidateColumns[i][j], progress);
+                candidateObjects[i + j * CandidatePerRow].GetComponent<Candidate>().SetCandidateText(candidateColumns[i][j], progress);
 //                CandidateWidth = perWidth * longestCand;
-                candidateObjects[i + j * candidateNumberPerColumn].transform.localPosition = 
+                candidateObjects[i + j * CandidatePerRow].transform.localPosition = 
                     new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + i * CandidateWidth, j * CandidateHeight, 0);
             }
             for (int j = candidateColumns[i].Count; j < candidateNumberPerColumn; j++)
             {
-                candidateObjects[i + j * candidateNumberPerColumn].transform.localPosition =
-                    new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + i * CandidateWidth, j * CandidateHeight, 0);
+                candidateObjects[i + j * CandidatePerRow].transform.localPosition =
+                    new Vector3(hoffset + i * CandidateWidth, j * CandidateHeight, 0);
             }
         }
     }

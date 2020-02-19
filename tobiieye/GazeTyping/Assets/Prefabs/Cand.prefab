@@ -154,6 +154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CandText: {fileID: 4169162866045001791}
   handlerFocusAtGaze: {fileID: 6264920681886837758}
+  candidateIndex: 0
+  candidateHandler: {fileID: 0}
 --- !u!1 &8919060650547770102
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,7 +193,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 3.57}
-  m_SizeDelta: {x: 20, y: 5}
+  m_SizeDelta: {x: 20, y: 1.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &665309847472960475
 MeshRenderer:
@@ -273,8 +275,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
