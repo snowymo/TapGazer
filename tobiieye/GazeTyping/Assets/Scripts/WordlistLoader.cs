@@ -24,6 +24,7 @@ public class WordlistLoader : MonoBehaviour {
     public string wordlistPath;
     [SerializeField]
     private int preloadedCandidates; // 20 for regular option, but actually 11 is enough lol. 48 for by-column option, in case we want it to be 6*8
+    public GameObject helpInfo;
 
     // Start is called before the first frame update
     void Start()
@@ -99,16 +100,25 @@ public class WordlistLoader : MonoBehaviour {
         inputString = inputString.Replace(";", "p");
         if (!wordDict.ContainsKey(inputString)) {
             Debug.LogWarning("no candidates for " + inputString);
+            // tell the users there are no candidates in the dictionary
+            currentCandidates = new string[preloadedCandidates];
+            candidateHandler.ResetCandidates();
+            helpInfo.SetActive(true);
             return;
         }
         //candText0.SetCandidateText(wordDict[inputString][0], currentProgress); // for now
-        int i = 0;
-        for (; i < Mathf.Min(currentCandidates.Length, wordDict[inputString].Length); i++) {
-            currentCandidates[i] = wordDict[inputString][i];
-        }
-        for (; i < Mathf.Max(currentCandidates.Length, wordDict[inputString].Length); i++)
+        if(preloadedCandidates < wordDict[inputString].Length)
         {
-            currentCandidates[i] = "";
+            currentCandidates = new string[preloadedCandidates];
+            int i = 0;
+            for (; i < Mathf.Min(currentCandidates.Length, wordDict[inputString].Length); i++)
+            {
+                currentCandidates[i] = wordDict[inputString][i];
+            }
+        }
+        else
+        {
+            currentCandidates = wordDict[inputString];
         }
         candidateHandler.UpdateCandidates(currentCandidates, currentProgress);
     }

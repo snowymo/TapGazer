@@ -205,7 +205,9 @@ public class CandidateHandler : MonoBehaviour
         // calculate the word length for both lines, find the longer one
         // or find the longest candidate, use that as the template, and re-calculate the width and place them
         int maxLength = candidates[0].Length;
-        for (int i = 1; i < Mathf.Min(11, candidates.Length); i++)
+        CandidateCount = 11;
+        CandidatePerRow = 5;
+        for (int i = 1; i < Mathf.Min(CandidateCount, candidates.Length); i++)
         {
             if (candidates[i].Length > maxLength)
                 maxLength = candidates[i].Length;
@@ -232,13 +234,13 @@ public class CandidateHandler : MonoBehaviour
             else
             {
                 candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i], progress);
-                candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight - 1.5f, 0);
+                candidateObjects[i].transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight - 1.5f, 0);
             }
         }
         for (int i = candNum; i < CandidateCount; i++)
         {
             candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
-            candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight - 1.5f, 0);
+            candidateObjects[i].transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight - 1.5f, 0);
         }
     }
 

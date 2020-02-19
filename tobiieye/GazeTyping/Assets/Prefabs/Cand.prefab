@@ -105,7 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7bfd2150ed560419b0fdc51dc30440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightColor: {r: 0.93582594, g: 1, b: 0.5518868, a: 1}
+  HighlightColor: {r: 1, g: 1, b: 1, a: 0}
   AnimationTime: 0.1
 --- !u!1 &5033345055598638332
 GameObject:

@@ -16,6 +16,8 @@ public class InputHandler : MonoBehaviour
 
     public GameObject[] selectedFingers;
 
+    public GameObject helpInfo;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,6 +43,7 @@ public class InputHandler : MonoBehaviour
             {
                 // process the key down
                 selectedFingers[i].SetActive(true);
+                helpInfo.SetActive(false);
                 if (inputStringTemplate[i] == "b")
                 {
                     // delete
@@ -61,9 +64,18 @@ public class InputHandler : MonoBehaviour
                 else if (inputStringTemplate[i] == "n")
                 {
                     // enter
-                    inputTextMesh.text = candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result
+                    inputTextMesh.text = candidateHandler.CurrentGazedText == "" ? wordListLoader.currentCandidates[0] : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result
                     // check if correct
-                    phraseLoader.IsCurrentTypingCorrect(candidateHandler.CurrentGazedText/*wordListLoader.currentCandidates[candidateHandler.GazedCandidate]*/);
+                    if (phraseLoader.IsCurrentTypingCorrect(candidateHandler.CurrentGazedText/*wordListLoader.currentCandidates[candidateHandler.GazedCandidate]*/))
+                    {
+                        inputTextMesh.text = "last typed:" + inputTextMesh.text;
+                    }
+                    else
+                    {
+                        // mark the current typing to red and tell the users
+                        inputTextMesh.text = "<color=red>last typed:" + inputTextMesh.text + "</color>";
+                    }
+                    
                     // flush input
                     currentInputString = "";
                     // flush candidates
