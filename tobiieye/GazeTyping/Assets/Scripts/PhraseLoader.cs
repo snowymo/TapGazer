@@ -65,16 +65,26 @@ public class PhraseLoader : MonoBehaviour
     {
         string curText = phrases[curPhraseIndex];
         curPhrases = curText.Split(new char[] { ' ' });
+        string arrowText = "";
         string newText = "";
         for(int i = 0; i < curTypingPhrase; i++) {
+            arrowText += "<color=white>" + curPhrases[i] + "</color> ";
             newText += "<color=green>" + curPhrases[i] + "</color> ";
         }
         if(curTypingPhrase < curPhrases.Length)
+        {
+            arrowText += "<color=blue>";
+            for(int i = 0; i < curPhrases[curTypingPhrase].Length/2; i++)
+            {
+                arrowText += " ";
+            }
+            arrowText += "↓</color>";
             newText += "<color=blue>" + curPhrases[curTypingPhrase] + "</color> ";
+        }
         for (int i = curTypingPhrase+1; i<curPhrases.Length; i++) {
             newText += curPhrases[i] + " ";
         }
-        textMesh.text = newText; 
+        textMesh.text = arrowText + "\n" + newText;
     }
 
     public bool IsCurrentTypingCorrect(string candidate)
