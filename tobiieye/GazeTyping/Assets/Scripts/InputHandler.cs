@@ -73,7 +73,7 @@ public class InputHandler : MonoBehaviour
                     // enter
                     inputTextMesh.text = candidateHandler.CurrentGazedText == "" ? wordListLoader.currentCandidates[0] : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result
                     // check if correct
-                    if (phraseLoader.IsCurrentTypingCorrect(candidateHandler.CurrentGazedText/*wordListLoader.currentCandidates[candidateHandler.GazedCandidate]*/))
+                    if (phraseLoader.IsCurrentTypingCorrect(inputTextMesh.text/*wordListLoader.currentCandidates[candidateHandler.GazedCandidate]*/))
                     {
                         inputTextMesh.text = "last typed:" + inputTextMesh.text;
                     }
