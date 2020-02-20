@@ -82,8 +82,8 @@ def generate_tap_map(test_dict, count):
                         largest_cand_input_string = cur_typing
                 else:
                     completed_numbers[cur_typing] = [word]
-            if len(word) == len(cur_typing) and word_rank[word] > 9 and len(word) > 1:
-                print("dangerous word\t" + cur_typing +"\t"+ word +"\t"+ str(word_rank[word]))
+            # if len(word) == len(cur_typing) and word_rank[word] > 9 and len(word) > 1:
+            #     print("dangerous word\t" + cur_typing +"\t"+ word +"\t"+ str(word_rank[word]))
             if cur_count == count:
                 break
             cur_count = cur_count + 1
@@ -113,6 +113,7 @@ def check_with_phrases():
         # go through currentPhrase
         for idx2, currentWord in enumerate(currentPhrase):
             # check the rank of currentWord
+            # add missing word in phrases2.txt to dict?
             cur_typing = ""
             for _, char in enumerate(currentWord):
                 # find the corresponding finger based on the char
@@ -213,6 +214,16 @@ if __name__ == "__main__":
     for idx, item in enumerate(noswear10k):
         noswear10k[idx] = noswear10k[idx].lower()
     count = len(noswear10k)
+    print("original 30k.txt has " + str(count) + " words")
+    # add phrase2.txt
+    with open('phrases2.txt', encoding="utf-8") as f:
+        phrasesDict = f.read().splitlines()
+    for item in phrasesDict:
+        currentPhrase = item.lower().split()
+        noswear10k.extend(currentPhrase)
+    count = len(noswear10k)
+    print("new dict has " + str(count) + " words")
+
     sorted(noswear10k, key=functools.cmp_to_key(compare))
     generate_tap_map(noswear10k, count)
     #
