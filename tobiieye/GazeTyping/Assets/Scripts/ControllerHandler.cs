@@ -10,11 +10,20 @@ public class ControllerHandler : MonoBehaviour
 
     public Transform TypingSection;
 
+    void updateTypingSection()
+    {
+        // reset the input area, put it in front of the current camera
+        TypingSection.position = Camera.main.gameObject.transform.position;
+        Quaternion quat = Camera.main.gameObject.transform.rotation;
+        Vector3 angle = quat.eulerAngles;
+        angle.z = 0;
+        TypingSection.rotation = Quaternion.Euler(angle);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        TypingSection.position = Camera.main.gameObject.transform.position;
-        TypingSection.rotation = Camera.main.gameObject.transform.rotation;
+        updateTypingSection();
     }
 
     // Update is called once per frame
@@ -22,9 +31,7 @@ public class ControllerHandler : MonoBehaviour
     {
         if (ControllerManager.Instance.GetButtonPressDown(ControllerButton.Trigger))
         {
-            // reset the input area, put it in front of the current camera
-            TypingSection.position = Camera.main.gameObject.transform.position;
-            TypingSection.rotation = Camera.main.gameObject.transform.rotation;
+            updateTypingSection();
         }
     }
 }

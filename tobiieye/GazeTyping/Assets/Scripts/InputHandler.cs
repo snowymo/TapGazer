@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
-    public TextMesh inputTextMesh;
+    public TMPro.TextMeshPro inputTextMesh;
     public WordlistLoader wordListLoader;
     public PhraseLoader phraseLoader;
 
@@ -13,6 +13,12 @@ public class InputHandler : MonoBehaviour
 
     public string currentInputString; // to save current input string, refresh it when click 'enter'
     public CandidateHandler candidateHandler;
+
+    public GameObject[] selectedFingers;
+
+    public GameObject helpInfo;
+
+    public HandAnimationCtrl handModel;
 
     // Start is called before the first frame update
     void Start()
@@ -33,35 +39,70 @@ public class InputHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        for(int i = 0; i < inputStringTemplate.Length; i++) {
-            if (Input.GetKeyDown(inputStringTemplate[i])) {
+        for (int i = 0; i < inputStringTemplate.Length; i++)
+        {
+            if (Input.GetKeyDown(inputStringTemplate[i]))
+            {
                 // process the key down
-                if(inputStringTemplate[i] == "b") {
+                //selectedFingers[i].SetActive(true);
+                // hand animation
+                if (i < 5)
+                    handModel.PressLeftFingers(i);
+                else
+                    handModel.PressRightFingers(i - 5);
+                helpInfo.SetActive(false);
+                if (inputStringTemplate[i] == "b")
+                {
                     // delete
-                    if(currentInputString.Length > 1) {
+                    candidateHandler.ResetCandidates();
+                    if (currentInputString.Length > 1)
+                    {
                         currentInputString = currentInputString.Substring(0, currentInputString.Length - 1);
                         wordListLoader.UpdateCandidates(currentInputString);
                     }
-                    else {
+                    else
+                    {
                         // reset candidates
+                        //wordListLoader.candText0.SetCandidateText("");
                         currentInputString = "";
-                        wordListLoader.ResetCandidates();
-                    }                    
+                        //wordListLoader.ResetCandidates();
+                    }
                 }
-                else if(inputStringTemplate[i] == "n") {
+                else if (inputStringTemplate[i] == "n")
+                {
                     // enter
-                    inputTextMesh.text += wordListLoader.currentCandidates[candidateHandler.GazedCandidate] + " "; // 0 for now, 0 should be replaced by gaze result
+                    inputTextMesh.text = candidateHandler.CurrentGazedText == "" ? wordListLoader.currentCandidates[0] : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result
                     // check if correct
-                    phraseLoader.IsCurrentTypingCorrect(wordListLoader.currentCandidates[candidateHandler.GazedCandidate]);
+                    if (phraseLoader.IsCurrentTypingCorrect(inputTextMesh.text/*wordListLoader.currentCandidates[candidateHandler.GazedCandidate]*/))
+                    {
+                        inputTextMesh.text = "last typed:" + inputTextMesh.text;
+                    }
+                    else
+                    {
+                        // mark the current typing to red and tell the users
+                        inputTextMesh.text = "<color=red>last typed:" + inputTextMesh.text + "</color>";
+                    }
+                    
                     // flush input
                     currentInputString = "";
+                    // flush candidates
+                    //wordListLoader.candText0.SetCandidateText("");
+                    candidateHandler.ResetCandidates();
                 }
-                else {
+                else
+                {
                     // regular input
                     currentInputString += mapInput2InputString[inputStringTemplate[i]];
+                    //wordListLoader.candText0.SetCandidateText("");
+                    candidateHandler.ResetCandidates();
                     wordListLoader.UpdateCandidates(currentInputString);
                 }
                 break;
+            }
+            if (Input.GetKeyUp(inputStringTemplate[i]))
+            {
+                // process the key down
+                selectedFingers[i].SetActive(false);
             }
         }
     }

@@ -17,24 +17,28 @@ public class WordlistLoader : MonoBehaviour {
     private dynamic wordlistJson;
     public int wordDictCount;
     public string testInputString;
-    public Candidate candText0;
+    //public Candidate candText0;
     public string[] currentCandidates;
     public CandidateHandler candidateHandler;
     private int currentProgress; // the number of the string was typed
     public string wordlistPath;
+    [SerializeField]
+    private int preloadedCandidates; // 20 for regular option, but actually 11 is enough lol. 48 for by-column option, in case we want it to be 6*8
+    public GameObject helpInfo;
 
     // Start is called before the first frame update
     void Start()
     {
+        preloadedCandidates = 54;
         wordDict = new Dictionary<string, string[]>();
-        currentCandidates = new string[20];
+        currentCandidates = new string[preloadedCandidates];
 
         if (wordlistPath == "")
             wordlistPath = Application.dataPath + "/Resources/noswear10k-result.json";
         else
             wordlistPath = Application.dataPath + "/Resources/" + wordlistPath;
         wordlistContent = File.ReadAllText(wordlistPath);
-        candText0.SetCandidateText("");
+        //candText0.SetCandidateText("");
 
         // test
         wordlistContent = wordlistContent.Replace(";", "p");
@@ -53,7 +57,7 @@ public class WordlistLoader : MonoBehaviour {
             }
             else {
                 string[] cands = temp.Split(new char[] { ',' });
-                string[] first20cand = new string[Mathf.Min(cands.Length, 20)];
+                string[] first20cand = new string[Mathf.Min(cands.Length, preloadedCandidates)];
                 Array.Copy(cands, first20cand, first20cand.Length);
                 wordDict.Add(item.Key, first20cand);
             }                
@@ -82,7 +86,7 @@ public class WordlistLoader : MonoBehaviour {
     public void ResetCandidates()
     {
         currentProgress = 0;
-        candText0.SetCandidateText("");
+        //candText0.SetCandidateText("");
         candidateHandler.ResetCandidates();
     }
 
@@ -96,11 +100,25 @@ public class WordlistLoader : MonoBehaviour {
         inputString = inputString.Replace(";", "p");
         if (!wordDict.ContainsKey(inputString)) {
             Debug.LogWarning("no candidates for " + inputString);
+            // tell the users there are no candidates in the dictionary
+            currentCandidates = new string[preloadedCandidates];
+            candidateHandler.ResetCandidates();
+            helpInfo.SetActive(true);
             return;
         }
-        candText0.SetCandidateText(wordDict[inputString][0], currentProgress); // for now
-        for(int i = 0; i < Mathf.Min(currentCandidates.Length, wordDict[inputString].Length); i++) {
-            currentCandidates[i] = wordDict[inputString][i];
+        //candText0.SetCandidateText(wordDict[inputString][0], currentProgress); // for now
+        if(preloadedCandidates < wordDict[inputString].Length)
+        {
+            currentCandidates = new string[preloadedCandidates];
+            int i = 0;
+            for (; i < Mathf.Min(currentCandidates.Length, wordDict[inputString].Length); i++)
+            {
+                currentCandidates[i] = wordDict[inputString][i];
+            }
+        }
+        else
+        {
+            currentCandidates = wordDict[inputString];
         }
         candidateHandler.UpdateCandidates(currentCandidates, currentProgress);
     }
