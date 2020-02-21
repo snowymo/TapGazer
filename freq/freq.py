@@ -43,7 +43,7 @@ def change_config():
         configFileName = input()
         config = {}
         for entry in mapFinger2Name:
-            print("type your " + mapFinger2Name[entry] + " keys, split with space, press enter when you finished")
+            print("type your " + mapFinger2Name[entry] + " keys, press enter when you finished")
             keys = input()
             for currentKey in keys:
                 config[currentKey] = entry
@@ -153,6 +153,8 @@ def check_with_phrases():
                 cur_typing += cur_finger
             inputString = cur_typing
             # go through the result of inputString in completed_numbers,
+            if currentWord == "nor":
+                print(currentWord)
             if inputString not in completed_numbers:
                 # print(currentWord + " not in the dictionary")
                 print(currentWord)
@@ -160,7 +162,7 @@ def check_with_phrases():
             for idx3, candidate in enumerate(completed_numbers[inputString]):
                 if candidate.lower() == currentWord.lower():
                     # idx3 is the rank
-                    if idx3 > 10:
+                    if idx3 > 6:
                         print("word: " + currentWord + " : " + str(idx3))
                     break
 
