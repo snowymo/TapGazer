@@ -25,6 +25,7 @@ def change_config():
     # use regular input to change the configuration
     print("Do you want to change the configuration? Default key mapping is: ")
     print("qaz;\twsx;\tedc;\trfvtgb;\tyhnuj\tikm;\tol;\tp")
+    print("Type y if you want to, type anything else if you prefer the default one")
     answer = input()
     mapFinger2Name = {'a': "left pinky",
                       's': "left ring",
