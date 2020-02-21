@@ -37,6 +37,8 @@ public class HandAnimationCtrl : MonoBehaviour
             {7,0 },{6,2},{8,3},{9,4},{5,5},{2,6},{3,7},{1,8},{0,9},{4,10}
         };
         fingerMaterials = handMeshRenderer.materials;
+
+        ResetAllFingers();
     }
 
     // Update is called once per frame
