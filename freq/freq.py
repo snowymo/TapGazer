@@ -20,6 +20,37 @@ freq_dict = get_frequency_dict("en", wordlist='best')
 tapping_dict = {}
 word_rank = {}
 completed_numbers = {}
+configFileName = ""
+def change_config():
+    # use regular input to change the configuration
+    print("Do you want to change the configuration? Default key mapping is: ")
+    print("qaz;\twsx;\tedc;\trfvtgb;\tyhnuj\tikm;\tol;\tp")
+    answer = input()
+    mapFinger2Name = {'a': "left pinky",
+                      's': "left ring",
+                      'd': "left middle",
+                      'f': "left index",
+                      'j': "right index",
+                      'k': "right middle",
+                      'l': "right ring",
+                      ';': "right pinky",}
+    global config
+    global configFileName
+    if answer == "y":
+        # change the config
+        print("name your config file")
+        configFileName = input()
+        config = {}
+        for entry in mapFinger2Name:
+            print("type your " + mapFinger2Name[entry] + " keys, split with space, press enter when you finished")
+            keys = input()
+            for currentKey in keys:
+                config[currentKey] = entry
+    print("new config ")
+    print(json.dumps(config, indent = 4))
+    f = open("config" + configFileName + ".json", "w")
+    json.dump(config, f)
+
 
 def find_rank(word, dict):
     for idx, item in enumerate(dict):
@@ -172,6 +203,9 @@ if __name__ == "__main__":
     # f.write(str(completed_numbers))
     # f.close()
 
+    # customized configuration
+    change_config()
+
     # google-10000-english-usa-no-swears
     reset_containers()
     print("\nprocessing 10000-no-swear.txt")
@@ -188,7 +222,7 @@ if __name__ == "__main__":
     #
     check_with_phrases()
     # write to file
-    f = open("noswear10k-result.txt", "w")
+    f = open("noswear10k-result" + configFileName + ".txt", "w")
     f.write(str(tapping_dict))
     f.close()
     f = open("noswear10k-cand.txt", "w")
@@ -200,7 +234,7 @@ if __name__ == "__main__":
     inputstring_word_map = {}
     for inputstring in tapping_dict:
         inputstring_word_map[inputstring] = [*tapping_dict[inputstring].keys()]
-    with open('noswear10k-result.json', 'w') as fp:
+    with open('noswear10k-result' + configFileName + '.json', 'w') as fp:
         json.dump(inputstring_word_map, fp)
 
     # 30k.txt
@@ -229,10 +263,10 @@ if __name__ == "__main__":
     #
     check_with_phrases()
     # write to file
-    f = open("30k-result.txt", "w")
+    f = open("30k-result" + configFileName + ".txt", "w")
     f.write(str(tapping_dict))
     f.close()
-    f = open("30k-cand.txt", "w")
+    f = open("30k-cand" + configFileName + ".txt", "w")
     f.write(str(completed_numbers))
     f.close()
 
@@ -242,7 +276,7 @@ if __name__ == "__main__":
     inputstring_word_map = {}
     for inputstring in tapping_dict:
         inputstring_word_map[inputstring] = [*tapping_dict[inputstring].keys()]
-    with open('30k-result.json', 'w') as fp:
+    with open('30k-result' + configFileName + '.json', 'w') as fp:
         json.dump(inputstring_word_map, fp)
 
 
