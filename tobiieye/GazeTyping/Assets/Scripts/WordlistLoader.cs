@@ -84,7 +84,11 @@ public class WordlistLoader : MonoBehaviour {
                 string[] cands = temp.Split(new char[] { ',' });
                 // load at most #preloadedCandidates candidate, and include at least #preloadedCompleteCandidates complete candidates, except there are not that many
                 string[] first20cand = new string[Mathf.Min(cands.Length, preloadedCandidates)];
-                int curCompletedCand = Mathf.Min(completeCandDict[item.Key].Length, preloadedCompleteCandidates);
+                int curCompletedCand = 0;
+                if (completeCandDict.ContainsKey(item.Key))
+                {
+                    curCompletedCand = Mathf.Min(completeCandDict[item.Key].Length, preloadedCompleteCandidates);
+                }                
                 int totalCandCount = 0, completeCandCount = 0;
                 while(totalCandCount < first20cand.Length && ( totalCandCount < preloadedCandidates || completeCandCount < curCompletedCand))
                 {
@@ -160,20 +164,13 @@ public class WordlistLoader : MonoBehaviour {
             return;
         }
         //candText0.SetCandidateText(wordDict[inputString][0], currentProgress); // for now
-        if(preloadedCandidates < wordDict[inputString].Length)
+        // make sure currentCandidates loaded all the complete candidates
+        if (preloadedCandidates < wordDict[inputString].Length)
         {
             currentCandidates = new string[preloadedCandidates];
-            int i = 0;
-            for (; i < Mathf.Min(currentCandidates.Length, wordDict[inputString].Length); i++)
-            {
-                currentCandidates[i] = wordDict[inputString][i];
-            }
         }
-        else
-        {
-            currentCandidates = wordDict[inputString];
-        }
-        candidateHandler.UpdateCandidates(currentCandidates, currentProgress);
+        currentCandidates = wordDict[inputString];
+        candidateHandler.UpdateCandidates(currentCandidates, currentProgress, completeCandDict[inputString]);
     }
 
     // Update is called once per frame
