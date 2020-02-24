@@ -12,9 +12,9 @@ public class WordlistLoader : MonoBehaviour {
     //    private IDictionary<string, JToken> _additionalData;
     //}
 
-    private Dictionary<string, string[]> wordDict;
-    private string wordlistContent;
-    private dynamic wordlistJson;
+    private Dictionary<string, string[]> wordDict, completeCandDict;
+    private string wordlistContent, completeCandContent;
+    private dynamic wordlistJson, completeCandJson;
     public int wordDictCount;
     public string testInputString;
     //public Candidate candText0;
@@ -22,29 +22,54 @@ public class WordlistLoader : MonoBehaviour {
     public CandidateHandler candidateHandler;
     private int currentProgress; // the number of the string was typed
     public string wordlistPath;
+    private string completeCandPath;
     [SerializeField]
     private int preloadedCandidates; // 20 for regular option, but actually 11 is enough lol. 48 for by-column option, in case we want it to be 6*8
+    [SerializeField]
+    private int preloadedCompleteCandidates;    // 13 complete candidate
     public GameObject helpInfo;
 
     // Start is called before the first frame update
     void Start()
     {
         preloadedCandidates = 54;
+        preloadedCompleteCandidates = 12;
         wordDict = new Dictionary<string, string[]>();
+        completeCandDict = new Dictionary<string, string[]>();
         currentCandidates = new string[preloadedCandidates];
 
         if (wordlistPath == "")
             wordlistPath = Application.dataPath + "/Resources/noswear10k-result.json";
         else
             wordlistPath = Application.dataPath + "/Resources/" + wordlistPath;
+        completeCandPath = wordlistPath.Replace("result", "cand");
         wordlistContent = File.ReadAllText(wordlistPath);
+        completeCandContent = File.ReadAllText(completeCandPath);
         //candText0.SetCandidateText("");
 
         // test
         wordlistContent = wordlistContent.Replace(";", "p");
+        completeCandContent = completeCandContent.Replace(";", "p");
 
         //var data = JsonUtility.Parse(wordlistPath);
         // Parse (from JsonString to DynamicJson)
+        completeCandJson = DynamicJson.Parse(completeCandContent);
+        foreach (KeyValuePair<string, dynamic> item in completeCandJson)
+        {
+            string temp = item.Value.ToString();
+            temp = temp.Replace("\"", "");
+            temp = temp.Replace("[", "");
+            temp = temp.Replace("]", "");
+            if (completeCandDict.ContainsKey(item.Key))
+            {
+                Debug.LogWarning("key: " + item.Key + " already exists.");
+            }
+            else
+            {
+                string[] cands = temp.Split(new char[] { ',' });
+                completeCandDict.Add(item.Key, cands);
+            }
+        }
 
         wordlistJson = DynamicJson.Parse(wordlistContent);
         foreach (KeyValuePair<string, dynamic> item in wordlistJson) {
@@ -57,8 +82,36 @@ public class WordlistLoader : MonoBehaviour {
             }
             else {
                 string[] cands = temp.Split(new char[] { ',' });
+                // load at most #preloadedCandidates candidate, and include at least #preloadedCompleteCandidates complete candidates, except there are not that many
                 string[] first20cand = new string[Mathf.Min(cands.Length, preloadedCandidates)];
-                Array.Copy(cands, first20cand, first20cand.Length);
+                int curCompletedCand = Mathf.Min(completeCandDict[item.Key].Length, preloadedCompleteCandidates);
+                int totalCandCount = 0, completeCandCount = 0;
+                while(totalCandCount < first20cand.Length && ( totalCandCount < preloadedCandidates || completeCandCount < curCompletedCand))
+                {
+                    if(item.Key == "jlf")
+                    {
+                        Debug.Log("check nor");
+                    }
+                    if (cands[totalCandCount].Length == item.Key.Length)
+                    {
+                        ++completeCandCount;
+                        first20cand[totalCandCount] = cands[totalCandCount++];
+                    }
+                    else if(totalCandCount + (curCompletedCand - completeCandCount) == first20cand.Length)
+                    {
+                        // reaches the max of the incompleted candidates capacity
+                        // no more incompleted candidates
+                        Debug.Log("no more incompleted candidates");
+                        // append the rest completed candidates to the array
+                        Array.Copy(completeCandDict[item.Key], completeCandCount, first20cand, totalCandCount, curCompletedCand - completeCandCount);
+                        break;
+                    }
+                    else
+                    {
+                        first20cand[totalCandCount] = cands[totalCandCount++];
+                    }
+                    
+                }
                 wordDict.Add(item.Key, first20cand);
             }                
         }
