@@ -329,17 +329,32 @@ public class CandidateHandler : MonoBehaviour
     {
         // make sure the complete candidates are placed in candidates before totalNumber
         int completeCandNumber = completedCand.Length;
+        if(completeCandNumber == 0)
+        {
+            // no completed candidates then we just return candidates directly
+            return candidates;
+        }
         // a simple trick: because all the candidates will be sorted via lexcial order later, we just need to put all the completed candidates first, and then the top (n-m) incompleted candidates
         string[] newCand = new string[totalNumber];
         newCand[0] = candidates[0];
-        Array.Copy(completedCand, 0, newCand, 1, completedCand.Length);
-        for (int i = completedCand.Length+1, j = 1; i < totalNumber; i++)
+        int copyNumber = Mathf.Min(completedCand.Length, totalNumber - 1);
+        Array.Copy(completedCand, 0, newCand, 1, copyNumber);
+        for (int i = copyNumber + 1, j = 1; i < totalNumber; i++)
         {
-            while(candidates[j].Length != completedCand[0].Length)
+            while(j < candidates.Length && candidates[j].Length == completedCand[0].Length)
             {
-                // not completed cand
+                // completed cand
+                ++j;
+            }
+            // not completed cand
+            if(j < candidates.Length)
                 newCand[i] = candidates[j++];
-                break;
+            else
+            {
+                // j reaches the end of candidates, no more could be assigned to newCand
+                string[] newCand2 = new string[i];
+                Array.Copy(newCand, newCand2, i);
+                return newCand2;
             }
         }
         return newCand;
