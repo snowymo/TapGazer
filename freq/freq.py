@@ -210,35 +210,35 @@ if __name__ == "__main__":
     change_config()
 
     # google-10000-english-usa-no-swears
-    reset_containers()
-    print("\nprocessing 10000-no-swear.txt")
-    with open('google-10000-english-usa-no-swears.txt', encoding="utf-8") as f:
-        noswear10k = f.read().splitlines()
-    # remove spaces
-    noswear10k = [line.replace(' ', '') for line in noswear10k]
-    noswear10k = [line.replace('\t', '') for line in noswear10k]
-    for idx, item in enumerate(noswear10k):
-        noswear10k[idx] = noswear10k[idx].lower()
-    count = len(noswear10k)
-    sorted(noswear10k, key=functools.cmp_to_key(compare))
-    generate_tap_map(noswear10k, count)
+    # reset_containers()
+    # print("\nprocessing 10000-no-swear.txt")
+    # with open('google-10000-english-usa-no-swears.txt', encoding="utf-8") as f:
+    #     noswear10k = f.read().splitlines()
+    # # remove spaces
+    # noswear10k = [line.replace(' ', '') for line in noswear10k]
+    # noswear10k = [line.replace('\t', '') for line in noswear10k]
+    # for idx, item in enumerate(noswear10k):
+    #     noswear10k[idx] = noswear10k[idx].lower()
+    # count = len(noswear10k)
+    # sorted(noswear10k, key=functools.cmp_to_key(compare))
+    # generate_tap_map(noswear10k, count)
+    # #
+    # check_with_phrases()
+    # # write to file
+    # f = open("noswear10k-result" + configFileName + ".txt", "w")
+    # f.write(str(tapping_dict))
+    # f.close()
+    # f = open("noswear10k-cand.txt", "w")
+    # f.write(str(completed_numbers))
+    # f.close()
+    # # try json so javascript maybe can read it directly
     #
-    check_with_phrases()
-    # write to file
-    f = open("noswear10k-result" + configFileName + ".txt", "w")
-    f.write(str(tapping_dict))
-    f.close()
-    f = open("noswear10k-cand.txt", "w")
-    f.write(str(completed_numbers))
-    f.close()
-    # try json so javascript maybe can read it directly
-
-    # save the result without freq
-    inputstring_word_map = {}
-    for inputstring in tapping_dict:
-        inputstring_word_map[inputstring] = [*tapping_dict[inputstring].keys()]
-    with open('noswear10k-result' + configFileName + '.json', 'w') as fp:
-        json.dump(inputstring_word_map, fp)
+    # # save the result without freq
+    # inputstring_word_map = {}
+    # for inputstring in tapping_dict:
+    #     inputstring_word_map[inputstring] = [*tapping_dict[inputstring].keys()]
+    # with open('noswear10k-result' + configFileName + '.json', 'w') as fp:
+    #     json.dump(inputstring_word_map, fp)
 
     # 30k.txt
     reset_containers()
@@ -281,6 +281,10 @@ if __name__ == "__main__":
         inputstring_word_map[inputstring] = [*tapping_dict[inputstring].keys()]
     with open('30k-result' + configFileName + '.json', 'w') as fp:
         json.dump(inputstring_word_map, fp)
+
+    with open('30k-cand' + configFileName + '.json', 'w') as fp:
+        json.dump(completed_numbers, fp)
+
 
 
 
