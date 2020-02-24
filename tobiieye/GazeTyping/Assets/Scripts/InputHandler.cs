@@ -71,7 +71,14 @@ public class InputHandler : MonoBehaviour
                 else if (inputStringTemplate[i] == "n")
                 {
                     // enter
-                    inputTextMesh.text = candidateHandler.CurrentGazedText == "" ? wordListLoader.currentCandidates[0] : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result
+                    if(wordListLoader.currentCandidates.Length > 0 && wordListLoader.currentCandidates[0] != null)
+                    {
+                        inputTextMesh.text = candidateHandler.CurrentGazedText == "" ? wordListLoader.currentCandidates[0] : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result
+                    }
+                    else
+                    {
+                        inputTextMesh.text = "";
+                    }                    
                     // check if correct
                     if (phraseLoader.IsCurrentTypingCorrect(inputTextMesh.text/*wordListLoader.currentCandidates[candidateHandler.GazedCandidate]*/))
                     {
