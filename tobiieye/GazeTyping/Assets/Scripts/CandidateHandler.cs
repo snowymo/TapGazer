@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ public class CandidateHandler : MonoBehaviour
     float CandidateHeight = -1.5f;
     int CandidatePerRow = 5;
     public int GazedCandidate = 0; // index of the candidate being gazed
-    float perWidth = 0.57f;
+    float perWidth = 0.7f;
     public float fanRadius = 4f;
     public float verticalScale = 0.5f;
     public float fanAngle = 30f;
@@ -219,6 +220,7 @@ public class CandidateHandler : MonoBehaviour
         sortHelp = new List<string>(candidates);
         List<string> restList = sortHelp.GetRange(1, candNum-1);
         restList.Sort();
+        //Array.Copy(restList, 0, candidates, 1, restList.Count);
         for (int i = 0; i < restList.Count; i++)
         {
             candidates[i+1] = restList[i];
@@ -306,7 +308,7 @@ public class CandidateHandler : MonoBehaviour
         }
     }
 
-    public void UpdateCandidates(string[] candidates, int progress)
+    public void UpdateCandidates(string[] candidates, int progress, string[] completedCand)
     {
         if (candidateLayout == CandLayout.ROW)
             UpdateRowLayoutCandidate(candidates, progress);
@@ -314,11 +316,48 @@ public class CandidateHandler : MonoBehaviour
             UpdateFanLayoutCandidate(candidates, progress);
         else if(candidateLayout == CandLayout.LEXIC)
         {
-            UpdateLexicalCandidate(candidates, progress);
+            int totalNumber = 13;
+            string[] newCand = ReorgCandidates(candidates, totalNumber, completedCand);
+            UpdateLexicalCandidate(newCand, progress);
         }else if(candidateLayout == CandLayout.BYCOL)
         {
             UpdateByColumnCandidate(candidates, progress);
         }
+    }
+
+    private string[] ReorgCandidates(string[] candidates, int totalNumber, string[] completedCand)
+    {
+        // make sure the complete candidates are placed in candidates before totalNumber
+        int completeCandNumber = completedCand.Length;
+        if(completeCandNumber == 0)
+        {
+            // no completed candidates then we just return candidates directly
+            return candidates;
+        }
+        // a simple trick: because all the candidates will be sorted via lexcial order later, we just need to put all the completed candidates first, and then the top (n-m) incompleted candidates
+        string[] newCand = new string[totalNumber];
+        newCand[0] = candidates[0];
+        int copyNumber = Mathf.Min(completedCand.Length, totalNumber - 1);
+        Array.Copy(completedCand, 0, newCand, 1, copyNumber);
+        for (int i = copyNumber + 1, j = 1; i < totalNumber; i++)
+        {
+            while(j < candidates.Length && candidates[j].Length == completedCand[0].Length)
+            {
+                // completed cand
+                ++j;
+            }
+            // not completed cand
+            if(j < candidates.Length)
+                newCand[i] = candidates[j++];
+            else
+            {
+                // j reaches the end of candidates, no more could be assigned to newCand
+                string[] newCand2 = new string[i];
+                Array.Copy(newCand, newCand2, i);
+                return newCand2;
+            }
+        }
+        return newCand;
     }
 
     public void ResetCandidates()

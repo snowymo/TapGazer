@@ -442,6 +442,7 @@ MonoBehaviour:
   candidateHandler: {fileID: 132433879}
   wordlistPath: 30k-result.json
   preloadedCandidates: 48
+  preloadedCompleteCandidates: 0
   helpInfo: {fileID: 2003182632}
 --- !u!114 &132433879
 MonoBehaviour:
@@ -2551,7 +2552,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52a82dbc4a2dc4b44ab15abbc3c81ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  profile: ziyu
+  profile: 
   wordlistLoader: {fileID: 132433878}
   dynamicHandKey: {fileID: 1008559595}
 --- !u!4 &840372617
