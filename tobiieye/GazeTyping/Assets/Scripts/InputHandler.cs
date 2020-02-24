@@ -110,6 +110,11 @@ public class InputHandler : MonoBehaviour
             {
                 // process the key down
                 selectedFingers[i].SetActive(false);
+                // move the finger back but keep the color changes
+                if(i < 5)
+                    handModel.ReleaseLeftFingers(i);
+                else
+                    handModel.ReleaseRightFingers(i-5);
             }
         }
     }

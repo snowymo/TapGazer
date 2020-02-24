@@ -170,7 +170,15 @@ public class WordlistLoader : MonoBehaviour {
             currentCandidates = new string[preloadedCandidates];
         }
         currentCandidates = wordDict[inputString];
-        candidateHandler.UpdateCandidates(currentCandidates, currentProgress, completeCandDict[inputString]);
+        if (completeCandDict.ContainsKey(inputString))
+        {
+            candidateHandler.UpdateCandidates(currentCandidates, currentProgress, completeCandDict[inputString]);
+        }
+        else
+        {
+            candidateHandler.UpdateCandidates(currentCandidates, currentProgress, new string[0]);
+        }
+        
     }
 
     // Update is called once per frame
