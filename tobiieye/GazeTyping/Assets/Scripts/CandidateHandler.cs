@@ -10,11 +10,11 @@ public class CandidateHandler : MonoBehaviour
 
     [SerializeField]
     int CandidateCount = 11;
-    float CandidateWidth = 4.0f; // roughly it fits for 5-character word
+    float CandidateWidth; // roughly it fits for 5-character word
     float CandidateHeight = -1.5f;
     int CandidatePerRow = 5;
     public int GazedCandidate = 0; // index of the candidate being gazed
-    float perWidth = 0.7f;
+    float perWidth;
     public float fanRadius = 4f;
     public float verticalScale = 0.5f;
     public float fanAngle = 30f;
@@ -56,6 +56,7 @@ public class CandidateHandler : MonoBehaviour
         {
             CreateColumnLayout();
         }
+        perWidth = 0.73f;
     }
 
     void CreateRowLayout()
@@ -338,7 +339,23 @@ public class CandidateHandler : MonoBehaviour
         string[] newCand = new string[totalNumber];
         newCand[0] = candidates[0];
         int copyNumber = Mathf.Min(completedCand.Length, totalNumber - 1);
-        Array.Copy(completedCand, 0, newCand, 1, copyNumber);
+        // if candidates[0] is in completedCand, we need to copy the 13th one
+        int completeNotFirst = -1;
+        for(int i = 0; i < copyNumber; i++)
+        {
+            if (completedCand[i] == newCand[0])
+            {
+                completeNotFirst = i;
+                break;
+            }                
+        }
+        if(completeNotFirst != -1)
+        {
+            Array.Copy(completedCand, 0, newCand, 1, completeNotFirst);
+            Array.Copy(completedCand, completeNotFirst+1, newCand, completeNotFirst+1, copyNumber - completeNotFirst);
+        }
+        else
+            Array.Copy(completedCand, 0, newCand, 1, copyNumber);
         for (int i = copyNumber + 1, j = 1; i < totalNumber; i++)
         {
             while(j < candidates.Length && candidates[j].Length == completedCand[0].Length)

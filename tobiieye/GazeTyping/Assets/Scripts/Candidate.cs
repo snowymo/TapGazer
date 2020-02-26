@@ -9,6 +9,9 @@ public class Candidate : MonoBehaviour
     public HandlerFocusAtGaze handlerFocusAtGaze;
     public int candidateIndex = 0;
     public CandidateHandler candidateHandler;
+    public GameObject planeCollider;
+
+    float kWidthScale;
 
     string removeFormat(string richtext)
     {
@@ -44,5 +47,8 @@ public class Candidate : MonoBehaviour
         CandText.text = "<color=blue>" + text.Substring(0, Mathf.Min(text.Length, progress)) + "</color>";
         if(progress < text.Length)
             CandText.text += "<color=orange>" + text.Substring(progress) + "</color>";
+        kWidthScale = 0.12f;
+        planeCollider.transform.localScale = new Vector3(0.51f * text.Length * kWidthScale, planeCollider.transform.localScale.y, planeCollider.transform.localScale.z);
     }
+    
 }
