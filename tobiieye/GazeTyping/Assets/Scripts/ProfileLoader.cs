@@ -20,7 +20,12 @@ public class ProfileLoader : MonoBehaviour
     int[] renderTextureIndices;
     public DynamicHandKey dynamicHandKey;
 
-    public enum TypingMode { TRAINING, TEST};
+    public GameObject regularInput, newKeyboardInput;
+
+    // training is new keyboard + type correct then continue
+    // test is new keyboard + keep typing
+    // regular is regular keyboard + keep typing
+    public enum TypingMode { TRAINING, TEST, REGULAR}; 
 
     // Start is called before the first frame update
     void Awake()
@@ -30,6 +35,10 @@ public class ProfileLoader : MonoBehaviour
         Debug.Log("typing mode:" + typingMode);
         loadConfigFile();
         updateRenderTexture();
+        if (typingMode == TypingMode.REGULAR)
+            newKeyboardInput.SetActive(false);
+        else
+            regularInput.SetActive(false);
     }
 
     private void loadConfigFile()

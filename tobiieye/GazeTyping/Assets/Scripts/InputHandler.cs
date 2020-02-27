@@ -10,6 +10,7 @@ public class InputHandler : MonoBehaviour
 
     private string[] inputStringTemplate = new string[] { "q", "3", "4", "t", "b", "n", "u", "9", "0", "[" }; // to save time, we convert them to asdf del enter jkl;, and then maybe convert ; to p for json
     private Dictionary<string, string> mapInput2InputString;
+    private string[] regularInputString;
 
     public string currentInputString; // to save current input string, refresh it when click 'enter'; in training mode, user has to type until correct
     public string currentInputLine; // refresh when go to next phrase, currentInputString should be substring(lastIndexOf('ent'))
@@ -40,6 +41,15 @@ public class InputHandler : MonoBehaviour
         mapInput2InputString.Add("9", "k");
         mapInput2InputString.Add("0", "l");
         mapInput2InputString.Add("[", ";");
+        //
+        regularInputString = new string[26];
+        regularInputString[0] = "a";
+        for (int i = 1; i < regularInputString.Length; i++) {
+            string prev = regularInputString[i - 1];
+            char cprev = prev[0];
+            ++cprev;
+            regularInputString[i] = cprev.ToString();
+        }
     }
 
     private void updateDisplayInput()
@@ -62,13 +72,10 @@ public class InputHandler : MonoBehaviour
         currentInputString = currentInputLine.Substring(index+1);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void HandleNewKeyboard()
     {
-        for (int i = 0; i < inputStringTemplate.Length; i++)
-        {
-            if (Input.GetKeyDown(inputStringTemplate[i]))
-            {
+        for (int i = 0; i < inputStringTemplate.Length; i++) {
+            if (Input.GetKeyDown(inputStringTemplate[i])) {
                 // process the key down
                 //selectedFingers[i].SetActive(true);
                 // hand animation
@@ -79,10 +86,9 @@ public class InputHandler : MonoBehaviour
                 helpInfo.SetActive(false);
                 // reset candidates
                 candidateHandler.ResetCandidates();
-                if (inputStringTemplate[i] == "b")
-                {
+                if (inputStringTemplate[i] == "b") {
                     // delete  
-                    if(currentInputLine.Length > 1) {
+                    if (currentInputLine.Length > 1) {
                         // if delete 'n', we need to remove the last typed word
                         if (currentInputLine[currentInputLine.Length - 1] == 'n') {
                             currentTypedWords.RemoveAt(currentTypedWords.Count - 1);
@@ -91,7 +97,7 @@ public class InputHandler : MonoBehaviour
                         }
                         currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1); // b won't be put inside currentLine, n will, behave as space
                         retrieveInputStringFromLine();
-                        if(currentInputString.Length > 0)
+                        if (currentInputString.Length > 0)
                             wordListLoader.UpdateCandidates(currentInputString);
                     }
                     else {
@@ -99,32 +105,21 @@ public class InputHandler : MonoBehaviour
                         currentInputString = "";
                     }
                 }
-                else if (inputStringTemplate[i] == "n")
-                {
+                else if (inputStringTemplate[i] == "n") {
                     // enter
                     currentInputLine += 'n';
                     // flush input
                     currentInputString = "";
                     string curWord = "null";
-                    if (wordListLoader.currentCandidates.Length > 0 && wordListLoader.currentCandidates[0] != null)
-                    {
+                    if (wordListLoader.currentCandidates.Length > 0 && wordListLoader.currentCandidates[0] != null) {
                         curWord = candidateHandler.CurrentGazedText == "" ? wordListLoader.currentCandidates[0] : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result                        
                     }
                     // check if correct
-                    if (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode))
-                    {
-                        curWord = "<color=green>" + curWord + "</color>";
-                    }
-                    else
-                    {
-                        // mark the current typing to red and tell the users
-                        curWord = "<color=red>" + curWord + "</color>";
-                    }
+                    curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
                     Debug.Log("cur word:" + curWord);
                     currentTypedWords.Add(curWord);
                 }
-                else
-                {
+                else {
                     // regular input
                     currentInputLine += mapInput2InputString[inputStringTemplate[i]];
                     retrieveInputStringFromLine();
@@ -133,17 +128,34 @@ public class InputHandler : MonoBehaviour
                 }
                 break;
             }
-            if (Input.GetKeyUp(inputStringTemplate[i]))
-            {
+            if (Input.GetKeyUp(inputStringTemplate[i])) {
                 // process the key down
                 selectedFingers[i].SetActive(false);
                 // move the finger back but keep the color changes
-                if(i < 5)
+                if (i < 5)
                     handModel.ReleaseLeftFingers(i);
                 else
-                    handModel.ReleaseRightFingers(i-5);
+                    handModel.ReleaseRightFingers(i - 5);
             }
         }
         updateDisplayInput();
+    }
+
+    public void HandleRegularKeyboard(TMPro.TMP_InputField inputField)
+    {
+        // directly typed into input section?, check when there is 'space'
+        string curText = inputField.text;
+        phraseLoader.IsCurrentTypingCorrect(curText);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR) {
+
+        }
+        else {
+            HandleNewKeyboard();
+        }
     }
 }

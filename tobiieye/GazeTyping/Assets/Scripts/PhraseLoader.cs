@@ -77,6 +77,43 @@ public class PhraseLoader : MonoBehaviour
         ColorCurrentTypingPhrase();
     }
 
+    public void IsCurrentTypingCorrect(string curTyping)
+    {
+        // only for regular
+        // separate candidate into a string array, compare them one by one and colorize it
+        string[] currentTypedWords;
+        bool doCheck = false;
+        if (curTyping.EndsWith(" ")) {
+            doCheck = true;
+            curTyping = curTyping.Remove(curTyping.Length - 1);            
+        }
+        currentTypedWords = curTyping.Split(new char[] { ' ' });
+        curTypingPhrase = currentTypedWords.Length;
+        Debug.Log("curTypingPhrase:" + curTypingPhrase);
+
+        string curText = phrases[curPhraseIndex];
+        curPhrases = curText.Split(new char[] { ' ' });
+        
+        string newText = "", arrowText = "";
+        curTypingPhrase = doCheck ? curTypingPhrase : curTypingPhrase - 1;
+        for (int wordIndex = 0; wordIndex < curTypingPhrase; wordIndex++) {
+            bool curResult = currentTypedWords[wordIndex].Equals(curPhrases[wordIndex], System.StringComparison.InvariantCultureIgnoreCase);
+            newText += (curResult ? "<color=#c3c3c3>" : "<color=red>") + curPhrases[wordIndex] + "</color> ";
+        }
+        if (curTypingPhrase < curPhrases.Length) {
+            arrowText += "<color=blue>";
+            for (int i = 0; i < curPhrases[curTypingPhrase].Length / 2; i++) {
+                arrowText += " ";
+            }
+            arrowText += "↓</color>";
+            newText += "<color=blue>" + curPhrases[curTypingPhrase] + "</color> ";
+        }
+        for (int i = curTypingPhrase + 1; i < curPhrases.Length; i++) {
+            newText += curPhrases[i] + " ";
+        }
+        textMesh.text = arrowText + "\n" + newText;
+    }
+
     private void ColorCurrentTypingPhrase(ProfileLoader.TypingMode typingMode = ProfileLoader.TypingMode.TRAINING)
     {
         string curText = phrases[curPhraseIndex];
@@ -87,7 +124,7 @@ public class PhraseLoader : MonoBehaviour
             arrowText += "<color=white>" + curPhrases[i] + "</color> ";
             if(typingMode == ProfileLoader.TypingMode.TRAINING)
                 newText += "<color=green>" + curPhrases[i] + "</color> ";
-            else if(typingMode == ProfileLoader.TypingMode.TEST)
+            else if (typingMode == ProfileLoader.TypingMode.TEST)
                 newText += "<color=#c3c3c3>" + curPhrases[i] + "</color> ";
         }
         if(curTypingPhrase < curPhrases.Length)
@@ -100,7 +137,7 @@ public class PhraseLoader : MonoBehaviour
             arrowText += "↓</color>";
             newText += "<color=blue>" + curPhrases[curTypingPhrase] + "</color> ";
         }
-        for (int i = curTypingPhrase+1; i<curPhrases.Length; i++) {
+        for (int i = curTypingPhrase+1; i < curPhrases.Length; i++) {
             newText += curPhrases[i] + " ";
         }
         textMesh.text = arrowText + "\n" + newText;
@@ -146,15 +183,26 @@ public class PhraseLoader : MonoBehaviour
             ColorCurrentTypingPhrase(typingMode);
             return result;
         }
+        else if(typingMode == ProfileLoader.TypingMode.REGULAR){
+            // should not go to here
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     private void Update()
     {
         // test NextPhrases
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            NextPhrases();
-        }else if (Input.GetKeyDown(KeyCode.Backspace)) {
-            PrevPhrases();
-        }
+        if(ProfileLoader.typingMode != ProfileLoader.TypingMode.REGULAR) {
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                Debug.Log("next phrase by pressing space");
+                NextPhrases();
+            }
+            else if (Input.GetKeyDown(KeyCode.Backspace)) {
+                PrevPhrases();
+            }
+        }        
     }
 }
