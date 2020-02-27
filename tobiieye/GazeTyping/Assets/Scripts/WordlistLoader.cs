@@ -170,6 +170,10 @@ public class WordlistLoader : MonoBehaviour {
             currentCandidates = new string[preloadedCandidates];
         }
         currentCandidates = wordDict[inputString];
+        Debug.Log("input string:" + inputString + " candidates length " + currentCandidates.Length);
+        for(int i = 0; i < currentCandidates.Length; i++) {
+            Debug.Log("currentCandidates[" + i + "]:" + currentCandidates[i]);
+        }
         if (completeCandDict.ContainsKey(inputString))
         {
             candidateHandler.UpdateCandidates(currentCandidates, currentProgress, completeCandDict[inputString]);

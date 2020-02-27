@@ -29,7 +29,7 @@ public class ControllerHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (ControllerManager.Instance.GetButtonPressDown(ControllerButton.Trigger))
+        if (UnityEngine.XR.XRSettings.enabled && ControllerManager.Instance.GetButtonPressDown(ControllerButton.Trigger))
         {
             updateTypingSection();
         }

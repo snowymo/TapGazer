@@ -11,7 +11,10 @@ public class InputHandler : MonoBehaviour
     private string[] inputStringTemplate = new string[] { "q", "3", "4", "t", "b", "n", "u", "9", "0", "[" }; // to save time, we convert them to asdf del enter jkl;, and then maybe convert ; to p for json
     private Dictionary<string, string> mapInput2InputString;
 
-    public string currentInputString; // to save current input string, refresh it when click 'enter'
+    public string currentInputString; // to save current input string, refresh it when click 'enter'; in training mode, user has to type until correct
+    public string currentInputLine; // refresh when go to next phrase, currentInputString should be substring(lastIndexOf('ent'))
+    //public string currentDisplayLine; // the string to display on screen
+    List<string> currentTypedWords; // inputTextMesh.text should be generated based on currentTypedWords.
     public CandidateHandler candidateHandler;
 
     public GameObject[] selectedFingers;
@@ -25,6 +28,9 @@ public class InputHandler : MonoBehaviour
     {
         inputTextMesh.text = "";
         currentInputString = "";
+        currentInputLine = "";
+        //currentDisplayLine = "";
+        currentTypedWords = new List<string>();
         mapInput2InputString = new Dictionary<string, string>();
         mapInput2InputString.Add("q", "a");
         mapInput2InputString.Add("3", "s");
@@ -34,6 +40,26 @@ public class InputHandler : MonoBehaviour
         mapInput2InputString.Add("9", "k");
         mapInput2InputString.Add("0", "l");
         mapInput2InputString.Add("[", ";");
+    }
+
+    private void updateDisplayInput()
+    {
+        // udpate inputTextMesh.text with currentTypedWords
+        inputTextMesh.text = "";
+        if (phraseLoader.IsNewPhrase()) {
+            currentTypedWords.Clear();
+            currentInputLine = "";
+        }
+            
+        for (int i = 0; i < currentTypedWords.Count; i++) {
+            inputTextMesh.text += currentTypedWords[i] + " ";
+        }
+    }
+
+    private void retrieveInputStringFromLine()
+    {
+        int index = currentInputLine.LastIndexOf('n');
+        currentInputString = currentInputLine.Substring(index+1);
     }
 
     // Update is called once per frame
@@ -51,57 +77,56 @@ public class InputHandler : MonoBehaviour
                 else
                     handModel.PressRightFingers(i - 5);
                 helpInfo.SetActive(false);
+                // reset candidates
+                candidateHandler.ResetCandidates();
                 if (inputStringTemplate[i] == "b")
                 {
-                    // delete
-                    candidateHandler.ResetCandidates();
-                    if (currentInputString.Length > 1)
-                    {
-                        currentInputString = currentInputString.Substring(0, currentInputString.Length - 1);
-                        wordListLoader.UpdateCandidates(currentInputString);
+                    // delete  
+                    if(currentInputLine.Length > 1) {
+                        // if delete 'n', we need to remove the last typed word
+                        if (currentInputLine[currentInputLine.Length - 1] == 'n') {
+                            currentTypedWords.RemoveAt(currentTypedWords.Count - 1);
+                        }
+                        currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1); // b won't be put inside currentLine, n will, behave as space
+                        retrieveInputStringFromLine();
+                        if(currentInputString.Length > 0)
+                            wordListLoader.UpdateCandidates(currentInputString);
                     }
-                    else
-                    {
-                        // reset candidates
-                        //wordListLoader.candText0.SetCandidateText("");
+                    else {
+                        currentInputLine = "";
                         currentInputString = "";
-                        //wordListLoader.ResetCandidates();
                     }
                 }
                 else if (inputStringTemplate[i] == "n")
                 {
                     // enter
-                    if(wordListLoader.currentCandidates.Length > 0 && wordListLoader.currentCandidates[0] != null)
+                    currentInputLine += 'n';
+                    // flush input
+                    currentInputString = "";
+                    string curWord = "null";
+                    if (wordListLoader.currentCandidates.Length > 0 && wordListLoader.currentCandidates[0] != null)
                     {
-                        inputTextMesh.text = candidateHandler.CurrentGazedText == "" ? wordListLoader.currentCandidates[0] : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result
+                        curWord = candidateHandler.CurrentGazedText == "" ? wordListLoader.currentCandidates[0] : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result                        
                     }
-                    else
-                    {
-                        inputTextMesh.text = "";
-                    }                    
                     // check if correct
-                    if (phraseLoader.IsCurrentTypingCorrect(inputTextMesh.text/*wordListLoader.currentCandidates[candidateHandler.GazedCandidate]*/))
+                    if (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode))
                     {
-                        inputTextMesh.text = "last typed:" + inputTextMesh.text;
+                        curWord = "<color=green>" + curWord + "</color>";
                     }
                     else
                     {
                         // mark the current typing to red and tell the users
-                        inputTextMesh.text = "<color=red>last typed:" + inputTextMesh.text + "</color>";
+                        curWord = "<color=red>" + curWord + "</color>";
                     }
-                    
-                    // flush input
-                    currentInputString = "";
-                    // flush candidates
-                    //wordListLoader.candText0.SetCandidateText("");
-                    candidateHandler.ResetCandidates();
+                    Debug.Log("cur word:" + curWord);
+                    currentTypedWords.Add(curWord);
                 }
                 else
                 {
                     // regular input
-                    currentInputString += mapInput2InputString[inputStringTemplate[i]];
-                    //wordListLoader.candText0.SetCandidateText("");
-                    candidateHandler.ResetCandidates();
+                    currentInputLine += mapInput2InputString[inputStringTemplate[i]];
+                    retrieveInputStringFromLine();
+                    Debug.Log("input string:" + currentInputString);
                     wordListLoader.UpdateCandidates(currentInputString);
                 }
                 break;
@@ -117,5 +142,6 @@ public class InputHandler : MonoBehaviour
                     handModel.ReleaseRightFingers(i-5);
             }
         }
+        updateDisplayInput();
     }
 }

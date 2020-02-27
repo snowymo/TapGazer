@@ -13,9 +13,18 @@ public class PhraseLoader : MonoBehaviour
     [SerializeField]
     private string[] curPhrases;
     private int curTypingPhrase;
+    private bool isNewPhrase;
 
     public string phrasePath;
 
+    public bool IsNewPhrase()
+    {
+        bool temp = isNewPhrase;
+        isNewPhrase = false;
+        return temp;
+    }
+
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -45,6 +54,7 @@ public class PhraseLoader : MonoBehaviour
         ++curPhraseIndex;
         curTypingPhrase = 0;
         UpdatePhrase();
+        isNewPhrase = true;
     }
 
     public void PrevPhrases()
@@ -87,26 +97,52 @@ public class PhraseLoader : MonoBehaviour
         textMesh.text = arrowText + "\n" + newText;
     }
 
-    public bool IsCurrentTypingCorrect(string candidate)
+    public bool IsCurrentTypingCorrect(string candidate, ProfileLoader.TypingMode typingMode)
     {
-        if(candidate.Equals(curPhrases[curTypingPhrase], System.StringComparison.InvariantCultureIgnoreCase)) {
-            // move to next word
-            if(curTypingPhrase < (curPhrases.Length-1)) {
-                ++curTypingPhrase;
+        // typingMode=training, then curPhraseIndex won't move until correct
+        // typingMode=test, curPhraseIndex will move to the next one anyway
+        if(typingMode == ProfileLoader.TypingMode.TRAINING) {
+            if (candidate.Equals(curPhrases[curTypingPhrase], System.StringComparison.InvariantCultureIgnoreCase)) {
+                // move to next word
+                if (curTypingPhrase < (curPhrases.Length - 1)) {
+                    ++curTypingPhrase;
+                    ColorCurrentTypingPhrase();
+                    Debug.Log("next word");
+                }
+                else {
+                    // move to next phrase
+                    Debug.Log("next phrase");
+                    NextPhrases();
+                    ColorCurrentTypingPhrase();
+                }
+                return true;
+            }
+            else {
+                // just wrong
+                return false;
+            }
+        }
+        else {
+            bool result;
+            if (candidate.Equals(curPhrases[curTypingPhrase], System.StringComparison.InvariantCultureIgnoreCase)) {
                 ColorCurrentTypingPhrase();
+                result = true;
+            }
+            else {
+                // just wrong                
+                result = false;
+            }
+            if (curTypingPhrase < (curPhrases.Length - 1)) {
+                // move to next word
+                ++curTypingPhrase;
                 Debug.Log("next word");
             }
             else {
                 // move to next phrase
                 Debug.Log("next phrase");
                 NextPhrases();
-                ColorCurrentTypingPhrase();
-            }
-            return true;
-        }
-        else {
-            // just wrong
-            return false;
+            }            
+            return result;
         }
     }
 

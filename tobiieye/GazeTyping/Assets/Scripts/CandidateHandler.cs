@@ -319,6 +319,9 @@ public class CandidateHandler : MonoBehaviour
         {
             int totalNumber = 13;
             string[] newCand = ReorgCandidates(candidates, totalNumber, completedCand);
+            for (int i = 0; i < newCand.Length; i++) {
+                Debug.Log("newCand[" + i + "]:" + newCand[i]);
+            }
             UpdateLexicalCandidate(newCand, progress);
         }else if(candidateLayout == CandLayout.BYCOL)
         {
@@ -349,14 +352,25 @@ public class CandidateHandler : MonoBehaviour
                 break;
             }                
         }
-        if(completeNotFirst != -1)
+        int toCopy = copyNumber;
+        if (completeNotFirst != -1)
         {
             Array.Copy(completedCand, 0, newCand, 1, completeNotFirst);
-            Array.Copy(completedCand, completeNotFirst+1, newCand, completeNotFirst+1, copyNumber - completeNotFirst);
+            Debug.LogWarning("completedCand.length:" + completedCand.Length);
+            Debug.LogWarning("completeNotFirst:" + completeNotFirst);
+            Debug.LogWarning("newCand.length:" + newCand.Length);
+            Debug.LogWarning("copyNumber - completeNotFirst:" + (copyNumber - completeNotFirst));
+            toCopy = Mathf.Min(copyNumber - completeNotFirst, completedCand.Length - (completeNotFirst + 1));
+            //if (completedCand.Length > (completeNotFirst + 1) && newCand.Length > (completeNotFirst + 1)) {
+            Array.Copy(completedCand, completeNotFirst + 1, newCand, completeNotFirst + 1, toCopy);
+            foreach (string nc in newCand) {
+                Debug.Log(nc);
+            }
+            //}            
         }
         else
             Array.Copy(completedCand, 0, newCand, 1, copyNumber);
-        for (int i = copyNumber + 1, j = 1; i < totalNumber; i++)
+        for (int i = toCopy + 1, j = 1; i < totalNumber; i++)
         {
             while(j < candidates.Length && candidates[j].Length == completedCand[0].Length)
             {
@@ -371,6 +385,9 @@ public class CandidateHandler : MonoBehaviour
                 // j reaches the end of candidates, no more could be assigned to newCand
                 string[] newCand2 = new string[i];
                 Array.Copy(newCand, newCand2, i);
+                foreach (string nc in newCand2) {
+                    Debug.Log(nc);
+                }
                 return newCand2;
             }
         }

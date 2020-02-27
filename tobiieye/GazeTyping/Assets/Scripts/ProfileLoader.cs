@@ -11,7 +11,8 @@ using UnityEngine;
 
 public class ProfileLoader : MonoBehaviour
 {
-
+    public TypingMode curTypingMode;
+    public static TypingMode typingMode;
     public string profile = "";
     public WordlistLoader wordlistLoader;
     [SerializeField]
@@ -19,18 +20,16 @@ public class ProfileLoader : MonoBehaviour
     int[] renderTextureIndices;
     public DynamicHandKey dynamicHandKey;
 
+    public enum TypingMode { TRAINING, TEST};
+
     // Start is called before the first frame update
     void Awake()
     {
         wordlistLoader.wordlistPath = "30k-result" + profile + ".json";
+        typingMode = curTypingMode;
+        Debug.Log("typing mode:" + typingMode);
         loadConfigFile();
         updateRenderTexture();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private void loadConfigFile()
