@@ -319,9 +319,9 @@ public class CandidateHandler : MonoBehaviour
         {
             int totalNumber = 13;
             string[] newCand = ReorgCandidates(candidates, totalNumber, completedCand);
-            for (int i = 0; i < newCand.Length; i++) {
-                Debug.Log("newCand[" + i + "]:" + newCand[i]);
-            }
+            //for (int i = 0; i < newCand.Length; i++) {
+            //    Debug.Log("newCand[" + i + "]:" + newCand[i]);
+            //}
             UpdateLexicalCandidate(newCand, progress);
         }else if(candidateLayout == CandLayout.BYCOL)
         {
@@ -385,9 +385,9 @@ public class CandidateHandler : MonoBehaviour
                 // j reaches the end of candidates, no more could be assigned to newCand
                 string[] newCand2 = new string[i];
                 Array.Copy(newCand, newCand2, i);
-                foreach (string nc in newCand2) {
-                    Debug.Log(nc);
-                }
+                //foreach (string nc in newCand2) {
+                //    Debug.Log(nc);
+                //}
                 return newCand2;
             }
         }

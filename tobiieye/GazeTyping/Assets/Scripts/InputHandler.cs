@@ -86,6 +86,8 @@ public class InputHandler : MonoBehaviour
                         // if delete 'n', we need to remove the last typed word
                         if (currentInputLine[currentInputLine.Length - 1] == 'n') {
                             currentTypedWords.RemoveAt(currentTypedWords.Count - 1);
+                            // curTypingPhrase should move back to previous word too
+                            phraseLoader.PreviousWord();
                         }
                         currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1); // b won't be put inside currentLine, n will, behave as space
                         retrieveInputStringFromLine();

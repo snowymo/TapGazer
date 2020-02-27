@@ -92,10 +92,6 @@ public class WordlistLoader : MonoBehaviour {
                 int totalCandCount = 0, completeCandCount = 0;
                 while(totalCandCount < first20cand.Length && ( totalCandCount < preloadedCandidates || completeCandCount < curCompletedCand))
                 {
-                    if(item.Key == "jlf")
-                    {
-                        Debug.Log("check nor");
-                    }
                     if (cands[totalCandCount].Length == item.Key.Length)
                     {
                         ++completeCandCount;
@@ -105,7 +101,7 @@ public class WordlistLoader : MonoBehaviour {
                     {
                         // reaches the max of the incompleted candidates capacity
                         // no more incompleted candidates
-                        Debug.Log("no more incompleted candidates");
+                        //Debug.Log("no more incompleted candidates");
                         // append the rest completed candidates to the array
                         Array.Copy(completeCandDict[item.Key], completeCandCount, first20cand, totalCandCount, curCompletedCand - completeCandCount);
                         break;
@@ -170,10 +166,10 @@ public class WordlistLoader : MonoBehaviour {
             currentCandidates = new string[preloadedCandidates];
         }
         currentCandidates = wordDict[inputString];
-        Debug.Log("input string:" + inputString + " candidates length " + currentCandidates.Length);
-        for(int i = 0; i < currentCandidates.Length; i++) {
-            Debug.Log("currentCandidates[" + i + "]:" + currentCandidates[i]);
-        }
+        //Debug.Log("input string:" + inputString + " candidates length " + currentCandidates.Length);
+        //for(int i = 0; i < currentCandidates.Length; i++) {
+        //    Debug.Log("currentCandidates[" + i + "]:" + currentCandidates[i]);
+        //}
         if (completeCandDict.ContainsKey(inputString))
         {
             candidateHandler.UpdateCandidates(currentCandidates, currentProgress, completeCandDict[inputString]);

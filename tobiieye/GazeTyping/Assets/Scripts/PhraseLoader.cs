@@ -24,6 +24,12 @@ public class PhraseLoader : MonoBehaviour
         return temp;
     }
 
+    public void PreviousWord()
+    {
+        --curTypingPhrase;
+        ColorCurrentTypingPhrase(ProfileLoader.TypingMode.TEST);
+    }
+
     
     // Start is called before the first frame update
     void Start()
@@ -65,7 +71,7 @@ public class PhraseLoader : MonoBehaviour
 
     public void UpdatePhrase()
     {
-        // update current phrases (5 phrases) to TextMesh
+        // update current phrases to TextMesh
         curPhraseIndex = Mathf.Max(0, curPhraseIndex);
         curPhraseIndex = Mathf.Min(phraseCount-1, curPhraseIndex);
         ColorCurrentTypingPhrase();
@@ -81,7 +87,7 @@ public class PhraseLoader : MonoBehaviour
             arrowText += "<color=white>" + curPhrases[i] + "</color> ";
             if(typingMode == ProfileLoader.TypingMode.TRAINING)
                 newText += "<color=green>" + curPhrases[i] + "</color> ";
-            else
+            else if(typingMode == ProfileLoader.TypingMode.TEST)
                 newText += "<color=#c3c3c3>" + curPhrases[i] + "</color> ";
         }
         if(curTypingPhrase < curPhrases.Length)
@@ -125,7 +131,7 @@ public class PhraseLoader : MonoBehaviour
                 return false;
             }
         }
-        else {
+        else if(typingMode == ProfileLoader.TypingMode.TEST) {
             bool result = candidate.Equals(curPhrases[curTypingPhrase], System.StringComparison.InvariantCultureIgnoreCase);
             if (curTypingPhrase < (curPhrases.Length - 1)) {
                 // move to next word
