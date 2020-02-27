@@ -71,7 +71,7 @@ public class PhraseLoader : MonoBehaviour
         ColorCurrentTypingPhrase();
     }
 
-    private void ColorCurrentTypingPhrase()
+    private void ColorCurrentTypingPhrase(ProfileLoader.TypingMode typingMode = ProfileLoader.TypingMode.TRAINING)
     {
         string curText = phrases[curPhraseIndex];
         curPhrases = curText.Split(new char[] { ' ' });
@@ -79,7 +79,10 @@ public class PhraseLoader : MonoBehaviour
         string newText = "";
         for(int i = 0; i < curTypingPhrase; i++) {
             arrowText += "<color=white>" + curPhrases[i] + "</color> ";
-            newText += "<color=green>" + curPhrases[i] + "</color> ";
+            if(typingMode == ProfileLoader.TypingMode.TRAINING)
+                newText += "<color=green>" + curPhrases[i] + "</color> ";
+            else
+                newText += "<color=#c3c3c3>" + curPhrases[i] + "</color> ";
         }
         if(curTypingPhrase < curPhrases.Length)
         {
@@ -123,15 +126,7 @@ public class PhraseLoader : MonoBehaviour
             }
         }
         else {
-            bool result;
-            if (candidate.Equals(curPhrases[curTypingPhrase], System.StringComparison.InvariantCultureIgnoreCase)) {
-                ColorCurrentTypingPhrase();
-                result = true;
-            }
-            else {
-                // just wrong                
-                result = false;
-            }
+            bool result = candidate.Equals(curPhrases[curTypingPhrase], System.StringComparison.InvariantCultureIgnoreCase);
             if (curTypingPhrase < (curPhrases.Length - 1)) {
                 // move to next word
                 ++curTypingPhrase;
@@ -141,7 +136,8 @@ public class PhraseLoader : MonoBehaviour
                 // move to next phrase
                 Debug.Log("next phrase");
                 NextPhrases();
-            }            
+            }
+            ColorCurrentTypingPhrase(typingMode);
             return result;
         }
     }
