@@ -143,11 +143,23 @@ public class InputHandler : MonoBehaviour
 
     public void HandleRegularKeyboard(TMPro.TMP_InputField inputField)
     {
+        // check focus
+        //if (!inputField.isFocused) {
+        //    inputField.ActivateInputField();
+        //}
+        
         // directly typed into input section?, check when there is 'space'
         string curText = inputField.text;
         bool nextPhraseOrNot = phraseLoader.IsCurrentTypingCorrect(curText);
         if (nextPhraseOrNot)
             inputField.text = "";
+        StartCoroutine(moveCaret(inputField));
+    }
+
+    IEnumerator moveCaret(TMPro.TMP_InputField inputField)
+    {
+        yield return new WaitForEndOfFrame();
+        inputField.MoveTextEnd(true);
     }
 
     // Update is called once per frame
