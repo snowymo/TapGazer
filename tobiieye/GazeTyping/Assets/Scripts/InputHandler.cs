@@ -145,7 +145,9 @@ public class InputHandler : MonoBehaviour
     {
         // directly typed into input section?, check when there is 'space'
         string curText = inputField.text;
-        phraseLoader.IsCurrentTypingCorrect(curText);
+        bool nextPhraseOrNot = phraseLoader.IsCurrentTypingCorrect(curText);
+        if (nextPhraseOrNot)
+            inputField.text = "";
     }
 
     // Update is called once per frame

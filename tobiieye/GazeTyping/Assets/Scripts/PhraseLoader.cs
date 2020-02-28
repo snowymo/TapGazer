@@ -77,7 +77,7 @@ public class PhraseLoader : MonoBehaviour
         ColorCurrentTypingPhrase();
     }
 
-    public void IsCurrentTypingCorrect(string curTyping)
+    public bool IsCurrentTypingCorrect(string curTyping)
     {
         // only for regular
         // separate candidate into a string array, compare them one by one and colorize it
@@ -95,9 +95,11 @@ public class PhraseLoader : MonoBehaviour
         curPhrases = curText.Split(new char[] { ' ' });
         
         string newText = "", arrowText = "";
+        Debug.Log("doCheck:" + doCheck);
         curTypingPhrase = doCheck ? curTypingPhrase : curTypingPhrase - 1;
         for (int wordIndex = 0; wordIndex < curTypingPhrase; wordIndex++) {
             bool curResult = currentTypedWords[wordIndex].Equals(curPhrases[wordIndex], System.StringComparison.InvariantCultureIgnoreCase);
+            arrowText += "<color=white>" + curPhrases[wordIndex] + "</color> ";
             newText += (curResult ? "<color=#c3c3c3>" : "<color=red>") + curPhrases[wordIndex] + "</color> ";
         }
         if (curTypingPhrase < curPhrases.Length) {
@@ -112,6 +114,13 @@ public class PhraseLoader : MonoBehaviour
             newText += curPhrases[i] + " ";
         }
         textMesh.text = arrowText + "\n" + newText;
+
+        // check if next phrase
+        if (doCheck && curTypingPhrase == (curPhrases.Length)) {
+            NextPhrases();
+            return true;
+        }
+        return false;
     }
 
     private void ColorCurrentTypingPhrase(ProfileLoader.TypingMode typingMode = ProfileLoader.TypingMode.TRAINING)
