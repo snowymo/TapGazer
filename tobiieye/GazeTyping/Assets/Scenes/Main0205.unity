@@ -323,7 +323,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 94866699}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1895095300}
@@ -332,8 +332,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -261.4, y: 166.53}
-  m_SizeDelta: {x: 516.7, y: 41.8}
+  m_AnchoredPosition: {x: -136, y: 121}
+  m_SizeDelta: {x: 354.19, y: 41.8}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &94866701
 MonoBehaviour:
@@ -755,6 +755,64 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!1 &257319245
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 257319246}
+  - component: {fileID: 257319247}
+  m_Layer: 0
+  m_Name: Evaluation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &257319246
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257319245}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1476959234}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &257319247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257319245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e073ea65b221635488c9756286ba1511, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  phraseLoader: {fileID: 289590125}
+  C: 0
+  INF: 0
+  IF: 0
+  F: 0
+  totalC: 0
+  totalINF: 0
+  totalIF: 0
+  totalF: 0
+  MSD: 0
+  KSPC: 0
+  CE: 0
+  PC: 0
+  NCER: 0
+  CER: 0
 --- !u!1 &289590119
 GameObject:
   m_ObjectHideFlags: 0
@@ -3387,6 +3445,7 @@ MonoBehaviour:
   - {fileID: 64169800}
   helpInfo: {fileID: 2003182632}
   handModel: {fileID: 150660575}
+  measurement: {fileID: 257319247}
 --- !u!1 &991865613
 GameObject:
   m_ObjectHideFlags: 0
@@ -4746,6 +4805,7 @@ Transform:
   - {fileID: 132433877}
   - {fileID: 617092277}
   - {fileID: 723344455}
+  - {fileID: 257319246}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

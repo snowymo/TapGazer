@@ -17,6 +17,11 @@ public class PhraseLoader : MonoBehaviour
 
     public string phrasePath;
 
+    public string GetCurPhrase()
+    {
+        return phrases[curPhraseIndex];
+    }
+
     public bool IsNewPhrase()
     {
         bool temp = isNewPhrase;

@@ -24,6 +24,8 @@ public class InputHandler : MonoBehaviour
 
     public HandAnimationCtrl handModel;
 
+    public Measurement measurement;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -150,6 +152,10 @@ public class InputHandler : MonoBehaviour
         
         // directly typed into input section?, check when there is 'space'
         string curText = inputField.text;
+
+        // 
+        measurement.OnRegularInput(inputField);
+
         bool nextPhraseOrNot = phraseLoader.IsCurrentTypingCorrect(curText);
         if (nextPhraseOrNot)
             inputField.text = "";
