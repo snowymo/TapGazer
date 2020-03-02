@@ -12,12 +12,17 @@ public class Measurement : MonoBehaviour
     private float C, INF, IF, F;
 
     [SerializeField]
-    private float totalC, totalINF, totalIF, totalF, MSD, KSPC, CE, PC, NCER, CER;
+    private float totalC, totalINF, totalIF, totalF, MSD, KSPC, CE, PC, NCER, CER, WPM;
+
+    [SerializeField]
+    private float typingSeconds = 20;
+
+    private DateTime startTime, endTime;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        startTime = DateTime.MinValue;
     }
 
     public void AddInputStream(string inputStream)
@@ -44,6 +49,8 @@ public class Measurement : MonoBehaviour
 
     public void OnRegularInput(TMPro.TMP_InputField inputField)
     {
+        if(startTime == DateTime.MinValue)
+            startTime = DateTime.Now;
         string curText = inputField.text;
         // we should calculate c, inf, if, f based on curText and the correct answer
         string correctString = phraseLoader.GetCurPhrase();
@@ -70,8 +77,16 @@ public class Measurement : MonoBehaviour
                 if(totalIF + totalINF != 0)    PC = totalIF / (totalIF + totalINF);
                 NCER = totalINF / (totalC + totalINF + totalIF);
                 CER = totalIF / (totalC + totalINF + totalIF);
+                WPM += correctString.Split(new char[] { ' ' }).Length;
+                endTime = DateTime.Now;
+                if ((endTime - startTime).Seconds > typingSeconds)
+                {
+                    inputField.enabled = false;
+                    WPM = WPM / ((endTime - startTime).Seconds / 60.0f);
+                }
             }
         }
+        
     }
 
     private int LCSubStr(string Presented, string Transcript)
