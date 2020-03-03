@@ -19,10 +19,13 @@ public class Measurement : MonoBehaviour
 
     private DateTime startTime, endTime;
 
+    public bool allowInput;
+
     // Start is called before the first frame update
     void Start()
     {
         startTime = DateTime.MinValue;
+        allowInput = true;
     }
 
     public void AddInputStream(string inputStream)
@@ -45,6 +48,67 @@ public class Measurement : MonoBehaviour
                 IF += 1;
             }
         }
+        else if(ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
+        {
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                IF += 1;
+                F += 1;
+            }
+        }
+    }
+
+    public void AddWPM(int curWC)
+    {
+        WPM += curWC;
+    }
+
+    public void StartClock()
+    {
+        if (startTime == DateTime.MinValue)
+            startTime = DateTime.Now;
+    }
+
+    public void UpdateTestMeasure(string presented, string transcript, bool isGazeCorrect)
+    {
+        // handle presented, from words to inputString
+        C = 0;
+        for(int i = 0; i < Mathf.Min(presented.Length, transcript.Length); i++)
+        {
+            if (transcript[i] == (ProfileLoader.configMap[presented[i].ToString()][0]))
+                C += 1;
+        }
+        if (isGazeCorrect)
+            C += 1;
+        // calculate C and INFtotalC += C;
+        totalC += C;
+        INF = transcript.Length + 1 - C;
+        totalINF += INF;
+        totalIF += IF;
+        IF = 0;
+        totalF += F;
+        F = 0;
+        calculateMetric();
+        //WPM += 1;// it is possible user deleted words
+        endTime = DateTime.Now;
+        if ((endTime - startTime).Seconds > typingSeconds)
+        {
+            allowInput = false;
+            Debug.Log("<color=blue>time is up</color>");
+            WPM = WPM / ((endTime - startTime).Seconds / 60.0f);
+        }
+    }
+
+    private void calculateMetric()
+    {
+        // calculate the measurement
+        MSD = (totalINF / (totalC + totalINF));
+        KSPC = (totalC + totalINF + totalIF + totalF) / (totalC + totalINF);
+        if (totalF != 0) CE = totalIF / totalF;
+        if (totalIF + totalINF != 0) PC = totalIF / (totalIF + totalINF);
+        NCER = totalINF / (totalC + totalINF + totalIF);
+        CER = totalIF / (totalC + totalINF + totalIF);
+        
     }
 
     public void OnRegularInput(TMPro.TMP_InputField inputField)
@@ -70,13 +134,7 @@ public class Measurement : MonoBehaviour
                 IF = 0;
                 totalF += F;
                 F = 0;
-                // calculate the measurement
-                MSD = (totalINF / (totalC + totalINF));
-                KSPC = (totalC + totalINF + totalIF + totalF) / (totalC + totalINF);
-                if(totalF!=0)   CE = totalIF / totalF;
-                if(totalIF + totalINF != 0)    PC = totalIF / (totalIF + totalINF);
-                NCER = totalINF / (totalC + totalINF + totalIF);
-                CER = totalIF / (totalC + totalINF + totalIF);
+                calculateMetric();
                 WPM += correctString.Split(new char[] { ' ' }).Length;
                 endTime = DateTime.Now;
                 if ((endTime - startTime).Seconds > typingSeconds)

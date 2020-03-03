@@ -363,9 +363,9 @@ public class CandidateHandler : MonoBehaviour
             toCopy = Mathf.Min(copyNumber - completeNotFirst, completedCand.Length - (completeNotFirst + 1));
             //if (completedCand.Length > (completeNotFirst + 1) && newCand.Length > (completeNotFirst + 1)) {
             Array.Copy(completedCand, completeNotFirst + 1, newCand, completeNotFirst + 1, toCopy);
-            foreach (string nc in newCand) {
-                Debug.Log(nc);
-            }
+            //foreach (string nc in newCand) {
+            //    Debug.Log(nc);
+            //}
             //}            
         }
         else

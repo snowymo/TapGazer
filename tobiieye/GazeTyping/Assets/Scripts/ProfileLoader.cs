@@ -16,7 +16,7 @@ public class ProfileLoader : MonoBehaviour
     public string profile = "";
     public WordlistLoader wordlistLoader;
     [SerializeField]
-    private Dictionary<string, string> configMap;
+    public static Dictionary<string, string> configMap;
     int[] renderTextureIndices;
     public DynamicHandKey dynamicHandKey;
 

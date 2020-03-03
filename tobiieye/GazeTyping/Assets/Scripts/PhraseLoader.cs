@@ -17,9 +17,16 @@ public class PhraseLoader : MonoBehaviour
 
     public string phrasePath;
 
+    public Measurement measurement;
+
     public string GetCurPhrase()
     {
         return phrases[curPhraseIndex];
+    }
+
+    public string GetCurWord()
+    {
+        return curPhrases[curTypingPhrase];
     }
 
     public bool IsNewPhrase()
@@ -192,6 +199,7 @@ public class PhraseLoader : MonoBehaviour
             else {
                 // move to next phrase
                 Debug.Log("next phrase");
+                measurement.AddWPM(curTypingPhrase+1);
                 NextPhrases();
             }
             ColorCurrentTypingPhrase(typingMode);

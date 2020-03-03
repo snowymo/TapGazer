@@ -108,10 +108,9 @@ public class InputHandler : MonoBehaviour
                     }
                 }
                 else if (inputStringTemplate[i] == "n") {
+                    string presented = phraseLoader.GetCurWord();
                     // enter
                     currentInputLine += 'n';
-                    // flush input
-                    currentInputString = "";
                     string curWord = "null";
                     if (wordListLoader.currentCandidates.Length > 0 && wordListLoader.currentCandidates[0] != null) {
                         curWord = candidateHandler.CurrentGazedText == "" ? wordListLoader.currentCandidates[0] : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result                        
@@ -120,9 +119,18 @@ public class InputHandler : MonoBehaviour
                     curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
                     Debug.Log("cur word:" + curWord);
                     currentTypedWords.Add(curWord);
+                    // pass corredsponding parameter to measurement
+                    // currentInputString is the input stream for current word, without 'n'
+                    // candidateHandler.GazedCandidate is the index of the candidates
+                    // the combination of the currentInputString and index is the entire input of the transcript=C+INF, presented is retrieved from PhraseLoader
+                    // the correct index of the candidates, we'd better find a way to get index from wordListLoader.currentCandidates
+                    measurement.UpdateTestMeasure(presented, currentInputString, curWord.Contains("=green"));
+                    // flush input
+                    currentInputString = "";
                 }
                 else {
                     // regular input
+                    measurement.StartClock();
                     currentInputLine += mapInput2InputString[inputStringTemplate[i]];
                     retrieveInputStringFromLine();
                     Debug.Log("input string:" + currentInputString);
@@ -174,7 +182,10 @@ public class InputHandler : MonoBehaviour
         if(ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR) {
 
         }
-        else {
+        else if(ProfileLoader.typingMode == ProfileLoader.TypingMode.TRAINING) {
+            HandleNewKeyboard();
+        }
+        else if(measurement.allowInput){
             HandleNewKeyboard();
         }
     }
