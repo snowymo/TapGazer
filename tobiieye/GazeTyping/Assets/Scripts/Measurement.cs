@@ -78,11 +78,13 @@ public class Measurement : MonoBehaviour
             if (transcript[i] == (ProfileLoader.configMap[presented[i].ToString()][0]))
                 C += 1;
         }
+        INF = transcript.Length- C;
         if (isGazeCorrect)
             C += 1;
+        else
+            INF += 1;
         // calculate C and INFtotalC += C;
-        totalC += C;
-        INF = transcript.Length + 1 - C;
+        totalC += C;        
         totalINF += INF;
         totalIF += IF;
         IF = 0;
@@ -128,7 +130,7 @@ public class Measurement : MonoBehaviour
                 string presented = correctString.Replace(" ", string.Empty);
                 C = LCSubStr(transcript, presented);
                 totalC += C;
-                INF = presented.Length - C;
+                INF = presented.Length - C + transcript.Length - C;
                 totalINF += INF;
                 totalIF += IF;
                 IF = 0;
