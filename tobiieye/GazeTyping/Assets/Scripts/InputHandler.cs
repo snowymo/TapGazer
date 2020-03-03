@@ -122,7 +122,7 @@ public class InputHandler : MonoBehaviour
                     // pass corredsponding parameter to measurement
                     // currentInputString is the input stream for current word, without 'n'
                     // candidateHandler.GazedCandidate is the index of the candidates
-                    // the combination of the currentInputString and index is the entire input of the transcript=C+INF, presented is retrieved from PhraseLoader
+                    // the combination of the currentInputString and index is the entire input of the transribed=C+INF, presented is retrieved from PhraseLoader
                     // the correct index of the candidates, we'd better find a way to get index from wordListLoader.currentCandidates
                     measurement.UpdateTestMeasure(presented, currentInputString, curWord.Contains("=green"));
                     // flush input

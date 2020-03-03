@@ -69,16 +69,16 @@ public class Measurement : MonoBehaviour
             startTime = DateTime.Now;
     }
 
-    public void UpdateTestMeasure(string presented, string transcript, bool isGazeCorrect)
+    public void UpdateTestMeasure(string presented, string transribed, bool isGazeCorrect)
     {
         // handle presented, from words to inputString
         C = 0;
-        for(int i = 0; i < Mathf.Min(presented.Length, transcript.Length); i++)
+        for(int i = 0; i < Mathf.Min(presented.Length, transribed.Length); i++)
         {
-            if (transcript[i] == (ProfileLoader.configMap[presented[i].ToString()][0]))
+            if (transribed[i] == (ProfileLoader.configMap[presented[i].ToString()][0]))
                 C += 1;
         }
-        INF = transcript.Length- C;
+        INF = transribed.Length- C;
         if (isGazeCorrect)
             C += 1;
         else
@@ -126,12 +126,12 @@ public class Measurement : MonoBehaviour
             if (curText.Remove(curText.Length - 1).Split(new char[] { ' ' }).Length == correctString.Split(new char[] { ' ' }).Length)
             {
                 // calculate C and INF
-                string transcript = curText.Replace(" ", string.Empty);
+                string transribed = curText.Replace(" ", string.Empty);
                 string presented = correctString.Replace(" ", string.Empty);
-                C = LCSubStr(transcript, presented);
-                totalC += C;
-                INF = presented.Length - C + transcript.Length - C;
+                INF = editDistance(presented, transribed);
                 totalINF += INF;
+                C = transribed.Length - INF;
+                totalC += C;
                 totalIF += IF;
                 IF = 0;
                 totalF += F;
@@ -141,29 +141,60 @@ public class Measurement : MonoBehaviour
                 endTime = DateTime.Now;
                 if ((endTime - startTime).Seconds > typingSeconds)
                 {
+                    allowInput = false;
                     inputField.enabled = false;
                     WPM = WPM / ((endTime - startTime).Seconds / 60.0f);
                 }
             }
-        }
-        
+        }        
     }
 
-    private int LCSubStr(string Presented, string Transcript)
+    private int editDistance(string presented, string transribed)
+    {
+        // instead of calculating LCS for C, we should calculate MSD(aka edit distance) for INF, and C = transcribed - INF
+        int[,] MSDTable = new int[presented.Length + 1, transribed.Length + 1];
+        int result = 0;  // To store length of the longest common substring 
+        for (int i = 0; i <= presented.Length; i++)
+        {
+            for (int j = 0; j <= transribed.Length; j++)
+            {
+                // The first row and first column  
+                // entries have no logical meaning,  
+                // they are used only for simplicity  
+                // of program 
+                if (i == 0 || j == 0)
+                    MSDTable[i, j] = 0;
+                // If last characters are same, ignore last char 
+                // and recur for remaining string 
+                else if (presented[i - 1] == transribed[j - 1])
+                    MSDTable[i,j] = MSDTable[i - 1,j - 1];
+
+                // If the last character is different, consider all 
+                // possibilities and find the minimum 
+                else
+                    MSDTable[i,j] = 1 + Mathf.Min(MSDTable[i,j - 1], // Insert 
+                                       MSDTable[i - 1,j], // Remove 
+                                       MSDTable[i - 1,j - 1]); // Replace 
+            }
+        }
+        return MSDTable[presented.Length, transribed.Length];
+    }
+
+    private int LCSubStr(string Presented, string Transribed)
     {
         // Create a table to store lengths of longest 
         // common suffixes of substrings.   Note that 
         // LCSuff[i][j] contains length of longest 
         // common suffix of X[0..i-1] and Y[0..j-1].  
 
-        int[,] LCSuff = new int[Presented.Length + 1, Transcript.Length + 1];
+        int[,] LCSuff = new int[Presented.Length + 1, Transribed.Length + 1];
         int result = 0;  // To store length of the longest common substring 
 
         /* Following steps build LCSuff[m+1][n+1] in 
             bottom up fashion. */
         for (int i = 0; i <= Presented.Length; i++)
         {
-            for (int j = 0; j <= Transcript.Length; j++)
+            for (int j = 0; j <= Transribed.Length; j++)
             {
                 // The first row and first column  
                 // entries have no logical meaning,  
@@ -171,7 +202,7 @@ public class Measurement : MonoBehaviour
                 // of program 
                 if (i == 0 || j == 0)
                     LCSuff[i, j] = 0;
-                else if (Presented[i - 1] == Transcript[j - 1])
+                else if (Presented[i - 1] == Transribed[j - 1])
                 {
                     LCSuff[i, j] = LCSuff[i - 1, j - 1] + 1;
                     result = Mathf.Max(result, LCSuff[i, j]);
