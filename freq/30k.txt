@@ -3417,9 +3417,7 @@ examination
 potter	
 dish	
 plays	
-bulletin	
-ia	
-pt	
+bulletin
 indicates	
 modify	
 oxford	
@@ -3955,8 +3953,7 @@ capture
 pounds	
 buffalo	
 organisations	
-plane	
-pg	
+plane
 explained	
 seed	
 programmes	
@@ -6961,8 +6958,7 @@ actively
 ciao	
 ampland	
 knee	
-prep	
-pb	
+prep
 complicated	
 chem	
 fastest	
@@ -8472,8 +8468,7 @@ excuse
 reforms	
 basement	
 onion	
-strand	
-pf	
+strand
 sandwich	
 uw	
 lawsuit	
@@ -9954,8 +9949,7 @@ seconded
 activate	
 waist	
 attributed
-seychelles	
-pv	
+seychelles
 fatigue	
 owl	
 patriot	
