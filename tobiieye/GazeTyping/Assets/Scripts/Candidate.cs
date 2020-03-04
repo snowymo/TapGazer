@@ -10,6 +10,7 @@ public class Candidate : MonoBehaviour
     public int candidateIndex = 0;
     public CandidateHandler candidateHandler;
     public GameObject planeCollider;
+    public string pureText;
 
     float kWidthScale;
 
@@ -41,13 +42,15 @@ public class Candidate : MonoBehaviour
         }
     }
 
-    public void SetCandidateText(string text, int progress = 0)
+    public void SetCandidateText(string text, int progress = 0, float fontSize = 106.1f)
     {
         // update the color of first #progress# characters to blue and the rest to red
+        pureText = text;
         CandText.text = "<color=blue>" + text.Substring(0, Mathf.Min(text.Length, progress)) + "</color>";
         if(progress < text.Length)
             CandText.text += "<color=orange>" + text.Substring(progress) + "</color>";
         kWidthScale = 0.12f;
+        CandText.fontSize = fontSize;
         planeCollider.transform.localScale = new Vector3(0.51f * text.Length * kWidthScale, planeCollider.transform.localScale.y, planeCollider.transform.localScale.z);
     }
     

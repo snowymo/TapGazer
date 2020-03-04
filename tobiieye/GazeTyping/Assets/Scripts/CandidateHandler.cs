@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class CandidateHandler : MonoBehaviour
 {
@@ -27,6 +28,9 @@ public class CandidateHandler : MonoBehaviour
 
     private List<GameObject> candidateObjects;
     public string CurrentGazedText;
+    [SerializeField]
+    private float kSizeScale = 0.1f;
+    private const float kOriginalSize = 106.1f;
 
     // map btw regular keys and input string
     Dictionary<char, int> mapKey2Column = new Dictionary<char, int>()
@@ -55,8 +59,81 @@ public class CandidateHandler : MonoBehaviour
         }else if(candidateLayout == CandLayout.BYCOL)
         {
             CreateColumnLayout();
+        }else if(candidateLayout == CandLayout.WORDCLOUD) {
+            CreateWordCloudLayout();
         }
         perWidth = 0.73f;
+    }
+
+    private void CreateWordCloudLayout()
+    {
+        // let's use a 4x4 here
+        // first, we can show some candidates with high freq, but let's do it next
+        //
+        CandidateCount = 16;
+        for (int i = 0; i < CandidateCount - 1; i++) {
+            GameObject go = Instantiate(CandidatePrefab, transform);
+            go.name = "Cand" + i.ToString();
+            go.transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 1.5f, 0);
+            go.GetComponent<Candidate>().SetCandidateText("");
+            go.GetComponent<Candidate>().candidateIndex = i;
+            go.GetComponent<Candidate>().candidateHandler = this;
+            candidateObjects.Add(go);
+        }
+    }
+
+    private int[] DoCandidateShowPreviously(string[] candidates, ref List<int> availableIndices)
+    {
+        int[] result = new int[candidates.Length];
+        for (int i = 0; i < candidateObjects.Count; i++)
+            availableIndices.Add(i);
+
+        for (int i = 0; i < candidates.Length; i++) {
+            result[i] = -1;
+            for (int j = 0; j < candidateObjects.Count; j++) {
+                if(candidates[i].Equals(candidateObjects[j].GetComponent<Candidate>().pureText, StringComparison.CurrentCultureIgnoreCase)) {
+                    result[i] = j;
+                    break;
+                }
+            }
+            if (result[i] > -1)
+                availableIndices.Remove(result[i]);
+        }
+        return result;
+    }
+
+    private void UpdateWordCloudLayout(string[] candidates, string[] allCandidates, int progress)
+    {
+        // we need to update the position at the same time
+        // instead of calculate=ing the word length for both lines, and finding the longer one, let's predefine a LONG number and apply
+        int maxLength = 7;
+        CandidateWidth = perWidth * maxLength;
+        int candNum = Mathf.Min(candidates.Length, CandidateCount);
+
+        // grid layout
+        List<int> availableIndices = new List<int>();
+        int[] showPreviously = DoCandidateShowPreviously(candidates, ref availableIndices);
+
+        for (int i = 0; i < candNum; i++) {
+            // update the text, check if the candidate shows up last time, we don't apply any change
+            // 'candidates' was updated after typing, 'candidateObjects' wasn't
+            if (showPreviously[i] > -1) {
+                // shows before, only apply the new progress
+                candidateObjects[showPreviously[i]].GetComponent<Candidate>().SetCandidateText(candidates[i], progress);
+            }
+            else {
+                // find an available index in candidateObjects, find from availableIndices
+                int randIndex = availableIndices[Random.Range(0, availableIndices.Count)];
+                availableIndices.Remove(randIndex);                
+                // the position is decided during creation
+                // the size is related to where it is in allCandidates
+                float candSize = Array.IndexOf(allCandidates, candidates[i]) * kSizeScale * kOriginalSize;
+                candidateObjects[randIndex].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, candSize);
+            }
+        }
+        for (int i = candNum; i < CandidateCount; i++) {
+            candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
+        }
     }
 
     void CreateRowLayout()
@@ -327,6 +404,10 @@ public class CandidateHandler : MonoBehaviour
         }else if(candidateLayout == CandLayout.BYCOL)
         {
             UpdateByColumnCandidate(candidates, progress);
+        }else if(candidateLayout == CandLayout.WORDCLOUD) {
+            int totalNumber = 16;
+            string[] newCand = ReorgCandidates(candidates, totalNumber, completedCand);
+            UpdateWordCloudLayout(newCand, candidates, progress);
         }
     }
 
