@@ -22,7 +22,7 @@ public class CandidateHandler : MonoBehaviour
     Dictionary<int, int> fanHorizontalMap;
     List<List<string>> candidateColumns;
 
-    public enum CandLayout { ROW, FAN, BYCOL, LEXIC};
+    public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD};
     public CandLayout candidateLayout;
 
     private List<GameObject> candidateObjects;
@@ -61,7 +61,7 @@ public class CandidateHandler : MonoBehaviour
 
     void CreateRowLayout()
     {
-        CandidateCount = 11;
+        CandidateCount = 13;
         // the first one is placed in the center
         GameObject go = Instantiate(CandidatePrefab, transform);
         go.name = "Cand0";
@@ -69,12 +69,13 @@ public class CandidateHandler : MonoBehaviour
         go.GetComponent<Candidate>().candidateIndex = 0;
         go.GetComponent<Candidate>().candidateHandler = this;
         candidateObjects.Add(go);
+        CandidatePerRow = 4;
         // the rest are placed in two rows
         for (int i = 0; i < CandidateCount-1; i++)
         {
             go = Instantiate(CandidatePrefab, transform);
             go.name = "Cand" + (i + 1).ToString();
-            go.transform.localPosition = new Vector3(-8f + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 1.5f, 0);
+            go.transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 1.5f, 0);
             go.GetComponent<Candidate>().SetCandidateText("");
             go.GetComponent<Candidate>().candidateIndex = i + 1;
             go.GetComponent<Candidate>().candidateHandler = this;
@@ -207,8 +208,8 @@ public class CandidateHandler : MonoBehaviour
         // calculate the word length for both lines, find the longer one
         // or find the longest candidate, use that as the template, and re-calculate the width and place them
         int maxLength = candidates[0].Length;
-        CandidateCount = 11;
-        CandidatePerRow = 5;
+        CandidateCount = 13;
+        CandidatePerRow = 4;
         for (int i = 1; i < Mathf.Min(CandidateCount, candidates.Length); i++)
         {
             if (candidates[i].Length > maxLength)
