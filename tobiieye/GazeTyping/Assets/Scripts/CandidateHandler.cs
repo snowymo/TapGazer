@@ -113,6 +113,22 @@ public class CandidateHandler : MonoBehaviour
         return answer;
     }
 
+    int[] priorityIndices = new int[] { 5, 10, 9, 6, 0, 15, 12, 3, 1, 14, 8, 7, 2, 13, 4, 11 };
+    private int findAvailableIndex(List<int> availableIndices)
+    {
+        
+        // let's try put it in the center and then go to the side
+        // a manual order for 0-15: 5,10, 9, 6, 0, 15, 12, 3, 1,14,8,7,2,13,4,11
+        for (int i = 0; i < priorityIndices.Length; i++)
+        {
+            if(availableIndices.IndexOf(priorityIndices[i]) > -1)
+            {
+                return priorityIndices[i];
+            }
+        }
+        return -1;
+    }
+
     private void UpdateWordCloudLayout(string[] candidates, string[] allCandidates, int progress)
     {
         // we need to update the position at the same time
@@ -136,7 +152,8 @@ public class CandidateHandler : MonoBehaviour
             }
             else {
                 // find an available index in candidateObjects, find from availableIndices
-                int randIndex = availableIndices[Random.Range(0, availableIndices.Count)];
+                // instead of doing it randomly, we should have a consitent order for the index
+                int randIndex = findAvailableIndex(availableIndices);
                 availableIndices.Remove(randIndex);                
                 // the position is decided during creation
                 // the size is related to where it is in allCandidates
