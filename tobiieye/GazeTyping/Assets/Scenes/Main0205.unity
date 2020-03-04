@@ -644,8 +644,9 @@ MonoBehaviour:
   verticalScale: 1
   fanAngle: 30
   textHeight: 0.2
-  candidateLayout: 3
+  candidateLayout: 4
   CurrentGazedText: 
+  kSizeScale: 0.1
 --- !u!4 &150660574 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4715405876975706376, guid: c0899b8a8a1acb041bc1fdffe37ba80f,
@@ -2978,7 +2979,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52a82dbc4a2dc4b44ab15abbc3c81ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curTypingMode: 1
+  curTypingMode: 0
   profile: 
   wordlistLoader: {fileID: 132433878}
   dynamicHandKey: {fileID: 1008559595}

@@ -87,7 +87,7 @@ public class InputHandler : MonoBehaviour
                     handModel.PressRightFingers(i - 5);
                 helpInfo.SetActive(false);
                 // reset candidates
-                candidateHandler.ResetCandidates();
+                //candidateHandler.ResetCandidates();
                 if (inputStringTemplate[i] == "b") {
                     // delete  
                     if (currentInputLine.Length > 1) {
@@ -105,6 +105,7 @@ public class InputHandler : MonoBehaviour
                     else {
                         currentInputLine = "";
                         currentInputString = "";
+                        candidateHandler.ResetCandidates();
                     }
                 }
                 else if (inputStringTemplate[i] == "n") {
@@ -127,6 +128,7 @@ public class InputHandler : MonoBehaviour
                     measurement.UpdateTestMeasure(presented, currentInputString, curWord.Contains("=green"));
                     // flush input
                     currentInputString = "";
+                    candidateHandler.ResetCandidates();
                 }
                 else {
                     // regular input

@@ -42,7 +42,9 @@ public class Candidate : MonoBehaviour
         }
     }
 
-    public void SetCandidateText(string text, int progress = 0, float fontSize = 106.1f)
+    private const float kOriginalSize = 106.1f;
+
+    public void SetCandidateText(string text, int progress = 0, float fontSize = 1f)
     {
         // update the color of first #progress# characters to blue and the rest to red
         pureText = text;
@@ -50,8 +52,8 @@ public class Candidate : MonoBehaviour
         if(progress < text.Length)
             CandText.text += "<color=orange>" + text.Substring(progress) + "</color>";
         kWidthScale = 0.12f;
-        CandText.fontSize = fontSize;
-        planeCollider.transform.localScale = new Vector3(0.51f * text.Length * kWidthScale, planeCollider.transform.localScale.y, planeCollider.transform.localScale.z);
+        CandText.fontSize = fontSize * kOriginalSize;
+        planeCollider.transform.localScale = new Vector3(0.51f * text.Length * kWidthScale * fontSize, fontSize, planeCollider.transform.localScale.z);
     }
     
 }

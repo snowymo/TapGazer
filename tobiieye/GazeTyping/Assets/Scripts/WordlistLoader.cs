@@ -147,9 +147,9 @@ public class WordlistLoader : MonoBehaviour {
     {
         currentProgress = inputString.Length;
         // turn ";" to "p"
-        if (!wordDict.ContainsKey(inputString)) {
-            Debug.LogWarning("no candidates for " + inputString);
-        }
+        //if (!wordDict.ContainsKey(inputString)) {
+            //Debug.LogWarning("no candidates for " + inputString);
+        //}
         inputString = inputString.Replace(";", "p");
         if (!wordDict.ContainsKey(inputString)) {
             Debug.LogWarning("no candidates for " + inputString);

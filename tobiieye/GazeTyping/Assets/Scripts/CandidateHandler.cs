@@ -13,7 +13,7 @@ public class CandidateHandler : MonoBehaviour
     int CandidateCount = 11;
     float CandidateWidth; // roughly it fits for 5-character word
     float CandidateHeight = -1.5f;
-    int CandidatePerRow = 5;
+    int CandidatePerRow;
     public int GazedCandidate = 0; // index of the candidate being gazed
     float perWidth;
     public float fanRadius = 4f;
@@ -29,9 +29,8 @@ public class CandidateHandler : MonoBehaviour
     private List<GameObject> candidateObjects;
     public string CurrentGazedText;
     [SerializeField]
-    private float kSizeScale = 0.1f;
-    private const float kOriginalSize = 106.1f;
-
+    private float kSizeScale;
+    
     // map btw regular keys and input string
     Dictionary<char, int> mapKey2Column = new Dictionary<char, int>()
     {
@@ -48,7 +47,9 @@ public class CandidateHandler : MonoBehaviour
     void Start()
     {
         candidateObjects = new List<GameObject>();
-        if(candidateLayout == CandLayout.ROW)
+        perWidth = 0.73f;
+        kSizeScale = 0.15f;
+        if (candidateLayout == CandLayout.ROW)
             CreateRowLayout();
         else if(candidateLayout == CandLayout.FAN)
             updateFanLayout();
@@ -61,8 +62,7 @@ public class CandidateHandler : MonoBehaviour
             CreateColumnLayout();
         }else if(candidateLayout == CandLayout.WORDCLOUD) {
             CreateWordCloudLayout();
-        }
-        perWidth = 0.73f;
+        }        
     }
 
     private void CreateWordCloudLayout()
@@ -71,7 +71,10 @@ public class CandidateHandler : MonoBehaviour
         // first, we can show some candidates with high freq, but let's do it next
         //
         CandidateCount = 16;
-        for (int i = 0; i < CandidateCount - 1; i++) {
+        int maxLength = 9;
+        CandidatePerRow = 4;
+        CandidateWidth = perWidth * maxLength;
+        for (int i = 0; i < CandidateCount; i++) {
             GameObject go = Instantiate(CandidatePrefab, transform);
             go.name = "Cand" + i.ToString();
             go.transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 1.5f, 0);
@@ -102,24 +105,34 @@ public class CandidateHandler : MonoBehaviour
         return result;
     }
 
+    float MapIndex2Size(int index)
+    {
+        // definitely it won't be x -> x
+        // let's use 16-x for now?
+        float answer = (54.0f - index) / 54.0f * 10.0f;
+        return answer;
+    }
+
     private void UpdateWordCloudLayout(string[] candidates, string[] allCandidates, int progress)
     {
         // we need to update the position at the same time
         // instead of calculate=ing the word length for both lines, and finding the longer one, let's predefine a LONG number and apply
-        int maxLength = 7;
+        int maxLength = 9;
         CandidateWidth = perWidth * maxLength;
         int candNum = Mathf.Min(candidates.Length, CandidateCount);
 
         // grid layout
         List<int> availableIndices = new List<int>();
         int[] showPreviously = DoCandidateShowPreviously(candidates, ref availableIndices);
+        ResetCandidates();
 
         for (int i = 0; i < candNum; i++) {
             // update the text, check if the candidate shows up last time, we don't apply any change
             // 'candidates' was updated after typing, 'candidateObjects' wasn't
             if (showPreviously[i] > -1) {
                 // shows before, only apply the new progress
-                candidateObjects[showPreviously[i]].GetComponent<Candidate>().SetCandidateText(candidates[i], progress);
+                float candSize = MapIndex2Size(Array.IndexOf(allCandidates, candidates[i])) * kSizeScale;
+                candidateObjects[showPreviously[i]].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, candSize);
             }
             else {
                 // find an available index in candidateObjects, find from availableIndices
@@ -127,13 +140,10 @@ public class CandidateHandler : MonoBehaviour
                 availableIndices.Remove(randIndex);                
                 // the position is decided during creation
                 // the size is related to where it is in allCandidates
-                float candSize = Array.IndexOf(allCandidates, candidates[i]) * kSizeScale * kOriginalSize;
+                float candSize = MapIndex2Size(Array.IndexOf(allCandidates, candidates[i])) * kSizeScale;
                 candidateObjects[randIndex].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, candSize);
             }
-        }
-        for (int i = candNum; i < CandidateCount; i++) {
-            candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
-        }
+        }        
     }
 
     void CreateRowLayout()
@@ -406,33 +416,41 @@ public class CandidateHandler : MonoBehaviour
             UpdateByColumnCandidate(candidates, progress);
         }else if(candidateLayout == CandLayout.WORDCLOUD) {
             int totalNumber = 16;
-            string[] newCand = ReorgCandidates(candidates, totalNumber, completedCand);
+            string[] newCand = ReorgCandidates(candidates, totalNumber, completedCand, false);
             UpdateWordCloudLayout(newCand, candidates, progress);
         }
     }
 
-    private string[] ReorgCandidates(string[] candidates, int totalNumber, string[] completedCand)
+    private string[] ReorgCandidates(string[] candidates, int totalNumber, string[] completedCand, bool remainFirst = true)
     {
         // make sure the complete candidates are placed in candidates before totalNumber
         int completeCandNumber = completedCand.Length;
-        if(completeCandNumber == 0)
+        string[] newCand = new string[totalNumber];
+        if (completeCandNumber == 0)
         {
-            // no completed candidates then we just return candidates directly
-            return candidates;
+            // no completed candidates then we just return candidates directly            
+            if (totalNumber > candidates.Length)
+                return candidates;
+            Array.Copy(candidates, newCand, totalNumber);
+            return newCand;
         }
         // a simple trick: because all the candidates will be sorted via lexcial order later, we just need to put all the completed candidates first, and then the top (n-m) incompleted candidates
-        string[] newCand = new string[totalNumber];
-        newCand[0] = candidates[0];
-        int copyNumber = Mathf.Min(completedCand.Length, totalNumber - 1);
-        // if candidates[0] is in completedCand, we need to copy the 13th one
+        int copyNumber = Mathf.Min(completedCand.Length, totalNumber);
+        
         int completeNotFirst = -1;
-        for(int i = 0; i < copyNumber; i++)
+        if (remainFirst)
         {
-            if (completedCand[i] == newCand[0])
+            newCand[0] = candidates[0];
+            copyNumber = Mathf.Min(completedCand.Length, totalNumber - 1);
+            // if candidates[0] is in completedCand, we need to copy the 13th one
+            for (int i = 0; i < copyNumber; i++)
             {
-                completeNotFirst = i;
-                break;
-            }                
+                if (completedCand[i] == newCand[0])
+                {
+                    completeNotFirst = i;
+                    break;
+                }
+            }
         }
         int toCopy = copyNumber;
         if (completeNotFirst != -1)
@@ -451,8 +469,12 @@ public class CandidateHandler : MonoBehaviour
             //}            
         }
         else
-            Array.Copy(completedCand, 0, newCand, 1, copyNumber);
-        for (int i = toCopy + 1, j = 1; i < totalNumber; i++)
+        {
+            Array.Copy(completedCand, 0, newCand, remainFirst?1:0, copyNumber);
+            toCopy = remainFirst ? copyNumber : (copyNumber - 1);
+        }
+            
+        for (int i = toCopy + 1, j = (remainFirst? 1:0); i < totalNumber; i++)
         {
             while(j < candidates.Length && candidates[j].Length == completedCand[0].Length)
             {
