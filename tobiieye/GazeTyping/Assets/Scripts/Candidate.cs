@@ -42,7 +42,7 @@ public class Candidate : MonoBehaviour
         }
     }
 
-    private const float kOriginalSize = 106.1f;
+    private const float kOriginalSize = 120f;
 
     public void SetCandidateText(string text, int progress = 0, float fontSize = 1f)
     {
