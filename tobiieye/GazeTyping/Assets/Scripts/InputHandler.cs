@@ -95,12 +95,15 @@ public class InputHandler : MonoBehaviour
                         if (currentInputLine[currentInputLine.Length - 1] == 'n') {
                             currentTypedWords.RemoveAt(currentTypedWords.Count - 1);
                             // curTypingPhrase should move back to previous word too
-                            phraseLoader.PreviousWord();
+                            if(ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
+                                phraseLoader.PreviousWord();
                         }
                         currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1); // b won't be put inside currentLine, n will, behave as space
                         retrieveInputStringFromLine();
                         if (currentInputString.Length > 0)
                             wordListLoader.UpdateCandidates(currentInputString);
+                        else
+                            candidateHandler.ResetCandidates();
                     }
                     else {
                         currentInputLine = "";
