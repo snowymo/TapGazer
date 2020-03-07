@@ -13,7 +13,7 @@ public class ProfileLoader : MonoBehaviour
 {
     public TypingMode curTypingMode;
     public static TypingMode typingMode;
-    public string profile = "";
+    public static string profile = "";
     public WordlistLoader wordlistLoader;
     [SerializeField]
     public static Dictionary<string, string> configMap;

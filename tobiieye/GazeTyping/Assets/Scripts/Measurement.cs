@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class Measurement : MonoBehaviour
@@ -68,6 +69,11 @@ public class Measurement : MonoBehaviour
             else if(!allowInput)
                 clock.text = "<color=red>" + (finishedSeconds / 60).ToString("00") + ":" + (finishedSeconds % 60).ToString("00");
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            saveData();
+        }
     }
 
     public void AddWPM(int curWC)
@@ -107,11 +113,30 @@ public class Measurement : MonoBehaviour
         endTime = DateTime.Now;
         if ((endTime - startTime).Seconds > typingSeconds)
         {
-            allowInput = false;
-            Debug.Log("<color=blue>time is up</color>");
             finishedSeconds = (endTime - startTime).Seconds;
-            WPM = WPM / (finishedSeconds / 60.0f);            
+            WPM = WPM / (finishedSeconds / 60.0f);
+
+            saveData();
+
+            if (allowInput)
+            {
+                allowInput = false;
+                Debug.Log("<color=blue>time is up</color>");
+            }
         }
+    }
+
+    private void saveData()
+    {
+        // save to file
+        string destination = Application.dataPath + "/Resources/Participants.csv";
+        if (!File.Exists(destination))
+        {
+            File.WriteAllText(destination, "Data,Name,C,INF,IF,F,WPM\n");
+        }
+
+        //Write some text to the file
+        File.AppendAllText(destination, DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "," + ProfileLoader.profile + "," + totalC.ToString() + "," + totalINF.ToString() + "," + totalIF.ToString() + "," + totalF.ToString() + "," + WPM.ToString() + "\n");
     }
 
     private void calculateMetric()
