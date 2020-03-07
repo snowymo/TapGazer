@@ -28,8 +28,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4572935356208247668}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.13, y: 3.62, z: 23.2}
-  m_LocalScale: {x: 0.51, y: 1, z: 0.07890635}
+  m_LocalPosition: {x: -0.13, y: 3.62, z: 23}
+  m_LocalScale: {x: 0.51, y: 1, z: 0.08}
   m_Children: []
   m_Father: {fileID: 3382318313462507023}
   m_RootOrder: 0
@@ -157,6 +157,7 @@ MonoBehaviour:
   candidateIndex: 0
   candidateHandler: {fileID: 0}
   planeCollider: {fileID: 4572935356208247668}
+  pureText: 
 --- !u!1 &8919060650547770102
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,7 +186,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8919060650547770102}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 23.08}
+  m_LocalPosition: {x: 0, y: 0, z: 23}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 3382318313462507023}
@@ -295,8 +296,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 106.1
-  m_fontSizeBase: 106.1
+  m_fontSize: 120
+  m_fontSizeBase: 120
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -312,7 +313,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: -1
+  m_firstOverflowCharacterIndex: 0
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
