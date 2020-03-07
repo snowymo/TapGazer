@@ -19,6 +19,7 @@ public class ProfileLoader : MonoBehaviour
     public static Dictionary<string, string> configMap;
     int[] renderTextureIndices;
     public DynamicHandKey dynamicHandKey;
+    public Keyboard dynamicKeyColor;
 
     public GameObject regularInput, newKeyboardInput;
 
@@ -125,5 +126,6 @@ public class ProfileLoader : MonoBehaviour
         }
 
         dynamicHandKey.UpdateText();
+        dynamicKeyColor.SetFinger(configMap);
     }
 }
