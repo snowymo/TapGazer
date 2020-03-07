@@ -17,9 +17,14 @@ public class Measurement : MonoBehaviour
     [SerializeField]
     private float typingSeconds = 20;
 
+    [SerializeField]
+    private float finishedSeconds;
+
     private DateTime startTime, endTime;
 
     public bool allowInput;
+
+    public TMPro.TextMeshPro clock;
 
     // Start is called before the first frame update
     void Start()
@@ -55,6 +60,13 @@ public class Measurement : MonoBehaviour
                 IF += 1;
                 F += 1;
             }
+            // udpate the clock
+            if (allowInput &&  startTime != DateTime.MinValue)
+            {
+                clock.text = ((DateTime.Now - startTime).Seconds / 60).ToString("00") + ":" + ((DateTime.Now - startTime).Seconds % 60).ToString("00");
+            }            
+            else if(!allowInput)
+                clock.text = "<color=red>" + (finishedSeconds / 60).ToString("00") + ":" + (finishedSeconds % 60).ToString("00");
         }
     }
 
@@ -97,7 +109,8 @@ public class Measurement : MonoBehaviour
         {
             allowInput = false;
             Debug.Log("<color=blue>time is up</color>");
-            WPM = WPM / ((endTime - startTime).Seconds / 60.0f);
+            finishedSeconds = (endTime - startTime).Seconds;
+            WPM = WPM / (finishedSeconds / 60.0f);            
         }
     }
 
