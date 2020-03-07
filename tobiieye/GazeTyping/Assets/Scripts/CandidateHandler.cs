@@ -48,7 +48,7 @@ public class CandidateHandler : MonoBehaviour
     {
         candidateObjects = new List<GameObject>();
         perWidth = 0.73f;
-        kSizeScale = 0.15f;
+        kSizeScale = 1f;
         if (candidateLayout == CandLayout.ROW)
             CreateRowLayout();
         else if(candidateLayout == CandLayout.FAN)
@@ -109,7 +109,9 @@ public class CandidateHandler : MonoBehaviour
     {
         // definitely it won't be x -> x
         // let's use 16-x for now?
-        float answer = (54.0f - index) / 54.0f * 10.0f;
+        index = Mathf.Min(15, index);
+        //float answer = (54.0f - index) / 54.0f * 10.0f;
+        float answer = 200.0f - index * 8.5f;
         return answer;
     }
 
