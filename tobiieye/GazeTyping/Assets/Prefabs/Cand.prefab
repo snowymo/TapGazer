@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 4572935356208247668}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: -0.13, y: 3.62, z: 23}
-  m_LocalScale: {x: 0.51, y: 1, z: 0.08}
+  m_LocalScale: {x: 0.66, y: 1, z: 0.08}
   m_Children: []
   m_Father: {fileID: 3382318313462507023}
   m_RootOrder: 0
@@ -158,6 +158,7 @@ MonoBehaviour:
   candidateHandler: {fileID: 0}
   planeCollider: {fileID: 4572935356208247668}
   pureText: 
+  firstOverflowCharacterIndex: 0
 --- !u!1 &8919060650547770102
 GameObject:
   m_ObjectHideFlags: 0
@@ -195,7 +196,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 3.57}
-  m_SizeDelta: {x: 200, y: 12}
+  m_SizeDelta: {x: 70, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &665309847472960475
 MeshRenderer:
@@ -313,7 +314,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 0
+  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0

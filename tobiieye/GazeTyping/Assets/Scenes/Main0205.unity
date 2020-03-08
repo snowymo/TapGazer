@@ -644,7 +644,7 @@ MonoBehaviour:
   verticalScale: 1
   fanAngle: 30
   textHeight: 0.2
-  candidateLayout: 4
+  candidateLayout: 3
   CurrentGazedText: 
   kSizeScale: 0.1
 --- !u!4 &150660574 stripped
@@ -816,6 +816,7 @@ MonoBehaviour:
   CER: 0
   WPM: 0
   typingSeconds: 20
+  finishedSeconds: 0
   allowInput: 0
   clock: {fileID: 579708453}
 --- !u!1 &289590119
@@ -3185,7 +3186,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curTypingMode: 1
-  profile: 
   wordlistLoader: {fileID: 132433878}
   dynamicHandKey: {fileID: 1008559595}
   dynamicKeyColor: {fileID: 1130148186}

@@ -71,13 +71,14 @@ public class CandidateHandler : MonoBehaviour
         // first, we can show some candidates with high freq, but let's do it next
         //
         CandidateCount = 16;
-        int maxLength = 9;
+        int maxLength = 10;
         CandidatePerRow = 4;
+        perWidth = 0.75f;
         CandidateWidth = perWidth * maxLength;
         for (int i = 0; i < CandidateCount; i++) {
             GameObject go = Instantiate(CandidatePrefab, transform);
             go.name = "Cand" + i.ToString();
-            go.transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 1.5f, 0);
+            go.transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 2.5f, 0);
             go.GetComponent<Candidate>().SetCandidateText("");
             go.GetComponent<Candidate>().candidateIndex = i;
             go.GetComponent<Candidate>().candidateHandler = this;
