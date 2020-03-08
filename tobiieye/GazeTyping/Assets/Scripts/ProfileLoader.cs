@@ -28,11 +28,16 @@ public class ProfileLoader : MonoBehaviour
     // regular is regular keyboard + keep typing
     public enum TypingMode { TRAINING, TEST, REGULAR}; 
 
+    public enum InputMode { KEYBOARD, TOUCH};
+    public static InputMode inputMode;
+    public InputMode curInputMode;
+
     // Start is called before the first frame update
     void Awake()
     {
         wordlistLoader.wordlistPath = "30k-result" + profile + ".json";
         typingMode = curTypingMode;
+        inputMode = curInputMode;
         Debug.Log("typing mode:" + typingMode);
         loadConfigFile();
         updateRenderTexture();

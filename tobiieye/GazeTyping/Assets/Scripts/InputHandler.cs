@@ -26,6 +26,8 @@ public class InputHandler : MonoBehaviour
 
     public Measurement measurement;
 
+    public Network tcpNetwork;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -52,6 +54,7 @@ public class InputHandler : MonoBehaviour
             ++cprev;
             regularInputString[i] = cprev.ToString();
         }
+        tcpNetwork.ConnectServer();
     }
 
     private void updateDisplayInput()
@@ -72,6 +75,86 @@ public class InputHandler : MonoBehaviour
     {
         int index = currentInputLine.LastIndexOf('n');
         currentInputString = currentInputLine.Substring(index+1);
+    }
+
+    public void HandleTouchInput()
+    {
+        // receive tcp package from c++ sensel
+        // parsing the msg to know which is up which is down or nothing happened
+        // assign it to somewhere so HandleNewKeyboard could use that
+        string curMessage;
+        while(tcpNetwork.serverMessages.TryDequeue(out curMessage)) {
+            // deal with this curMessage
+            //Debug.Log("from msg queue:" + curMessage);
+            int index = System.Array.IndexOf(inputStringTemplate, curMessage);
+            if (index == -1)
+                continue;
+            if (index < 5)
+                handModel.PressLeftFingers(index);
+            else
+                handModel.PressRightFingers(index - 5);
+            helpInfo.SetActive(false);
+            switch (index) {
+            case 4:
+                // b
+                // delete  
+                if (currentInputLine.Length > 1) {
+                    // if delete 'n', we need to remove the last typed word
+                    if (currentInputLine[currentInputLine.Length - 1] == 'n') {
+                        currentTypedWords.RemoveAt(currentTypedWords.Count - 1);
+                        // curTypingPhrase should move back to previous word too
+                        if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
+                            phraseLoader.PreviousWord();
+                    }
+                    currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1); // b won't be put inside currentLine, n will, behave as space
+                    retrieveInputStringFromLine();
+                    if (currentInputString.Length > 0)
+                        wordListLoader.UpdateCandidates(currentInputString);
+                    else
+                        candidateHandler.ResetCandidates();
+                }
+                else {
+                    currentInputLine = "";
+                    currentInputString = "";
+                    candidateHandler.ResetCandidates();
+                }
+                break;
+            case 5:
+                // n
+                {
+                    string presented = phraseLoader.GetCurWord();
+                    // enter
+                    currentInputLine += 'n';
+                    string curWord = "null";
+                    if (wordListLoader.currentCandidates.Length > 0 && wordListLoader.currentCandidates[0] != null) {
+                        curWord = candidateHandler.CurrentGazedText == "" ? wordListLoader.currentCandidates[0] : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result                        
+                    }
+                    // check if correct
+                    curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
+                    Debug.Log("cur word:" + curWord);
+                    currentTypedWords.Add(curWord);
+                    // pass corredsponding parameter to measurement
+                    // currentInputString is the input stream for current word, without 'n'
+                    // candidateHandler.GazedCandidate is the index of the candidates
+                    // the combination of the currentInputString and index is the entire input of the transribed=C+INF, presented is retrieved from PhraseLoader
+                    // the correct index of the candidates, we'd better find a way to get index from wordListLoader.currentCandidates
+                    measurement.UpdateTestMeasure(presented, currentInputString, curWord.Contains("=green"));
+                    // flush input
+                    currentInputString = "";
+                    candidateHandler.ResetCandidates();
+                }
+                break;
+            default:
+                // regular input
+                measurement.StartClock();
+                currentInputLine += mapInput2InputString[curMessage];
+                retrieveInputStringFromLine();
+                Debug.Log("input string:" + currentInputString);
+                wordListLoader.UpdateCandidates(currentInputString);
+                break;
+            }
+            updateDisplayInput();
+        }
     }
 
     private void HandleNewKeyboard()
@@ -184,14 +267,19 @@ public class InputHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR) {
+        if(ProfileLoader.inputMode == ProfileLoader.InputMode.KEYBOARD) {
+            if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR) {
 
+            }
+            else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TRAINING) {
+                HandleNewKeyboard();
+            }
+            else if (measurement.allowInput) {
+                HandleNewKeyboard();
+            }
         }
-        else if(ProfileLoader.typingMode == ProfileLoader.TypingMode.TRAINING) {
-            HandleNewKeyboard();
-        }
-        else if(measurement.allowInput){
-            HandleNewKeyboard();
-        }
+        else {
+            HandleTouchInput();
+        }        
     }
 }
