@@ -30,6 +30,8 @@ public class CandidateHandler : MonoBehaviour
     public string CurrentGazedText;
     [SerializeField]
     private float kSizeScale;
+
+    public bool isEllipsis;
     
     // map btw regular keys and input string
     Dictionary<char, int> mapKey2Column = new Dictionary<char, int>()
@@ -46,6 +48,7 @@ public class CandidateHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        isEllipsis = false;
         candidateObjects = new List<GameObject>();
         perWidth = 0.73f;
         kSizeScale = 1f;
@@ -151,7 +154,7 @@ public class CandidateHandler : MonoBehaviour
             if (showPreviously[i] > -1) {
                 // shows before, only apply the new progress
                 float candSize = MapIndex2Size(Array.IndexOf(allCandidates, candidates[i])) * kSizeScale;
-                candidateObjects[showPreviously[i]].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, candSize);
+                candidateObjects[showPreviously[i]].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, candSize, isEllipsis);
             }
             else {
                 // find an available index in candidateObjects, find from availableIndices
@@ -161,7 +164,7 @@ public class CandidateHandler : MonoBehaviour
                 // the position is decided during creation
                 // the size is related to where it is in allCandidates
                 float candSize = MapIndex2Size(Array.IndexOf(allCandidates, candidates[i])) * kSizeScale;
-                candidateObjects[randIndex].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, candSize);
+                candidateObjects[randIndex].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, candSize, isEllipsis);
             }
         }        
     }

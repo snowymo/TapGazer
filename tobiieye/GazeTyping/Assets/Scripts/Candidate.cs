@@ -46,7 +46,7 @@ public class Candidate : MonoBehaviour
     private const float kOriginalZScale = 0.08f;
     public float firstOverflowCharacterIndex;
 
-    public void SetCandidateText(string text, int progress = 0, float fontSize = kOriginalSize)
+    public void SetCandidateText(string text, int progress = 0, float fontSize = kOriginalSize, bool isEllipsis = false)
     {
         // update the color of first #progress# characters to blue and the rest to red
         pureText = text;
@@ -57,7 +57,10 @@ public class Candidate : MonoBehaviour
         CandText.fontSize = fontSize;
         planeCollider.transform.localScale = new Vector3(0.51f * text.Length * kWidthScale * fontSize/ kOriginalSize, planeCollider.transform.localScale.y, fontSize / kOriginalSize * kOriginalZScale);
         firstOverflowCharacterIndex = CandText.characterWidthAdjustment;
-        StartCoroutine(checkReverseEllipsis(text, progress));
+        if (isEllipsis)
+            StartCoroutine(checkReverseEllipsis(text, progress));
+        else
+            CandText.enableWordWrapping = false;
     }
 
     IEnumerator checkReverseEllipsis(string text, int progress)

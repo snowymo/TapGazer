@@ -644,7 +644,7 @@ MonoBehaviour:
   verticalScale: 1
   fanAngle: 30
   textHeight: 0.2
-  candidateLayout: 3
+  candidateLayout: 4
   CurrentGazedText: 
   kSizeScale: 0.1
 --- !u!4 &150660574 stripped
