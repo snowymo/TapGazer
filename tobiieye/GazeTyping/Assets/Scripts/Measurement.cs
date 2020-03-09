@@ -64,7 +64,7 @@ public class Measurement : MonoBehaviour
             // udpate the clock
             if (allowInput &&  startTime != DateTime.MinValue)
             {
-                clock.text = ((DateTime.Now - startTime).Seconds / 60).ToString("00") + ":" + ((DateTime.Now - startTime).Seconds % 60).ToString("00");
+                clock.text = ((DateTime.Now - startTime).Minutes).ToString("00") + ":" + ((DateTime.Now - startTime).Seconds % 60).ToString("00");
             }            
             else if(!allowInput)
                 clock.text = "<color=red>" + (finishedSeconds / 60).ToString("00") + ":" + (finishedSeconds % 60).ToString("00");
@@ -111,9 +111,9 @@ public class Measurement : MonoBehaviour
         calculateMetric();
         //WPM += 1;// it is possible user deleted words
         endTime = DateTime.Now;
-        if ((endTime - startTime).Seconds > typingSeconds)
+        finishedSeconds = (endTime - startTime).Minutes * 60.0f + (endTime - startTime).Seconds;
+        if (finishedSeconds > typingSeconds)
         {
-            finishedSeconds = (endTime - startTime).Seconds;
             WPM = WPM / (finishedSeconds / 60.0f);
 
             saveData();
@@ -177,11 +177,12 @@ public class Measurement : MonoBehaviour
                 calculateMetric();
                 WPM += correctString.Split(new char[] { ' ' }).Length;
                 endTime = DateTime.Now;
-                if ((endTime - startTime).Seconds > typingSeconds)
+                finishedSeconds = (endTime - startTime).Minutes * 60.0f + (endTime - startTime).Seconds;
+                if (finishedSeconds > typingSeconds)
                 {
                     allowInput = false;
                     inputField.enabled = false;
-                    WPM = WPM / ((endTime - startTime).Seconds / 60.0f);
+                    WPM = WPM / (finishedSeconds / 60.0f);
                 }
             }
         }        

@@ -54,7 +54,8 @@ public class InputHandler : MonoBehaviour
             ++cprev;
             regularInputString[i] = cprev.ToString();
         }
-        tcpNetwork.ConnectServer();
+        if(ProfileLoader.inputMode == ProfileLoader.InputMode.TOUCH)
+            tcpNetwork.ConnectServer();
     }
 
     private void updateDisplayInput()
@@ -221,7 +222,7 @@ public class InputHandler : MonoBehaviour
                     measurement.StartClock();
                     currentInputLine += mapInput2InputString[inputStringTemplate[i]];
                     retrieveInputStringFromLine();
-                    Debug.Log("input string:" + currentInputString);
+                    //Debug.Log("input string:" + currentInputString);
                     wordListLoader.UpdateCandidates(currentInputString);
                 }
                 break;
@@ -279,7 +280,8 @@ public class InputHandler : MonoBehaviour
             }
         }
         else {
-            HandleTouchInput();
+            if (measurement.allowInput)
+                HandleTouchInput();
         }        
     }
 }

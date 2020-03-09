@@ -58,7 +58,10 @@ public class Candidate : MonoBehaviour
         planeCollider.transform.localScale = new Vector3(0.51f * text.Length * kWidthScale * fontSize/ kOriginalSize, planeCollider.transform.localScale.y, fontSize / kOriginalSize * kOriginalZScale);
         firstOverflowCharacterIndex = CandText.characterWidthAdjustment;
         if (isEllipsis)
+        {
+            CandText.enableWordWrapping = true;
             StartCoroutine(checkReverseEllipsis(text, progress));
+        }            
         else
             CandText.enableWordWrapping = false;
     }

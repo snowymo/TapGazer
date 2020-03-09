@@ -816,7 +816,7 @@ MonoBehaviour:
   NCER: 0
   CER: 0
   WPM: 0
-  typingSeconds: 20
+  typingSeconds: 60
   finishedSeconds: 0
   allowInput: 0
   clock: {fileID: 579708453}
@@ -3298,7 +3298,7 @@ MonoBehaviour:
   dynamicKeyColor: {fileID: 1130148186}
   regularInput: {fileID: 1699447645}
   newKeyboardInput: {fileID: 1057379355}
-  curInputMode: 1
+  curInputMode: 0
 --- !u!4 &840372617
 Transform:
   m_ObjectHideFlags: 0

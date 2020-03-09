@@ -73,6 +73,7 @@ public class CandidateHandler : MonoBehaviour
         // let's use a 4x4 here
         // first, we can show some candidates with high freq, but let's do it next
         //
+        isEllipsis = true;
         CandidateCount = 16;
         int maxLength = 10;
         CandidatePerRow = 4;
