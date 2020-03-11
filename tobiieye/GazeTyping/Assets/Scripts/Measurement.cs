@@ -16,7 +16,7 @@ public class Measurement : MonoBehaviour
     private float totalC, totalINF, totalIF, totalF, MSD, KSPC, CE, PC, NCER, CER, WPM;
 
     [SerializeField]
-    private float typingSeconds = 20;
+    private float typingSeconds;
 
     [SerializeField]
     private float finishedSeconds;
@@ -34,6 +34,17 @@ public class Measurement : MonoBehaviour
     {
         startTime = DateTime.MinValue;
         allowInput = true;
+        if(ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR)
+        {
+            typingSeconds = 60;
+        }else if(ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
+        {
+            typingSeconds = 300;
+        }
+        else
+        {
+            typingSeconds = 600;
+        }
     }
 
     public void AddInputStream(string inputStream)
@@ -63,14 +74,14 @@ public class Measurement : MonoBehaviour
                 IF += 1;
                 F += 1;
             }
-            // udpate the clock
-            if (allowInput &&  startTime != DateTime.MinValue)
-            {
-                clock.text = ((DateTime.Now - startTime).Minutes).ToString("00") + ":" + ((DateTime.Now - startTime).Seconds % 60).ToString("00");
-            }            
-            else if(!allowInput)
-                clock.text = "<color=red>" + (finishedSeconds / 60).ToString("00") + ":" + (finishedSeconds % 60).ToString("00");
         }
+        // udpate the clock
+        if (allowInput && startTime != DateTime.MinValue)
+        {
+            clock.text = ((DateTime.Now - startTime).Minutes).ToString("00") + ":" + ((DateTime.Now - startTime).Seconds % 60).ToString("00");
+        }
+        else if (!allowInput)
+            clock.text = "<color=red>" + (finishedSeconds / 60).ToString("00") + ":" + (finishedSeconds % 60).ToString("00");
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -184,9 +195,11 @@ public class Measurement : MonoBehaviour
                 finishedSeconds = (endTime - startTime).Minutes * 60.0f + (endTime - startTime).Seconds;
                 if (finishedSeconds > typingSeconds)
                 {
+                    Debug.Log("time is up");
                     allowInput = false;
                     inputField.enabled = false;
                     WPM = WPM / (finishedSeconds / 60.0f);
+                    saveData();
                 }
             }
         }        
