@@ -27,6 +27,8 @@ public class Measurement : MonoBehaviour
 
     public TMPro.TextMeshPro clock;
 
+    public CandidateHandler candidateHandler;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -136,7 +138,9 @@ public class Measurement : MonoBehaviour
         }
 
         //Write some text to the file
-        File.AppendAllText(destination, DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "," + ProfileLoader.profile + "," + totalC.ToString() + "," + totalINF.ToString() + "," + totalIF.ToString() + "," + totalF.ToString() + "," + WPM.ToString() + "\n");
+        // name should include profile (aka user name), mode (regular, or test), layout and session
+        string name = ProfileLoader.profile + "-" + ProfileLoader.typingMode.ToString() + "-" + candidateHandler.candidateLayout.ToString() + "-" + ProfileLoader.session_number.ToString();
+        File.AppendAllText(destination, DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "," + name + "," + totalC.ToString() + "," + totalINF.ToString() + "," + totalIF.ToString() + "," + totalF.ToString() + "," + WPM.ToString() + "\n");
     }
 
     private void calculateMetric()

@@ -215,9 +215,9 @@ public class Network : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.S)) {
-            // send
-            SendNetworkMessage(testMessage);
-        }
+        //if (Input.GetKeyDown(KeyCode.S)) {
+        //    // send
+        //    SendNetworkMessage(testMessage);
+        //}
     }
 }

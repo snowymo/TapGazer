@@ -820,6 +820,7 @@ MonoBehaviour:
   finishedSeconds: 0
   allowInput: 0
   clock: {fileID: 579708453}
+  candidateHandler: {fileID: 132433879}
 --- !u!1 &289590119
 GameObject:
   m_ObjectHideFlags: 0
@@ -3292,7 +3293,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52a82dbc4a2dc4b44ab15abbc3c81ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curTypingMode: 1
+  curTypingMode: 2
+  curSessionNumber: 1
   wordlistLoader: {fileID: 132433878}
   dynamicHandKey: {fileID: 1008559595}
   dynamicKeyColor: {fileID: 1130148186}

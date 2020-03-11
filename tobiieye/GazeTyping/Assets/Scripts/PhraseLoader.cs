@@ -101,13 +101,13 @@ public class PhraseLoader : MonoBehaviour
         }
         currentTypedWords = curTyping.Split(new char[] { ' ' });
         curTypingPhrase = currentTypedWords.Length;
-        Debug.Log("curTypingPhrase:" + curTypingPhrase);
+        //Debug.Log("curTypingPhrase:" + curTypingPhrase);
 
         string curText = phrases[curPhraseIndex];
         curPhrases = curText.Split(new char[] { ' ' });
         
         string newText = "", arrowText = "";
-        Debug.Log("doCheck:" + doCheck);
+        //Debug.Log("doCheck:" + doCheck);
         curTypingPhrase = doCheck ? curTypingPhrase : curTypingPhrase - 1;
         for (int wordIndex = 0; wordIndex < curTypingPhrase; wordIndex++) {
             bool curResult = currentTypedWords[wordIndex].Equals(curPhrases[wordIndex], System.StringComparison.InvariantCultureIgnoreCase);
