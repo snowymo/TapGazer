@@ -18,6 +18,7 @@ public class PhraseLoader : MonoBehaviour
     public string phrasePath;
 
     public Measurement measurement;
+    public CandidateHandler candidateHandler;
 
     public string GetCurPhrase()
     {
@@ -62,7 +63,21 @@ public class PhraseLoader : MonoBehaviour
                 phrases[t++] = line;
             }
         }
+        // curPhraseIndex is decided by mode, layout, and session
         curPhraseIndex = 0;
+        if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR)
+            curPhraseIndex = 0;
+        else if(ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
+        {
+            if(candidateHandler.candidateLayout == CandidateHandler.CandLayout.ROW)
+            {
+                curPhraseIndex = ProfileLoader.session_number * 100; // 100 or 200
+            }
+            else if(candidateHandler.candidateLayout == CandidateHandler.CandLayout.WORDCLOUD)
+            {
+                curPhraseIndex = 200 + ProfileLoader.session_number * 100; // 300 or 400
+            }
+        }
         curTypingPhrase = 0;
         UpdatePhrase();
     }
