@@ -207,14 +207,15 @@ public class PhraseLoader : MonoBehaviour
         else if(typingMode == ProfileLoader.TypingMode.TEST) {
             bool result = candidate.Equals(curPhrases[curTypingPhrase], System.StringComparison.InvariantCultureIgnoreCase);
             if (curTypingPhrase < (curPhrases.Length - 1)) {
+                measurement.AddWPM(curPhrases[curTypingPhrase].Length);
                 // move to next word
-                ++curTypingPhrase;
+                ++curTypingPhrase;                
                 Debug.Log("next word");
             }
             else {
                 // move to next phrase
                 Debug.Log("next phrase");
-                measurement.AddWPM(curTypingPhrase+1);
+                measurement.AddWPM(curPhrases[curTypingPhrase].Length);
                 NextPhrases();
             }
             ColorCurrentTypingPhrase(typingMode);

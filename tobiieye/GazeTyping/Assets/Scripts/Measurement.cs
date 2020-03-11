@@ -143,7 +143,7 @@ public class Measurement : MonoBehaviour
         finishedSeconds = (endTime - startTime).Minutes * 60.0f + (endTime - startTime).Seconds;
         if (finishedSeconds > typingSeconds)
         {
-            WPM = (WPM-1f) / (finishedSeconds / 60.0f) / 5.0f;
+            WPM = (WPM-1f) / finishedSeconds * 60.0f / 5.0f;
 
             saveData();
 

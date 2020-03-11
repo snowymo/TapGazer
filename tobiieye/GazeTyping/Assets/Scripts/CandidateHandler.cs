@@ -82,7 +82,7 @@ public class CandidateHandler : MonoBehaviour
         for (int i = 0; i < CandidateCount; i++) {
             GameObject go = Instantiate(CandidatePrefab, transform);
             go.name = "Cand" + i.ToString();
-            go.transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 2.5f, 0);
+            go.transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * (CandidateHeight-0.5f) - 2.5f, 0);
             go.GetComponent<Candidate>().SetCandidateText("");
             go.GetComponent<Candidate>().candidateIndex = i;
             go.GetComponent<Candidate>().candidateHandler = this;
