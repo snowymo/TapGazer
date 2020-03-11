@@ -110,6 +110,7 @@ public class Measurement : MonoBehaviour
                 C += 1;
         }
         INF = transribed.Length- C;
+        C += 1; // count the space
         if (isGazeCorrect)
             C += 1;
         else
@@ -157,6 +158,7 @@ public class Measurement : MonoBehaviour
     private void calculateMetric()
     {
         // calculate the measurement
+        totalC -= 1; // remove the last 'space
         MSD = (totalINF / (totalC + totalINF));
         KSPC = (totalC + totalINF + totalIF + totalF) / (totalC + totalINF);
         if (totalF != 0) CE = totalIF / totalF;
