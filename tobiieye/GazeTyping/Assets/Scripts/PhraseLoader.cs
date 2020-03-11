@@ -210,11 +210,11 @@ public class PhraseLoader : MonoBehaviour
                 measurement.AddWPM(curPhrases[curTypingPhrase].Length);
                 // move to next word
                 ++curTypingPhrase;                
-                Debug.Log("next word");
+                //Debug.Log("next word");
             }
             else {
                 // move to next phrase
-                Debug.Log("next phrase");
+                //Debug.Log("next phrase");
                 measurement.AddWPM(curPhrases[curTypingPhrase].Length);
                 NextPhrases();
             }

@@ -76,16 +76,16 @@ public class Candidate : MonoBehaviour
             //string newtext = "..." + text.Substring(text.Length - CandText.textInfo.lineInfo[0].characterCount+2, CandText.textInfo.lineInfo[0].characterCount-2);
             // udpate the text
             int remainingTypedWords = Mathf.Max(0, Mathf.Min(text.Length - toremove, progress - toremove));
-            Debug.Log("toremove " + toremove + " remain typed words " + Mathf.Min(text.Length - toremove, progress - toremove));
+            //Debug.Log("toremove " + toremove + " remain typed words " + Mathf.Min(text.Length - toremove, progress - toremove));
             CandText.text = "<color=blue>.." + text.Substring(toremove, remainingTypedWords) + "</color>";
             if (progress < text.Length) {
                 CandText.text += "<color=orange>" + text.Substring(toremove + remainingTypedWords) + "</color>";
             }                
         }
-        Debug.Log(CandText.text + ":" + CandText.textInfo.lineCount + ":" + CandText.textInfo.lineInfo[0].characterCount);
-        if (CandText.textInfo.lineCount > 1) {
-            Debug.Log(CandText.text + CandText.textInfo.lineInfo[1].firstCharacterIndex);
-        }
+        //Debug.Log(CandText.text + ":" + CandText.textInfo.lineCount + ":" + CandText.textInfo.lineInfo[0].characterCount);
+        //if (CandText.textInfo.lineCount > 1) {
+        //    Debug.Log(CandText.text + CandText.textInfo.lineInfo[1].firstCharacterIndex);
+        //}
     }
 
     // XXX operating in no overflow (Horizonal|Vertical)

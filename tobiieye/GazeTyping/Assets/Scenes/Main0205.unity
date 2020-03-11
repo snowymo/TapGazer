@@ -3297,7 +3297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curTypingMode: 1
-  curProfile: sherry
+  curProfile: xiangyu
   curSessionNumber: 2
   wordlistLoader: {fileID: 132433878}
   dynamicHandKey: {fileID: 1008559595}

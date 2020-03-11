@@ -205,7 +205,7 @@ public class InputHandler : MonoBehaviour
                     }
                     // check if correct
                     curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
-                    Debug.Log("cur word:" + curWord);
+                    //Debug.Log("cur word:" + curWord);
                     currentTypedWords.Add(curWord);
                     // pass corredsponding parameter to measurement
                     // currentInputString is the input stream for current word, without 'n'

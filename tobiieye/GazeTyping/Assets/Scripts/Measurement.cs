@@ -123,7 +123,7 @@ public class Measurement : MonoBehaviour
             if (isGazeCorrect)
                 correctGazeSelection += 1;
         }
-        Debug.LogWarning("gaze accuracy:" + correctGazeSelection + "/" + totalGazeSelection);
+        //Debug.LogWarning("gaze accuracy:" + correctGazeSelection + "/" + totalGazeSelection);
         INF = transribed.Length- C;
         C += 1; // count the space
         if (isGazeCorrect)
