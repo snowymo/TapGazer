@@ -14,6 +14,9 @@ public class ProfileLoader : MonoBehaviour
     public TypingMode curTypingMode;
     public static TypingMode typingMode;
     public static string profile = "";
+    public string curProfile;
+    public static int session_number;
+    public int curSessionNumber;
     public WordlistLoader wordlistLoader;
     [SerializeField]
     public static Dictionary<string, string> configMap;
@@ -35,9 +38,11 @@ public class ProfileLoader : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        profile = curProfile;
         wordlistLoader.wordlistPath = "30k-result" + profile + ".json";
         typingMode = curTypingMode;
         inputMode = curInputMode;
+        session_number = curSessionNumber;
         Debug.Log("typing mode:" + typingMode);
         loadConfigFile();
         updateRenderTexture();

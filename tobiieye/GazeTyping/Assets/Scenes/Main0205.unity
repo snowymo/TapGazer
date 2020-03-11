@@ -816,10 +816,13 @@ MonoBehaviour:
   NCER: 0
   CER: 0
   WPM: 0
+  totalGazeSelection: 0
+  correctGazeSelection: 0
   typingSeconds: 60
   finishedSeconds: 0
   allowInput: 0
   clock: {fileID: 579708453}
+  candidateHandler: {fileID: 132433879}
 --- !u!1 &289590119
 GameObject:
   m_ObjectHideFlags: 0
@@ -1044,6 +1047,7 @@ MonoBehaviour:
   curPhrases: []
   phrasePath: phrases2.txt
   measurement: {fileID: 257319247}
+  candidateHandler: {fileID: 132433879}
 --- !u!1 &318798826
 GameObject:
   m_ObjectHideFlags: 0
@@ -3293,6 +3297,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curTypingMode: 1
+  curProfile: ziyu
+  curSessionNumber: 1
   wordlistLoader: {fileID: 132433878}
   dynamicHandKey: {fileID: 1008559595}
   dynamicKeyColor: {fileID: 1130148186}

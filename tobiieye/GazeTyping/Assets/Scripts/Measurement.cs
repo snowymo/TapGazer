@@ -14,9 +14,11 @@ public class Measurement : MonoBehaviour
 
     [SerializeField]
     private float totalC, totalINF, totalIF, totalF, MSD, KSPC, CE, PC, NCER, CER, WPM;
+    [SerializeField]
+    private float totalGazeSelection, correctGazeSelection;
 
     [SerializeField]
-    private float typingSeconds = 20;
+    private float typingSeconds;
 
     [SerializeField]
     private float finishedSeconds;
@@ -27,11 +29,27 @@ public class Measurement : MonoBehaviour
 
     public TMPro.TextMeshPro clock;
 
+    public CandidateHandler candidateHandler;
+
+
     // Start is called before the first frame update
     void Start()
     {
         startTime = DateTime.MinValue;
         allowInput = true;
+        if(ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR)
+        {
+            typingSeconds = 60;
+        }else if(ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
+        {
+            typingSeconds = 300;
+        }
+        else
+        {
+            typingSeconds = 600;
+        }
+        totalGazeSelection = 0;
+        correctGazeSelection = 0;
     }
 
     public void AddInputStream(string inputStream)
@@ -61,14 +79,14 @@ public class Measurement : MonoBehaviour
                 IF += 1;
                 F += 1;
             }
-            // udpate the clock
-            if (allowInput &&  startTime != DateTime.MinValue)
-            {
-                clock.text = ((DateTime.Now - startTime).Minutes).ToString("00") + ":" + ((DateTime.Now - startTime).Seconds % 60).ToString("00");
-            }            
-            else if(!allowInput)
-                clock.text = "<color=red>" + (finishedSeconds / 60).ToString("00") + ":" + (finishedSeconds % 60).ToString("00");
         }
+        // udpate the clock
+        if (allowInput && startTime != DateTime.MinValue)
+        {
+            clock.text = ((DateTime.Now - startTime).Minutes).ToString("00") + ":" + ((DateTime.Now - startTime).Seconds % 60).ToString("00");
+        }
+        else if (!allowInput)
+            clock.text = "<color=red>" + (finishedSeconds / 60).ToString("00") + ":" + (finishedSeconds % 60).ToString("00");
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -78,7 +96,7 @@ public class Measurement : MonoBehaviour
 
     public void AddWPM(int curWC)
     {
-        WPM += curWC;
+        WPM += curWC+1; // including the 'n' key, aka space
     }
 
     public void StartClock()
@@ -91,12 +109,23 @@ public class Measurement : MonoBehaviour
     {
         // handle presented, from words to inputString
         C = 0;
+        bool isCurrentTypingCorrect = true;
         for(int i = 0; i < Mathf.Min(presented.Length, transribed.Length); i++)
         {
             if (transribed[i] == (ProfileLoader.configMap[presented[i].ToString()][0]))
                 C += 1;
+            else
+                isCurrentTypingCorrect = false;
         }
+        if (isCurrentTypingCorrect)
+        {
+            totalGazeSelection += 1;
+            if (isGazeCorrect)
+                correctGazeSelection += 1;
+        }
+        Debug.LogWarning("gaze accuracy:" + correctGazeSelection + "/" + totalGazeSelection);
         INF = transribed.Length- C;
+        C += 1; // count the space
         if (isGazeCorrect)
             C += 1;
         else
@@ -114,7 +143,7 @@ public class Measurement : MonoBehaviour
         finishedSeconds = (endTime - startTime).Minutes * 60.0f + (endTime - startTime).Seconds;
         if (finishedSeconds > typingSeconds)
         {
-            WPM = WPM / (finishedSeconds / 60.0f);
+            WPM = (WPM-1f) / (finishedSeconds / 60.0f) / 5.0f;
 
             saveData();
 
@@ -132,16 +161,20 @@ public class Measurement : MonoBehaviour
         string destination = Application.dataPath + "/Resources/Participants.csv";
         if (!File.Exists(destination))
         {
-            File.WriteAllText(destination, "Data,Name,C,INF,IF,F,WPM\n");
+            File.WriteAllText(destination, "Data,Name,C,INF,IF,F,WPM, Correct Gaze, Total Gaze\n");
         }
 
         //Write some text to the file
-        File.AppendAllText(destination, DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "," + ProfileLoader.profile + "," + totalC.ToString() + "," + totalINF.ToString() + "," + totalIF.ToString() + "," + totalF.ToString() + "," + WPM.ToString() + "\n");
+        // name should include profile (aka user name), mode (regular, or test), layout and session
+        string name = ProfileLoader.profile + "-" + ProfileLoader.typingMode.ToString() + "-" + candidateHandler.candidateLayout.ToString() + "-" + ProfileLoader.session_number.ToString();
+        File.AppendAllText(destination, DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "," + name + "," + totalC.ToString() + "," + totalINF.ToString() + "," + totalIF.ToString() + "," + totalF.ToString() + "," + WPM.ToString() + ","
+            + correctGazeSelection.ToString() + "," + totalGazeSelection.ToString() + "\n");
     }
 
     private void calculateMetric()
     {
         // calculate the measurement
+        totalC -= 1; // remove the last 'space
         MSD = (totalINF / (totalC + totalINF));
         KSPC = (totalC + totalINF + totalIF + totalF) / (totalC + totalINF);
         if (totalF != 0) CE = totalIF / totalF;
@@ -164,8 +197,8 @@ public class Measurement : MonoBehaviour
             if (curText.Remove(curText.Length - 1).Split(new char[] { ' ' }).Length == correctString.Split(new char[] { ' ' }).Length)
             {
                 // calculate C and INF
-                string transribed = curText.Replace(" ", string.Empty);
-                string presented = correctString.Replace(" ", string.Empty);
+                string transribed = curText;// we need to count space curText.Replace(" ", string.Empty);
+                string presented = correctString;// we need to count space correctString.Replace(" ", string.Empty);
                 INF = editDistance(presented, transribed);
                 totalINF += INF;
                 C = transribed.Length - INF;
@@ -175,14 +208,16 @@ public class Measurement : MonoBehaviour
                 totalF += F;
                 F = 0;
                 calculateMetric();
-                WPM += correctString.Split(new char[] { ' ' }).Length;
+                WPM += transribed.Length;
                 endTime = DateTime.Now;
                 finishedSeconds = (endTime - startTime).Minutes * 60.0f + (endTime - startTime).Seconds;
                 if (finishedSeconds > typingSeconds)
                 {
+                    Debug.Log("time is up");
                     allowInput = false;
                     inputField.enabled = false;
-                    WPM = WPM / (finishedSeconds / 60.0f);
+                    WPM = (WPM-1.0f) / finishedSeconds * 60.0f / 5.0f;
+                    saveData();
                 }
             }
         }        
