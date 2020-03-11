@@ -816,6 +816,8 @@ MonoBehaviour:
   NCER: 0
   CER: 0
   WPM: 0
+  totalGazeSelection: 0
+  correctGazeSelection: 0
   typingSeconds: 60
   finishedSeconds: 0
   allowInput: 0

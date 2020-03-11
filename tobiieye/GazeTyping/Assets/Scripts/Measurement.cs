@@ -14,6 +14,8 @@ public class Measurement : MonoBehaviour
 
     [SerializeField]
     private float totalC, totalINF, totalIF, totalF, MSD, KSPC, CE, PC, NCER, CER, WPM;
+    [SerializeField]
+    private float totalGazeSelection, correctGazeSelection;
 
     [SerializeField]
     private float typingSeconds;
@@ -28,6 +30,7 @@ public class Measurement : MonoBehaviour
     public TMPro.TextMeshPro clock;
 
     public CandidateHandler candidateHandler;
+
 
     // Start is called before the first frame update
     void Start()
@@ -45,6 +48,8 @@ public class Measurement : MonoBehaviour
         {
             typingSeconds = 600;
         }
+        totalGazeSelection = 0;
+        correctGazeSelection = 0;
     }
 
     public void AddInputStream(string inputStream)
@@ -104,11 +109,21 @@ public class Measurement : MonoBehaviour
     {
         // handle presented, from words to inputString
         C = 0;
+        bool isCurrentTypingCorrect = true;
         for(int i = 0; i < Mathf.Min(presented.Length, transribed.Length); i++)
         {
             if (transribed[i] == (ProfileLoader.configMap[presented[i].ToString()][0]))
                 C += 1;
+            else
+                isCurrentTypingCorrect = false;
         }
+        if (isCurrentTypingCorrect)
+        {
+            totalGazeSelection += 1;
+            if (isGazeCorrect)
+                correctGazeSelection += 1;
+        }
+        Debug.LogWarning("gaze accuracy:" + correctGazeSelection + "/" + totalGazeSelection);
         INF = transribed.Length- C;
         C += 1; // count the space
         if (isGazeCorrect)
@@ -146,13 +161,14 @@ public class Measurement : MonoBehaviour
         string destination = Application.dataPath + "/Resources/Participants.csv";
         if (!File.Exists(destination))
         {
-            File.WriteAllText(destination, "Data,Name,C,INF,IF,F,WPM\n");
+            File.WriteAllText(destination, "Data,Name,C,INF,IF,F,WPM, Correct Gaze, Total Gaze\n");
         }
 
         //Write some text to the file
         // name should include profile (aka user name), mode (regular, or test), layout and session
         string name = ProfileLoader.profile + "-" + ProfileLoader.typingMode.ToString() + "-" + candidateHandler.candidateLayout.ToString() + "-" + ProfileLoader.session_number.ToString();
-        File.AppendAllText(destination, DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "," + name + "," + totalC.ToString() + "," + totalINF.ToString() + "," + totalIF.ToString() + "," + totalF.ToString() + "," + WPM.ToString() + "\n");
+        File.AppendAllText(destination, DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "," + name + "," + totalC.ToString() + "," + totalINF.ToString() + "," + totalIF.ToString() + "," + totalF.ToString() + "," + WPM.ToString() + ","
+            + correctGazeSelection.ToString() + "," + totalGazeSelection.ToString() + "\n");
     }
 
     private void calculateMetric()

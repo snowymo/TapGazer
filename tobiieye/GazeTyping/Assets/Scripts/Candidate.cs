@@ -33,7 +33,7 @@ public class Candidate : MonoBehaviour
         {
             CandText.fontStyle = TMPro.FontStyles.Underline;
             candidateHandler.GazedCandidate = candidateIndex;
-            candidateHandler.CurrentGazedText = removeFormat(CandText.text);
+            candidateHandler.CurrentGazedText = pureText;// TODO: TESTING removeFormat(CandText.text);
         }
         else
         {
@@ -71,7 +71,7 @@ public class Candidate : MonoBehaviour
         yield return new WaitForEndOfFrame();
         if(CandText.textInfo.lineCount > 1) {
             // get the count of how many words for the first line
-            int toremove = text.Length - CandText.textInfo.lineInfo[0].characterCount + 1;
+            int toremove = text.Length - CandText.textInfo.lineInfo[0].characterCount + 2;
             //string newtext = "..." + text.Substring(text.Length - CandText.textInfo.lineInfo[0].characterCount+2, CandText.textInfo.lineInfo[0].characterCount-2);
             // udpate the text
             int remainingTypedWords = Mathf.Max(0, Mathf.Min(text.Length - toremove, progress - toremove));
