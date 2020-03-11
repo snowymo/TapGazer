@@ -112,7 +112,7 @@ public class Measurement : MonoBehaviour
         bool isCurrentTypingCorrect = true;
         for(int i = 0; i < Mathf.Min(presented.Length, transribed.Length); i++)
         {
-            if (transribed[i] == (ProfileLoader.configMap[presented[i].ToString()][0]))
+            if (ProfileLoader.configMap.ContainsKey(presented[i].ToString()) && transribed[i] == (ProfileLoader.configMap[presented[i].ToString()][0]))
                 C += 1;
             else
                 isCurrentTypingCorrect = false;
