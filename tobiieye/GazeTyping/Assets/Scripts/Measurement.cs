@@ -91,7 +91,7 @@ public class Measurement : MonoBehaviour
 
     public void AddWPM(int curWC)
     {
-        WPM += curWC;
+        WPM += curWC+1; // including the 'n' key, aka space
     }
 
     public void StartClock()
@@ -127,7 +127,7 @@ public class Measurement : MonoBehaviour
         finishedSeconds = (endTime - startTime).Minutes * 60.0f + (endTime - startTime).Seconds;
         if (finishedSeconds > typingSeconds)
         {
-            WPM = WPM / (finishedSeconds / 60.0f);
+            WPM = (WPM-1f) / (finishedSeconds / 60.0f) / 5.0f;
 
             saveData();
 
@@ -179,8 +179,8 @@ public class Measurement : MonoBehaviour
             if (curText.Remove(curText.Length - 1).Split(new char[] { ' ' }).Length == correctString.Split(new char[] { ' ' }).Length)
             {
                 // calculate C and INF
-                string transribed = curText.Replace(" ", string.Empty);
-                string presented = correctString.Replace(" ", string.Empty);
+                string transribed = curText;// we need to count space curText.Replace(" ", string.Empty);
+                string presented = correctString;// we need to count space correctString.Replace(" ", string.Empty);
                 INF = editDistance(presented, transribed);
                 totalINF += INF;
                 C = transribed.Length - INF;
@@ -190,7 +190,7 @@ public class Measurement : MonoBehaviour
                 totalF += F;
                 F = 0;
                 calculateMetric();
-                WPM += correctString.Split(new char[] { ' ' }).Length;
+                WPM += transribed.Length;
                 endTime = DateTime.Now;
                 finishedSeconds = (endTime - startTime).Minutes * 60.0f + (endTime - startTime).Seconds;
                 if (finishedSeconds > typingSeconds)
@@ -198,7 +198,7 @@ public class Measurement : MonoBehaviour
                     Debug.Log("time is up");
                     allowInput = false;
                     inputField.enabled = false;
-                    WPM = WPM / (finishedSeconds / 60.0f);
+                    WPM = (WPM-1.0f) / finishedSeconds * 60.0f / 5.0f;
                     saveData();
                 }
             }
