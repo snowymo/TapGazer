@@ -69,7 +69,7 @@ public class PhraseLoader : MonoBehaviour
             curPhraseIndex = 0;
         else if(ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
         {
-            if(candidateHandler.candidateLayout == CandidateHandler.CandLayout.ROW)
+            if((candidateHandler.candidateLayout == CandidateHandler.CandLayout.ROW) || (candidateHandler.candidateLayout == CandidateHandler.CandLayout.LEXIC))
             {
                 curPhraseIndex = ProfileLoader.session_number * 100; // 100 or 200
             }
