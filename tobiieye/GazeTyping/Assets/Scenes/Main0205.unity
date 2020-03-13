@@ -644,7 +644,7 @@ MonoBehaviour:
   verticalScale: 1
   fanAngle: 30
   textHeight: 0.2
-  candidateLayout: 4
+  candidateLayout: 0
   CurrentGazedText: 
   kSizeScale: 0.1
   isEllipsis: 0
@@ -2480,7 +2480,7 @@ PrefabInstance:
     - target: {fileID: 4715405876975706376, guid: c0899b8a8a1acb041bc1fdffe37ba80f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -16.08
+      value: -12.78
       objectReference: {fileID: 0}
     - target: {fileID: 4715405876975706376, guid: c0899b8a8a1acb041bc1fdffe37ba80f,
         type: 3}
@@ -3296,9 +3296,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52a82dbc4a2dc4b44ab15abbc3c81ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curTypingMode: 1
-  curProfile: Shariina
-  curSessionNumber: 2
+  curTypingMode: 0
+  curProfile: aparna
+  curSessionNumber: 1
   wordlistLoader: {fileID: 132433878}
   dynamicHandKey: {fileID: 1008559595}
   dynamicKeyColor: {fileID: 1130148186}
@@ -4280,7 +4280,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1130148182
 Transform:
   m_ObjectHideFlags: 0
@@ -5457,7 +5457,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1678171500
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6804,7 +6804,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '                                         \n                                         \n                                         \n                                         \n                                         \n                                        \n                                         \n'
+  m_text: '                                         \n                                         \n                                         \n                                         \n                                         \n                                        \n                                          \n                                          \n'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6873,12 +6873,12 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 2042310653}
-    characterCount: 293
+    characterCount: 337
     spriteCount: 0
-    spaceCount: 293
+    spaceCount: 337
     wordCount: 1
     linkCount: 0
-    lineCount: 7
+    lineCount: 8
     pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
