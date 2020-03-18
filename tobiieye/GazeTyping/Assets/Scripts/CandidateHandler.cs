@@ -318,7 +318,7 @@ public class CandidateHandler : MonoBehaviour
         // we need to update the position at the same time
         // calculate the word length for both lines, find the longer one
         // or find the longest candidate, use that as the template, and re-calculate the width and place them
-        int maxLength = candidates[0].Length;
+        int maxLength = Mathf.Max(4, candidates[0].Length);
         CandidateCount = 13;
         CandidatePerRow = 4;
         for (int i = 1; i < Mathf.Min(CandidateCount, candidates.Length); i++)
