@@ -644,7 +644,7 @@ MonoBehaviour:
   verticalScale: 1
   fanAngle: 30
   textHeight: 0.2
-  candidateLayout: 0
+  candidateLayout: 3
   CurrentGazedText: 
   kSizeScale: 0.1
   isEllipsis: 0
@@ -3297,14 +3297,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curTypingMode: 1
-  curProfile: ruoyang
+  curProfile: ning
   curSessionNumber: 2
   wordlistLoader: {fileID: 132433878}
   dynamicHandKey: {fileID: 1008559595}
   dynamicKeyColor: {fileID: 1130148186}
   regularInput: {fileID: 1699447645}
   newKeyboardInput: {fileID: 1057379355}
-  curInputMode: 0
+  curInputMode: 1
 --- !u!4 &840372617
 Transform:
   m_ObjectHideFlags: 0
