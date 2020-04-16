@@ -33,6 +33,7 @@ public class CandidateHandler : MonoBehaviour
     private float kSizeScale;
 
     public bool isEllipsis;
+  public GameObject screenGazeIndicator;
 
   private Vector2 screenGaze;
   public Vector2 ScreenGaze {
@@ -67,6 +68,7 @@ public class CandidateHandler : MonoBehaviour
         kSizeScale = 1f;
     CandidateHeight = ProfileLoader.outputMode == ProfileLoader.OutputMode.Devkit ? -1.5f : -2.5f;
     CandidateStartHeight = ProfileLoader.outputMode == ProfileLoader.OutputMode.Devkit ? -1.5f : -2.5f;
+    screenGazeIndicator.SetActive(ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar);
 
         if (candidateLayout == CandLayout.ROW)
             CreateRowLayout();

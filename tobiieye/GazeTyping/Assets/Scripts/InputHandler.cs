@@ -261,6 +261,20 @@ public class InputHandler : MonoBehaviour {
     inputField.MoveTextEnd(true);
   }
 
+  Vector2 screenGazeTuner;
+  private void adjustScreenGaze() {
+    if (Input.GetKeyDown(KeyCode.UpArrow)) {
+      screenGazeTuner.y += 1;
+    }else if (Input.GetKeyDown(KeyCode.DownArrow)) {
+      screenGazeTuner.y -= 1;
+    }
+    if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+      screenGazeTuner.x -= 1;
+    } else if (Input.GetKeyDown(KeyCode.RightArrow)) {
+      screenGazeTuner.x += 1;
+    }
+  }
+
   // Update is called once per frame
   void Update() {
     if (ProfileLoader.inputMode == ProfileLoader.InputMode.KEYBOARD) {
@@ -277,6 +291,7 @@ public class InputHandler : MonoBehaviour {
     }
 
     if(ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar) {
+      adjustScreenGaze();
       HandleScreenGaze();
     }
   }
@@ -295,7 +310,14 @@ public class InputHandler : MonoBehaviour {
       Single.TryParse(coords[0], out curScreenCoord.x);
       Single.TryParse(coords[1], out curScreenCoord.y);
     }
+    curScreenCoord += screenGazeTuner;
     candidateHandler.ScreenGaze = curScreenCoord;
+
+    // visualize delta gaze, for fine tune
+    Vector2 deltaGaze = candidateHandler.ScreenGaze - candidateHandler.ScreenGazeOffset;
+    deltaGaze.y = Camera.main.pixelHeight - deltaGaze.y;
+    //candidateHandler.screenGazeIndicator.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(deltaGaze.x, deltaGaze.y, Camera.main.nearClipPlane+5));
+    candidateHandler.screenGazeIndicator.transform.position = deltaGaze;
   }
 
   public void CalibrateScreenGaze() {

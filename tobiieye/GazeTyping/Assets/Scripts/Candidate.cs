@@ -40,6 +40,7 @@ public class Candidate : MonoBehaviour {
       // turn gaze into correct x,y space
       Vector2 deltaGaze = candidateHandler.ScreenGaze - candidateHandler.ScreenGazeOffset;
       deltaGaze.y = Camera.main.pixelHeight - deltaGaze.y;
+      
       handlerScreenGaze.GazeFocusChanged(deltaGaze);
       if (handlerScreenGaze.GetGaze()) {
         CandText.fontStyle = TMPro.FontStyles.Underline;
