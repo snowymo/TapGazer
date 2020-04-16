@@ -12,6 +12,7 @@ public class CandidateHandler : MonoBehaviour
     [SerializeField]
     int CandidateCount = 11;
     float CandidateWidth; // roughly it fits for 5-character word
+  float CandidateStartHeight = -1.5f;
     float CandidateHeight = -1.5f;
     int CandidatePerRow;
     public int GazedCandidate = 0; // index of the candidate being gazed
@@ -32,9 +33,21 @@ public class CandidateHandler : MonoBehaviour
     private float kSizeScale;
 
     public bool isEllipsis;
-    
-    // map btw regular keys and input string
-    Dictionary<char, int> mapKey2Column = new Dictionary<char, int>()
+
+  private Vector2 screenGaze;
+  public Vector2 ScreenGaze {
+    get { return screenGaze; }
+    set { screenGaze = value; }
+  }
+
+  private Vector2 screenGazeOffset;
+  public Vector2 ScreenGazeOffset {
+    get { return screenGazeOffset; }
+    set { screenGazeOffset = value; }
+  }
+
+  // map btw regular keys and input string
+  Dictionary<char, int> mapKey2Column = new Dictionary<char, int>()
     {
         {'q',0}, { 'a',0},{'z',0}, {'w',1}, {'s',1}, {'x',1}, {'e',2}, {'d', 2}, {'c', 2}, {'r', 3}, {'f', 3}, {'v', 3}, {'t',3}, {'g', 3}, {'b',3},
         {'y',4}, { 'h',4},{'n',4}, {'u',4}, {'j',4}, {'i',5}, {'k',5}, {'m', 5}, {'o', 6}, {'l', 6}, {'p', 7}
@@ -52,6 +65,9 @@ public class CandidateHandler : MonoBehaviour
         candidateObjects = new List<GameObject>();
         perWidth = 0.73f;
         kSizeScale = 1f;
+    CandidateHeight = ProfileLoader.outputMode == ProfileLoader.OutputMode.Devkit ? -1.5f : -2.5f;
+    CandidateStartHeight = ProfileLoader.outputMode == ProfileLoader.OutputMode.Devkit ? -1.5f : -2.5f;
+
         if (candidateLayout == CandLayout.ROW)
             CreateRowLayout();
         else if(candidateLayout == CandLayout.FAN)
@@ -155,7 +171,7 @@ public class CandidateHandler : MonoBehaviour
             if (showPreviously[i] > -1) {
                 // shows before, only apply the new progress
                 float candSize = MapIndex2Size(Array.IndexOf(allCandidates, candidates[i])) * kSizeScale;
-                candidateObjects[showPreviously[i]].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, candSize, isEllipsis);
+                candidateObjects[showPreviously[i]].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, maxLength-1, candSize, isEllipsis);
             }
             else {
                 // find an available index in candidateObjects, find from availableIndices
@@ -165,7 +181,7 @@ public class CandidateHandler : MonoBehaviour
                 // the position is decided during creation
                 // the size is related to where it is in allCandidates
                 float candSize = MapIndex2Size(Array.IndexOf(allCandidates, candidates[i])) * kSizeScale;
-                candidateObjects[randIndex].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, candSize, isEllipsis);
+                candidateObjects[randIndex].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, maxLength-1, candSize, isEllipsis);
             }
         }        
     }
@@ -186,7 +202,7 @@ public class CandidateHandler : MonoBehaviour
         {
             go = Instantiate(CandidatePrefab, transform);
             go.name = "Cand" + (i + 1).ToString();
-            go.transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 1.5f, 0);
+            go.transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight + CandidateStartHeight, 0);
             go.GetComponent<Candidate>().SetCandidateText("");
             go.GetComponent<Candidate>().candidateIndex = i + 1;
             go.GetComponent<Candidate>().candidateHandler = this;
@@ -211,7 +227,7 @@ public class CandidateHandler : MonoBehaviour
         {
             GameObject go = Instantiate(CandidatePrefab, transform);
             go.name = "Cand" + i.ToString();
-            go.transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow-1) / 2 + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight - 1.5f, 0);
+            go.transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow-1) / 2 + (i % CandidatePerRow) * CandidateWidth, i / CandidatePerRow * CandidateHeight + CandidateStartHeight, 0);
             go.GetComponent<Candidate>().SetCandidateText("");
             go.GetComponent<Candidate>().candidateIndex = i;
             go.GetComponent<Candidate>().candidateHandler = this;
@@ -297,18 +313,18 @@ public class CandidateHandler : MonoBehaviour
         {
             if (i == 0)
             {
-                candidateObjects[0].GetComponent<Candidate>().SetCandidateText(candidates[0], progress);
+                candidateObjects[0].GetComponent<Candidate>().SetCandidateText(candidates[0], progress, maxLength-1);
             }
             else
             {
-                candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i], progress);
-                candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight - 1.5f, 0);
+                candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, maxLength-1);
+                candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight + CandidateStartHeight, 0);
             }
         }
         for (int i = candNum; i < CandidateCount; i++)
         {
             candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
-            candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight - 1.5f, 0);
+            candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight + CandidateStartHeight, 0);
         }
     }
 
@@ -344,18 +360,18 @@ public class CandidateHandler : MonoBehaviour
         {
             if (i == 0)
             {
-                candidateObjects[0].GetComponent<Candidate>().SetCandidateText(candidates[0], progress);
+                candidateObjects[0].GetComponent<Candidate>().SetCandidateText(candidates[0], progress, maxLength-1);
             }
             else
             {
-                candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i], progress);
-                candidateObjects[i].transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight - 1.5f, 0);
+                candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, maxLength-1);
+                candidateObjects[i].transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight + CandidateStartHeight, 0);
             }
         }
         for (int i = candNum; i < CandidateCount; i++)
         {
             candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
-            candidateObjects[i].transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight - 1.5f, 0);
+            candidateObjects[i].transform.localPosition = new Vector3(-CandidateWidth * (CandidatePerRow - 1) / 2 + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight + CandidateStartHeight, 0);
         }
     }
 

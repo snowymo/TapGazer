@@ -19,27 +19,33 @@ namespace Tobii.XR.Examples
             return isGazed;
         }
 
+    public void SetGaze(bool hasFocus) {
+      //If this object received focus, fade the object's color to highlight color
+      if (hasFocus) {
+        _targetColor = HighlightColor;
+        // underline?
+        isGazed = true;
+      }
+      //If this object lost focus, fade the object's color to it's original color
+      else {
+        _targetColor = _originalColor;
+        isGazed = false;
+      }
+    }
+
         //The method of the "IGazeFocusable" interface, which will be called when this object receives or loses focus
         public void GazeFocusChanged(bool hasFocus)
         {
-            //If this object received focus, fade the object's color to highlight color
-            if (hasFocus)
-            {
-                _targetColor = HighlightColor;
-                // underline?
-                isGazed = true;
-            }
-            //If this object lost focus, fade the object's color to it's original color
-            else
-            {
-                _targetColor = _originalColor;
-                isGazed = false;
-            }
+      SetGaze(hasFocus);
         }
-
-        private void Start()
+    
+    private void Start()
         {
-            _renderer = GetComponent<Renderer>();
+      if (ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar) {
+        // disable it
+        transform.gameObject.GetComponent<HandlerFocusAtGaze>().enabled = false;
+      }
+        _renderer = GetComponent<Renderer>();
             _originalColor = _renderer.material.color;
             _targetColor = _originalColor;
         }

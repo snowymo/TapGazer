@@ -14,7 +14,7 @@ public class Network : MonoBehaviour
     public COMMUNICATION_TYPE commType;
     public int sendPort;
     public int listenPort;
-    public string connectIP = "172.24.71.214"; // the ip of the server to connect to
+  public string connectIP = "192.168.1.240";//"172.24.71.214"; // the ip of the server to connect to
     private int MAX_BUF_SIZE = 65535; // 2^16-1
 
     private IPEndPoint ipEndPoint;

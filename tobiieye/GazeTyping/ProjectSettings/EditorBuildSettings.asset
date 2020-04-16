@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Main0205.unity
     guid: b2ae7047946aec74fa0eb47d2cf51eb4
-  - enabled: 1
+  - enabled: 0
     path: Assets/TobiiXR/Examples/Example_GettingStarted.unity
     guid: 221a337531f80eb4eb510b1cd2874c53
   m_configObjects: {}
