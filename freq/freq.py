@@ -121,7 +121,7 @@ def generate_tap_map(test_dict, count):
             cur_count = cur_count + 1
     print("largest_cand_result", largest_cand_number, largest_cand_input_string, completed_numbers[largest_cand_input_string])
     for item in completed_numbers:
-        if len(completed_numbers[item]) > 9:
+        if len(completed_numbers[item]) > 5:
             print(item + "\t" + str(len(completed_numbers[item])) + "\t" + str(completed_numbers[item]))
     print("\n")
     # sort each item in tapping_dict
@@ -162,7 +162,7 @@ def check_with_phrases():
             for idx3, candidate in enumerate(completed_numbers[inputString]):
                 if candidate.lower() == currentWord.lower():
                     # idx3 is the rank
-                    if idx3 > 6:
+                    if idx3 > 7:
                         print("word: " + currentWord + " : " + str(idx3))
                     break
 
