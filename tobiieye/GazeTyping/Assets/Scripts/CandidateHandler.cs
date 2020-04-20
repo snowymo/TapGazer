@@ -191,14 +191,19 @@ public class CandidateHandler : MonoBehaviour
     void CreateRowLayout()
     {
         CandidateCount = 13;
-        // the first one is placed in the center
-        GameObject go = Instantiate(CandidatePrefab, transform);
+    CandidatePerRow = 4;
+
+    CandidateCount = 7;
+    CandidatePerRow = 3;
+
+    // the first one is placed in the center
+    GameObject go = Instantiate(CandidatePrefab, transform);
         go.name = "Cand0";
         go.GetComponent<Candidate>().SetCandidateText("");
         go.GetComponent<Candidate>().candidateIndex = 0;
         go.GetComponent<Candidate>().candidateHandler = this;
         candidateObjects.Add(go);
-        CandidatePerRow = 4;
+        
         // the rest are placed in two rows
         for (int i = 0; i < CandidateCount-1; i++)
         {
@@ -337,8 +342,8 @@ public class CandidateHandler : MonoBehaviour
         // calculate the word length for both lines, find the longer one
         // or find the longest candidate, use that as the template, and re-calculate the width and place them
         int maxLength = Mathf.Max(4, candidates[0].Length);
-        CandidateCount = 13;
-        CandidatePerRow = 4;
+//         CandidateCount = 13;
+//         CandidatePerRow = 4;
         for (int i = 1; i < Mathf.Min(CandidateCount, candidates.Length); i++)
         {
             if (candidates[i].Length > maxLength)

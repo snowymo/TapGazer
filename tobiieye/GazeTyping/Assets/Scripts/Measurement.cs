@@ -13,7 +13,7 @@ public class Measurement : MonoBehaviour
     private float C, INF, IF, F;
 
     [SerializeField]
-    private float totalC, totalINF, totalIF, totalF, MSD, KSPC, CE, PC, NCER, CER, WPM;
+    private float totalC, totalINF, totalIF, totalF, MSD, KSPC, CE, PC, NCER, CER, WPM, words;
     [SerializeField]
     private float totalGazeSelection, correctGazeSelection;
 
@@ -96,7 +96,7 @@ public class Measurement : MonoBehaviour
 
     public void AddWPM(int curWC)
     {
-        WPM += curWC+1; // including the 'n' key, aka space
+    words += curWC+1; // including the 'n' key, aka space
     }
 
     public void StartClock()
@@ -141,9 +141,10 @@ public class Measurement : MonoBehaviour
         //WPM += 1;// it is possible user deleted words
         endTime = DateTime.Now;
         finishedSeconds = (endTime - startTime).Minutes * 60.0f + (endTime - startTime).Seconds;
-        if (finishedSeconds > typingSeconds)
+    WPM = (words - 1f) / finishedSeconds * 60.0f / 5.0f;
+    if (finishedSeconds > typingSeconds)
         {
-            WPM = (WPM-1f) / finishedSeconds * 60.0f / 5.0f;
+            
 
             saveData();
 
@@ -208,15 +209,16 @@ public class Measurement : MonoBehaviour
                 totalF += F;
                 F = 0;
                 calculateMetric();
-                WPM += transribed.Length;
+        words += transribed.Length;
                 endTime = DateTime.Now;
                 finishedSeconds = (endTime - startTime).Minutes * 60.0f + (endTime - startTime).Seconds;
-                if (finishedSeconds > typingSeconds)
+        WPM = (words - 1.0f) / finishedSeconds * 60.0f / 5.0f;
+        if (finishedSeconds > typingSeconds)
                 {
                     Debug.Log("time is up");
                     allowInput = false;
                     inputField.enabled = false;
-                    WPM = (WPM-1.0f) / finishedSeconds * 60.0f / 5.0f;
+                    
                     saveData();
                 }
             }
