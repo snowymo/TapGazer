@@ -24,7 +24,7 @@ configFileName = ""
 def change_config():
     # use regular input to change the configuration
     print("Do you want to change the configuration? Default key mapping is: ")
-    print("qaz;\twsx;\tedc;\trfvtgb;\tyhnuj\tikm;\tol;\tp")
+    print("qaz;\twsx;\tedc;\trfvtgb;\tyhnuj;\ttikm;\tol;\tp")
     print("Type y if you want to, type anything else if you prefer the default one")
     answer = input()
     mapFinger2Name = {'a': "left pinky",
@@ -136,10 +136,14 @@ def reset_containers():
     word_rank = {}
     completed_numbers = {}
 
-def check_with_phrases():
+def check_with_phrases(filename):
     # try to output the candidate ranking for all the words in phrase2.txt
-    with open('phrases2.txt', encoding="utf-8") as f:
+    with open(filename, encoding="utf-8") as f:
         phrasesDict = f.read().splitlines()
+    minimumCandNum = {}
+    minimumCandNum["2"] = 0
+    minimumCandNum["3"] = 0
+    minimumCandNum["4"] = 0
     for idx1, item in enumerate(phrasesDict):
         currentPhrase = item.lower().split()
         # go through currentPhrase
@@ -153,18 +157,25 @@ def check_with_phrases():
                 cur_typing += cur_finger
             inputString = cur_typing
             # go through the result of inputString in completed_numbers,
-            if currentWord == "nor":
-                print(currentWord)
+            # if currentWord == "nor":
+            #     print(currentWord)
             if inputString not in completed_numbers:
-                # print(currentWord + " not in the dictionary")
-                print(currentWord)
+                print(currentWord + " not in the dictionary")
+                # print(currentWord)
                 continue
             for idx3, candidate in enumerate(completed_numbers[inputString]):
                 if candidate.lower() == currentWord.lower():
                     # idx3 is the rank
                     if idx3 > 7:
                         print("word: " + currentWord + " : " + str(idx3))
+                        if len(inputString) == 2:
+                            minimumCandNum["2"] = max(minimumCandNum["2"], idx3)
+                        elif len(inputString) == 3:
+                            minimumCandNum["3"] = max(minimumCandNum["3"], idx3)
+                        else:
+                            minimumCandNum["4"] = max(minimumCandNum["4"], idx3)
                     break
+    print(minimumCandNum)
 
 if __name__ == "__main__":
     # word: a Unicode string containing the word to look up. Ideally the word is a single token according to our tokenizer, but if not, there is still hope -- see Tokenization below.
@@ -264,7 +275,10 @@ if __name__ == "__main__":
     sorted(noswear10k, key=functools.cmp_to_key(compare))
     generate_tap_map(noswear10k, count)
     #
-    check_with_phrases()
+    print("check phrases2.txt")
+    check_with_phrases('phrases2.txt')
+    print("check 30k.txt")
+    check_with_phrases('30k.txt')
     # write to file
     f = open("30k-result" + configFileName + ".txt", "w")
     f.write(str(tapping_dict))
