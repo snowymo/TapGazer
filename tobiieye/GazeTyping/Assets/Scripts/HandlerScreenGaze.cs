@@ -90,15 +90,15 @@ public class HandlerScreenGaze : MonoBehaviour {
 
     point = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, Camera.main.nearClipPlane));
 
-    GUILayout.BeginArea(new Rect(20, 20, 250, 75));
-    GUILayout.Label("Screen pixels: " + Camera.main.pixelWidth + ":" + Camera.main.pixelHeight);
-    GUILayout.Label("Mouse position: " + mousePos);
-    GUILayout.Label("World position: " + point.ToString("F3"));
-    GUILayout.EndArea();
-
-    GUILayout.BeginArea(new Rect(20, 100, 250, 75));
-    GUILayout.Label("gaze position: " + curgazeScreenCoord);
-    GUILayout.Label("gaze3D position: " + gazeWorldCoord.ToString("F3"));
-    GUILayout.EndArea();
+//     GUILayout.BeginArea(new Rect(20, 20, 250, 75));
+//     GUILayout.Label("Screen pixels: " + Camera.main.pixelWidth + ":" + Camera.main.pixelHeight);
+//     GUILayout.Label("Mouse position: " + mousePos);
+//     GUILayout.Label("World position: " + point.ToString("F3"));
+//     GUILayout.EndArea();
+// 
+//     GUILayout.BeginArea(new Rect(20, 100, 250, 75));
+//     GUILayout.Label("gaze position: " + curgazeScreenCoord);
+//     GUILayout.Label("gaze3D position: " + gazeWorldCoord.ToString("F3"));
+//     GUILayout.EndArea();
   }
 }

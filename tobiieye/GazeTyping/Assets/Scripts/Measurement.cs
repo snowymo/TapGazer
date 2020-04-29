@@ -144,8 +144,6 @@ public class Measurement : MonoBehaviour
     WPM = (words - 1f) / finishedSeconds * 60.0f / 5.0f;
     if (finishedSeconds > typingSeconds)
         {
-            
-
             saveData();
 
             if (allowInput)
