@@ -84,45 +84,48 @@ public class ProfileLoader : MonoBehaviour {
     renderTextureIndices = new int[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
     // iterate all the keys in configMap and put them in the correct place
     foreach (string key in configMap.Keys) {
+      char curKey = key[0];
+      if (curKey == 'l')
+        curKey = 'L';
       if (configMap[key] == "a") {
         // put it in the first finger
         // for the first finger, we need to skip two \n
-        dynamicHandKey.SetFingerKey(0, 2, renderTextureIndices[0], key[0]);
+        dynamicHandKey.SetFingerKey(0, 2, renderTextureIndices[0], curKey);
         renderTextureIndices[0] = renderTextureIndices[0] + 1;
       } else if (configMap[key] == "s") {
         // put it in the second finger
         // for the first finger, we need to skip two \n
-        dynamicHandKey.SetFingerKey(1, 1, renderTextureIndices[1], key[0]);
+        dynamicHandKey.SetFingerKey(1, 1, renderTextureIndices[1], curKey);
         renderTextureIndices[1] = renderTextureIndices[1] + 1;
       } else if (configMap[key] == "d") {
         // put it in the third finger
         // for the first finger, we need to skip two \n
-        dynamicHandKey.SetFingerKey(2, 0, renderTextureIndices[2], key[0]);
+        dynamicHandKey.SetFingerKey(2, 0, renderTextureIndices[2], curKey);
         renderTextureIndices[2] = renderTextureIndices[2] + 1;
       } else if (configMap[key] == "f") {
         // put it in the fourth finger
         // for the first finger, we need to skip two \n
-        dynamicHandKey.SetFingerKey(3, 0, renderTextureIndices[3], key[0]);
+        dynamicHandKey.SetFingerKey(3, 0, renderTextureIndices[3], curKey);
         renderTextureIndices[3] = renderTextureIndices[3] + 1;
       } else if (configMap[key] == "j") {
 
         // for the first finger, we need to skip two \n
-        dynamicHandKey.SetFingerKey(4, 0, renderTextureIndices[4], key[0]);
+        dynamicHandKey.SetFingerKey(4, 0, renderTextureIndices[4], curKey);
         renderTextureIndices[4] = renderTextureIndices[4] + 1;
       } else if (configMap[key] == "k") {
 
         // for the first finger, we need to skip two \n
-        dynamicHandKey.SetFingerKey(5, 0, renderTextureIndices[5], key[0]);
+        dynamicHandKey.SetFingerKey(5, 0, renderTextureIndices[5], curKey);
         renderTextureIndices[5] = renderTextureIndices[5] + 1;
       } else if (configMap[key] == "l") {
 
         // for the first finger, we need to skip two \n
-        dynamicHandKey.SetFingerKey(6, 1, renderTextureIndices[6], key[0]);
+        dynamicHandKey.SetFingerKey(6, 1, renderTextureIndices[6], curKey);
         renderTextureIndices[6] = renderTextureIndices[6] + 1;
       } else if (configMap[key] == ";") {
 
         // for the first finger, we need to skip two \n
-        dynamicHandKey.SetFingerKey(7, 2, renderTextureIndices[7], key[0]);
+        dynamicHandKey.SetFingerKey(7, 2, renderTextureIndices[7], curKey);
         renderTextureIndices[7] = renderTextureIndices[7] + 1;
       }
     }
