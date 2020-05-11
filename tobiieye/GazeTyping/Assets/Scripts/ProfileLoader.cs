@@ -97,10 +97,12 @@ public class ProfileLoader : MonoBehaviour {
       char curKey = key[0];
       if (curKey == 'l')
         curKey = 'L';
+      if (curKey == 'r')
+        curKey = 'R';
       if (configMap[key] == "a") {
         // put it in the first finger
         // for the first finger, we need to skip two \n
-        dynamicHandKey.SetFingerKey(0, 2, renderTextureIndices[0], curKey);
+        dynamicHandKey.SetFingerKey(0, 1, renderTextureIndices[0], curKey);
         renderTextureIndices[0] = renderTextureIndices[0] + 1;
       } else if (configMap[key] == "s") {
         // put it in the second finger
@@ -135,7 +137,7 @@ public class ProfileLoader : MonoBehaviour {
       } else if (configMap[key] == ";") {
 
         // for the first finger, we need to skip two \n
-        dynamicHandKey.SetFingerKey(7, 2, renderTextureIndices[7], curKey);
+        dynamicHandKey.SetFingerKey(7, 0, renderTextureIndices[7], curKey);
         renderTextureIndices[7] = renderTextureIndices[7] + 1;
       }
     }

@@ -62,7 +62,7 @@ public class Measurement : MonoBehaviour {
       if (Input.GetKeyDown(KeyCode.Backspace)) {
         IF += 1;
       }
-    } else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST) {
+    } else /*if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)*/ {
       if (Input.GetKeyDown(KeyCode.B)) {
         IF += 1;
         F += 1;

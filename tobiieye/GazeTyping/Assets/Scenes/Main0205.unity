@@ -2899,16 +2899,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 679013844}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0.12955815, w: 0.9915719}
   m_LocalPosition: {x: 0, y: 0, z: 7.4}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 1008559597}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -14.8880005}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -1.7}
+  m_AnchoredPosition: {x: -0.5893594, y: -1.1}
   m_SizeDelta: {x: 74.2, y: 109.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &679013846
@@ -2929,7 +2929,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '\n                                                  \n                                                  \n                                                 \n                                                \n
+  m_text: '\n                                             \n                                             \n                                             \n                                            \n
 
 
 '
@@ -3001,9 +3001,9 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 679013846}
-    characterCount: 204
+    characterCount: 186
     spriteCount: 0
-    spaceCount: 204
+    spaceCount: 186
     wordCount: 1
     linkCount: 0
     lineCount: 7
@@ -3285,7 +3285,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '          \n          \n           \n           \n           \n'
+  m_text: '          \n           \n           \n           \n           \n'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3354,9 +3354,9 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 738228347}
-    characterCount: 58
+    characterCount: 59
     spriteCount: 0
-    spaceCount: 58
+    spaceCount: 59
     wordCount: 1
     linkCount: 0
     lineCount: 5
@@ -3518,7 +3518,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curTypingMode: 0
-  curProfile: colemak
+  curProfile: dvorak
   curSessionNumber: 1
   wordlistLoader: {fileID: 132433878}
   dynamicHandKey: {fileID: 1008559595}
@@ -3604,7 +3604,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '                                               \n                                              \n                                             \n                                             \n                                             \n'
+  m_text: '                                              \n                                              \n                                             \n                                             \n                                             \n'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3673,9 +3673,9 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 900200168}
-    characterCount: 233
+    characterCount: 232
     spriteCount: 0
-    spaceCount: 233
+    spaceCount: 232
     wordCount: 1
     linkCount: 0
     lineCount: 5
@@ -5142,7 +5142,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: \n     \n      \n       \n        \n         \n
+  m_text: \n      \n      \n       \n        \n         \n
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5211,9 +5211,9 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1269575254}
-    characterCount: 41
+    characterCount: 42
     spriteCount: 0
-    spaceCount: 41
+    spaceCount: 42
     wordCount: 1
     linkCount: 0
     lineCount: 6
@@ -6760,16 +6760,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1894208549}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 7.4}
+  m_LocalRotation: {x: 0.0003751205, y: 0.0028055618, z: -0.16376378, w: 0.98649555}
+  m_LocalPosition: {x: 0, y: 0, z: 7.4084373}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 1008559597}
   m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0.095000006, y: 0.31, z: -18.851002}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -1.7}
+  m_AnchoredPosition: {x: -0.7994971, y: -1.78}
   m_SizeDelta: {x: 74.2, y: 109.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1894208551
@@ -6790,7 +6790,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: \n\n                                                      \n                                                     \n
+  m_text: '                                               \n                                               \n                                               \n                                              \n'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6859,9 +6859,9 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1894208551}
-    characterCount: 111
+    characterCount: 191
     spriteCount: 0
-    spaceCount: 111
+    spaceCount: 191
     wordCount: 1
     linkCount: 0
     lineCount: 4
@@ -7012,16 +7012,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1929257015}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.101798184, w: 0.9948051}
   m_LocalPosition: {x: 0, y: 0, z: 7.4}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 1008559597}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 11.685}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -1.7}
+  m_AnchoredPosition: {x: 0.41644478, y: -1.38}
   m_SizeDelta: {x: 74.2, y: 109.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1929257017
@@ -7042,7 +7042,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: \n\n  \n   \n    \n      \n
+  m_text: \n      \n       \n        \n          \n
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7111,12 +7111,12 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1929257017}
-    characterCount: 21
+    characterCount: 36
     spriteCount: 0
-    spaceCount: 21
+    spaceCount: 36
     wordCount: 1
     linkCount: 0
-    lineCount: 6
+    lineCount: 5
     pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0

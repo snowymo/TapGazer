@@ -17,9 +17,14 @@ public class DynamicHandKey : MonoBehaviour
             tobeModifiedIndex = curText.IndexOf("\\n", tobeModifiedIndex)+2;
         }
         StringBuilder sb = new StringBuilder(curText);
-        sb[tobeModifiedIndex - 3] = key;
-        curText = sb.ToString();
-        fingerText[fingerIndex].text = curText;
+    
+    if(tobeModifiedIndex < 3) {
+      Debug.LogWarning("curText:" + curText + "\ttobe modified index:" + tobeModifiedIndex + "\tkey:" + key);
+    } else {
+      sb[tobeModifiedIndex - 3] = key;
+      curText = sb.ToString();
+      fingerText[fingerIndex].text = curText;
+    }        
     }
 
     public void UpdateText()
