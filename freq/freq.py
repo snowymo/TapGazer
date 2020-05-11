@@ -4,7 +4,7 @@ import functools
 import json
 from wordfreq import *
 
-config = {'q': 'a', 'a': 'a', 'z': 'a',
+config = {'q': 'a', 'a': 'a', 'z': 's',
     'w': 's', 's': 's', 'x': 's',
     'e': 'd', 'd': 'd', 'c': 'd',
     'r': 'f', 'f': 'f', 'v': 'f',
@@ -15,6 +15,74 @@ config = {'q': 'a', 'a': 'a', 'z': 'a',
     'o': 'l', 'l': 'l',
     'p': ';'}
 
+configP = {"a": "s", "s": "s", "x": "s", "z": "s", "e": "d", "f": "d", "q": "d", "r": "d", "w": "d", "c": "f", "d": "f", "v": "f", "b": "j", "g": "j", "h": "j", "j": "j", "m": "j", "n": "j", "t": "j", "y": "j", "i": "k", "k": "k", "o": "k", "p": "k", "u": "k", "l": "l"}
+# try nine fingers
+configAZ = {"a":"a","b":"a","c":"a",
+          "d":"s","e":"s","f":"s",
+          "g":"d","h":"d","i":"d",
+          "j":"f","k":"f","l":"f",
+          "m":"g","n":"g","o":"g",
+          "p":"j","q":"j","r":"j",
+          "s":"k","t":"k","u":"k",
+          "v":"l","w":"l","x":"l",
+          "y":";","z":";"}
+# '19 Quadmetric Optimized Thumb-to-Finger Interaction for Force Assisted One-Handed Text Entry on Mobile Headsets
+configQ = {"t":"a","u":"a","f":"a",
+          "a":"s","y":"s","w":"s",
+          "s":"d","j":"d","d":"d",
+          "c":"f","v":"f","r":"f",
+          "i":"g","q":"g","e":"g",
+          "p":"j","k":"j","l":"j",
+          "o":"k","x":"k","h":"k",
+          "b":"l","z":"l","n":"l",
+          "m":";","g":";"}
+# qwerty -> 3x9
+config3x9 = {"q":"a","w":"a","e":"a",
+          "r":"s","t":"s","y":"s",
+          "u":"d","i":"d","o":"d",
+          "a":"f","s":"f","d":"f",
+          "f":"g","g":"g","h":"g",
+          "j":"j","k":"j","p":"j",
+          "z":"k","x":"k","c":"k",
+          "v":"l","b":"l","n":"l",
+          "m":";","l":";"}
+# T9
+configT9 = {"a":"a","b":"a","c":"a",
+          "d":"s","e":"s","f":"s",
+          "g":"d","h":"d","i":"d",
+          "j":"f","k":"f","l":"f",
+          "m":"j","n":"j","o":"j",
+          "p":"k","q":"k","r":"k","s":"k",
+          "t":"l","u":"l","v":"l",
+          "w":";","x":";","y":";","z":";"}
+# Dvorak
+configDvorak = {"a":"a",
+                "o":"s","q":"s",
+                "e":"d","j":"d",
+                "p":"f","u":"f","k":"f","y":"f","i":"f","x":"f",
+                "f":"j","d":"j","b":"j","g":"j","h":"j","m":"j",
+                "c":"k","t":"k","w":"k",
+                "r":"l","n":"l","v":"l",
+                "l":";","s":";","z":";"}
+# colemak
+configColemak = {"q":"a","a":"a","z":"a",
+                 "w":"s","r":"s","x":"s",
+                 "f":"d","s":"d","c":"d",
+                 "p":"f","t":"f","v":"f","g":"f","d":"f","b":"f",
+                 "j":"j","h":"j","k":"j","l":"j","n":"j","m":"j",
+                 "u":"k","e":"k",
+                 "y":"l","i":"l",
+                 "o":";"}
+# ken1 [ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ],
+configKen1 = {"m":"a","n":"a","h":"a",
+              "o":"s","s":"s",
+              "v":"d","i":"d","c":"d","g":"d",
+              "e":"f","f":"f","w":"f",
+              "z":"j","j":"j","k":"j","x":"j","q":"j","a":"j","p":"j",
+              "y":"k","u":"k","r":"k",
+              "b":"l","t":"l",
+              "l":";","d":";"}
+# config = configKen1
 freq_dict = get_frequency_dict("en", wordlist='best')
 
 tapping_dict = {}
@@ -154,7 +222,12 @@ def check_with_phrases(filename):
             for _, char in enumerate(currentWord):
                 # find the corresponding finger based on the char
                 cur_finger = find_finger(char)
+                if cur_finger is None:
+                    print("word not supported: " + currentWord)
+                    break
                 cur_typing += cur_finger
+            if len(cur_typing) != len(currentWord):
+                continue
             inputString = cur_typing
             # go through the result of inputString in completed_numbers,
             # if currentWord == "nor":
@@ -166,14 +239,14 @@ def check_with_phrases(filename):
             for idx3, candidate in enumerate(completed_numbers[inputString]):
                 if candidate.lower() == currentWord.lower():
                     # idx3 is the rank
-                    if idx3 > 7:
+                    if idx3 > 8:
                         print("word: " + currentWord + " : " + str(idx3))
-                        if len(inputString) == 2:
-                            minimumCandNum["2"] = max(minimumCandNum["2"], idx3)
-                        elif len(inputString) == 3:
-                            minimumCandNum["3"] = max(minimumCandNum["3"], idx3)
-                        else:
-                            minimumCandNum["4"] = max(minimumCandNum["4"], idx3)
+                    if len(inputString) == 2:
+                        minimumCandNum["2"] = max(minimumCandNum["2"], idx3)
+                    elif len(inputString) == 3:
+                        minimumCandNum["3"] = max(minimumCandNum["3"], idx3)
+                    else:
+                        minimumCandNum["4"] = max(minimumCandNum["4"], idx3)
                     break
     print(minimumCandNum)
 
@@ -183,8 +256,10 @@ if __name__ == "__main__":
     # wordlist: which set of word frequencies to use. Current options are 'small', 'large', and 'best'.
     # minimum: If the word is not in the list or has a frequency lower than minimum, return minimum instead. You may want to set this to the minimum value contained in the wordlist, to avoid a discontinuity where the wordlist ends.
     # word_frequency(word, lang, wordlist='best', minimum=0.0)
-    freq_cafe = word_frequency('ok', 'en')
-    print("ok freq", freq_cafe)
+    freq_cafe = word_frequency('that', 'en')
+    print("that freq", freq_cafe)
+    freq_cafe = word_frequency('for', 'en')
+    print("for freq", freq_cafe)
 
     # zipf_frequency is a variation on word_frequency that aims to return the word frequency on a human-friendly logarithmic scale.
     freq_the = zipf_frequency('the', 'en')
@@ -275,9 +350,11 @@ if __name__ == "__main__":
     sorted(noswear10k, key=functools.cmp_to_key(compare))
     generate_tap_map(noswear10k, count)
     #
-    print("check phrases2.txt")
+    print("\ncheck phrases2.txt")
     check_with_phrases('phrases2.txt')
-    print("check 30k.txt")
+    print("\ncheck 1k.txt")
+    check_with_phrases('1k.txt')
+    print("\ncheck 30k.txt")
     check_with_phrases('30k.txt')
     # write to file
     f = open("30k-result" + configFileName + ".txt", "w")
