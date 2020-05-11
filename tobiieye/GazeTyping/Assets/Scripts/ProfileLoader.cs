@@ -22,6 +22,8 @@ public class ProfileLoader : MonoBehaviour {
   int[] renderTextureIndices;
   public DynamicHandKey dynamicHandKey;
   public Keyboard dynamicKeyColor;
+  public Transform keyboardHint, handmodelHint;
+  public bool showKeyboard, showHandModel;
 
   public GameObject regularInput, newKeyboardInput;
   public OutputMode curOutputMode;
@@ -46,7 +48,15 @@ public class ProfileLoader : MonoBehaviour {
     outputMode = curOutputMode;
     Debug.Log("typing mode:" + typingMode);
     loadConfigFile();
-    updateRenderTexture();
+    if (showHandModel) {
+      handmodelHint.gameObject.SetActive(true);
+      updateRenderTexture();
+    }
+    if (showKeyboard) {
+      keyboardHint.gameObject.SetActive(true);
+      dynamicKeyColor.SetFinger(configMap);
+    }
+    
     if (typingMode == TypingMode.REGULAR)
       newKeyboardInput.SetActive(false);
     else
@@ -131,6 +141,5 @@ public class ProfileLoader : MonoBehaviour {
     }
 
     dynamicHandKey.UpdateText();
-    dynamicKeyColor.SetFinger(configMap);
   }
 }

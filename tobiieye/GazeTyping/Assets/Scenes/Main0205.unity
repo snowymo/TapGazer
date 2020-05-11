@@ -644,7 +644,7 @@ MonoBehaviour:
   verticalScale: 1
   fanAngle: 30
   textHeight: 0.2
-  candidateLayout: 4
+  candidateLayout: 3
   CurrentGazedText: 
   kSizeScale: 0.1
   isEllipsis: 0
@@ -2688,6 +2688,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hands_Zhenyi2
       objectReference: {fileID: 0}
+    - target: {fileID: 4715405876975549736, guid: c0899b8a8a1acb041bc1fdffe37ba80f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4715405876975706376, guid: c0899b8a8a1acb041bc1fdffe37ba80f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2696,7 +2701,7 @@ PrefabInstance:
     - target: {fileID: 4715405876975706376, guid: c0899b8a8a1acb041bc1fdffe37ba80f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -12.78
+      value: -10.31
       objectReference: {fileID: 0}
     - target: {fileID: 4715405876975706376, guid: c0899b8a8a1acb041bc1fdffe37ba80f,
         type: 3}
@@ -3518,6 +3523,10 @@ MonoBehaviour:
   wordlistLoader: {fileID: 132433878}
   dynamicHandKey: {fileID: 1008559595}
   dynamicKeyColor: {fileID: 1130148186}
+  keyboardHint: {fileID: 1130148182}
+  handmodelHint: {fileID: 150660574}
+  showKeyboard: 0
+  showHandModel: 1
   regularInput: {fileID: 94866699}
   newKeyboardInput: {fileID: 1057379355}
   curOutputMode: 0
@@ -4601,7 +4610,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1130148182
 Transform:
   m_ObjectHideFlags: 0
@@ -5306,7 +5315,7 @@ Transform:
   m_GameObject: {fileID: 1327282771}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: -0.13, y: -1.8, z: 23}
-  m_LocalScale: {x: 9, y: 1, z: 1.14}
+  m_LocalScale: {x: 9, y: 1, z: 0.69825}
   m_Children: []
   m_Father: {fileID: 132433877}
   m_RootOrder: 2
