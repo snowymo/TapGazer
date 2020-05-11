@@ -31,6 +31,8 @@ public class Measurement : MonoBehaviour
 
     public CandidateHandler candidateHandler;
 
+  public TMPro.TextMeshPro wpmText;
+
 
     // Start is called before the first frame update
     void Start()
@@ -92,6 +94,8 @@ public class Measurement : MonoBehaviour
         {
             saveData();
         }
+
+    wpmText.text = "WPM:" + WPM.ToString("F3");
     }
 
     public void AddWPM(int curWC)
@@ -140,7 +144,7 @@ public class Measurement : MonoBehaviour
         calculateMetric();
         //WPM += 1;// it is possible user deleted words
         endTime = DateTime.Now;
-        finishedSeconds = (endTime - startTime).Minutes * 60.0f + (endTime - startTime).Seconds;
+    finishedSeconds = (float)(endTime - startTime).TotalSeconds;
     WPM = (words - 1f) / finishedSeconds * 60.0f / 5.0f;
     if (finishedSeconds > typingSeconds)
         {
@@ -286,5 +290,16 @@ public class Measurement : MonoBehaviour
         }
         return result;
     }
+
+//   void OnGUI() {
+//     GUILayout.BeginArea(new Rect(20, 200, 250, 75));
+//     GUILayout.Label("WPM: " + WPM);
+//     GUILayout.EndArea();
+//     // 
+//     //     GUILayout.BeginArea(new Rect(20, 100, 250, 75));
+//     //     GUILayout.Label("gaze position: " + curgazeScreenCoord);
+//     //     GUILayout.Label("gaze3D position: " + gazeWorldCoord.ToString("F3"));
+//     //     GUILayout.EndArea();
+//   }
 
 }
