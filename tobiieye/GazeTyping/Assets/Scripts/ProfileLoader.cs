@@ -99,6 +99,8 @@ public class ProfileLoader : MonoBehaviour {
         curKey = 'L';
       if (curKey == 'r')
         curKey = 'R';
+      if (curKey == 'y')
+        curKey = 'Y';
       if (configMap[key] == "a") {
         // put it in the first finger
         // for the first finger, we need to skip two \n
