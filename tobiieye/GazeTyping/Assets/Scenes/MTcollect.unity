@@ -156,8 +156,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   times: 
+  results: []
+  alterResults: []
   fingerKeys: []
   currentProgress: 0
+  alterTimes: 
   textMesh: {fileID: 249757638}
 --- !u!1 &249757637
 GameObject:
@@ -225,8 +228,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 24.96
+  m_fontSizeBase: 24.96
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -358,7 +361,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 6.41}
+  m_AnchoredPosition: {x: 0, y: 5.76}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &978873359
