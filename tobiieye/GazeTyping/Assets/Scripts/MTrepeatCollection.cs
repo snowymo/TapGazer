@@ -24,7 +24,7 @@ public class MTrepeatCollection : MonoBehaviour
     times = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     results = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     alterDuration = new float[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    alterStart = new DateTime[10];
+    alterStart = new DateTime[] { DateTime.MaxValue, DateTime.MaxValue , DateTime.MaxValue , DateTime.MaxValue , DateTime.MaxValue , DateTime.MaxValue , DateTime.MaxValue , DateTime.MaxValue , DateTime.MaxValue , DateTime.MaxValue };
     alterTimes = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     alterResults = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     samesideResults = new double[24];
@@ -58,16 +58,19 @@ public class MTrepeatCollection : MonoBehaviour
     
     
     if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), curKey))) {  
+      if(alterStart[alterProgress] != DateTime.MaxValue) {
         TimeSpan deltaTime = DateTime.Now - alterStart[alterProgress];
-      alterDuration[alterProgress] += (float)deltaTime.TotalMilliseconds;
+        alterDuration[alterProgress] += (float)deltaTime.TotalMilliseconds;
         if (alterDuration[alterProgress] > 2500) {
-        alterResults[alterProgress] = alterDuration[alterProgress] / 1000.0f / (float)alterTimes[alterProgress];
+          alterResults[alterProgress] = alterDuration[alterProgress] / 1000.0f / (float)alterTimes[alterProgress];
           ++currentProgress;
           return;
         }
-       // print("now " + DateTime.Now.ToString());
-      
-      ++alterTimes[alterProgress];
+        // print("now " + DateTime.Now.ToString());
+
+        ++alterTimes[alterProgress];
+        alterStart[alterProgress] = DateTime.MaxValue;
+      }        
     } else {
       if (Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(KeyCode.F)) {
           alterStart[alterProgress] = DateTime.Now;
