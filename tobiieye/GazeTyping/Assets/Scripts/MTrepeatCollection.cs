@@ -51,9 +51,9 @@ public class MTrepeatCollection : MonoBehaviour
     int alterProgress = currentProgress % 10;
     string curKey = fingerKeys[alterProgress];
     if (alterProgress < 5) {
-      textMesh.text = "please press with RH index finger then press " + fingerKeys[alterProgress];
+      textMesh.text = "please press J then press " + fingerKeys[alterProgress];
     } else {
-      textMesh.text = "please press with LH index finger then press " + fingerKeys[alterProgress];
+      textMesh.text = "please press F then press " + fingerKeys[alterProgress];
     }
     
     
