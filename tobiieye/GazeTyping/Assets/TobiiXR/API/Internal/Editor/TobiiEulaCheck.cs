@@ -49,7 +49,8 @@ using eye tracking for interactive experiences, unless you first obtain a specia
 
 If you want to develop software which stores or transfers eye tracking data,
 such as for behaviour research, advertisement research, usability testing, etc
-please contact Tobii licensing at </color><color=#0080ff>sdklicensing@tobii.com</color>
+please contact Tobii licensing using our contact form at:</color><color=#0080ff>
+https://vr.tobii.com/sdk/contact/</color>
 
 <color=" + LicenseTextColor + @">By clicking the Accept button below, you are stating that you have read,
 and agree to be bound, by the Tobii XR Unity SDK License and Use Agreement.</color></size>";
