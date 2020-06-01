@@ -75,7 +75,21 @@ public class VSCandHandler : MonoBehaviour, IGazeFocusable {
   void Update() {
     if (hasBox == 10) {      
       hasBox += 1;
-      bc.center = new Vector3(bc.center.x, 0, bc.center.z);
+      if (bc.transform.parent.name.Contains("penta"))
+      {
+        //circle
+        if(bc.transform.name.Contains("1") || bc.transform.name.Contains("3") || bc.transform.name.Contains("5"))
+        {
+          bc.center = new Vector3(pw/2, 0, bc.center.z);
+        } else
+        {
+          bc.center = new Vector3(-pw/2, 0, bc.center.z);
+        }
+      } else
+      {
+        bc.center = new Vector3(bc.center.x, 0, bc.center.z);
+      }
+      
       bc.size = new Vector3(Mathf.Max(minColliderWidth, pw), colliderHeight/*(ph- colliderHeight)*/);
     } else if (hasBox >=0 && hasBox < 10) {
       hasBox += 1;
