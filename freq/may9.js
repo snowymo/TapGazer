@@ -1,11 +1,20 @@
 var fs = require("fs");
 
 // prepare large vocabulary
-var text = fs.readFileSync("./30k.txt").toString('utf-8');
+var text = fs.readFileSync("./top40k.txt").toString('utf-8');
 let wordList = text.split("\n")
 for(var i = 0; i < wordList.length; i++){
     wordList[i] = wordList[i].replace(/\s+/g, '');
 }
+
+// load frequencies
+let wordnfreq = JSON.parse(fs.readFileSync('top40k-freq.json'));
+// load finger skill
+// fingerSKill["diff"][0-7]
+// fingerSkill["same"][prevFinger][curFinger]
+let fingerSkill = JSON.parse(fs.readFileSync('fingerSkill.json'));
+// tap
+let tapTime = 0.277547;
 
 // prepare 100 common words
 let getMostFrequentWords = () => {
@@ -223,25 +232,67 @@ let classifyWords = n => {
    }
 }
 
+// Ken's computerScore
+// let computeScore = i => {
+//    let score = 0; // typing time for the 100 common words
+//    for (let n = 0 ; n < wordList.length ; n++) {
+//       let word = wordList[n];
+//       let count = wordCount[classifyWord(word)];
+//       if (count > 1)
+//          if (count > 5)
+// 	         score += 100000000;
+//          else {
+//             let weight = mostFrequentWords[word];
+//          if (weight)
+//             score += weight * count;// if we want to calculate the MT, we should use a new equation taking MTfinger and VisualSearch into consideration
+//          }
+//       else {
+//          let weight = mostFrequentWords[word];
+//       if (weight)
+//          score -= 2 * weight * count;
+//       }
+//    }
+//    return score;
+// }
+
+// y = 52x + 227.3 (ms)
+let computeVisualSearch = c => {
+   // take homograph count as the parameter
+   count = c;
+   return (52.0 * count + 227.3)/1000.0;
+}
+
+let computerMT = w => {
+   // mapping is global actually...
+   word = w;
+   moveTime = 0;
+   // MT = time for each finger + visual search + tap
+   let fingerSeq = classifyWord(word);
+   for(let i = 0; i < fingerSeq.length; i++){
+      if(i == 0 || 
+         ((fingerSeq[i-1]<= '3' && fingerSeq[i] > '3') || (fingerSeq[i-1]> '3' && fingerSeq[i] <= '3'))){
+            // apply different finger skill
+         moveTime += fingerSkill["diff"][fingerSeq[i]];
+      }else{
+         moveTime += fingerSkill["same"][fingerSeq[i-1]][fingerSeq[i]];
+      }
+   }
+   return moveTime;
+}
 
 let computeScore = i => {
    let score = 0; // typing time for the 100 common words
+   let bHomograph = true;
    for (let n = 0 ; n < wordList.length ; n++) {
       let word = wordList[n];
       let count = wordCount[classifyWord(word)];
-      if (count > 1)
-         if (count > 5)
-	    score += 100000000;
-         else {
-            let weight = mostFrequentWords[word];
-	    if (weight)
-	       score += weight * count;// if we want to calculate the MT, we should use a new equation taking MTfinger and VisualSearch into consideration
-         }
-      else {
-         let weight = mostFrequentWords[word];
-	 if (weight)
-	    score -= 2 * weight * count;
+      if (count > 5){
+         bHomograph = false;
+         score = Number.MAX_SAFE_INTEGER;
+         break;
       }
+      // calculate the MT for each common word and calculate the weighted sum 
+      score += (computerMT(word) + computeVisualSearch(count) + tapTime) * wordnfreq[word]
    }
    return score;
 }
@@ -250,16 +301,17 @@ let tryMapping = m => {
    mapping = m;
    classifyWords();
    let s0 = computeScore(0);
-console.log(Math.floor(1000 * s0));
+   console.log(s0);
    let str = s0;
 
+   // each mapping has 1000 iterations
    for (let i = 0 ; i < 1000 ; i++) {
       let saveMapping = mapping.slice();
       modifyMapping();
       classifyWords();
       let s1 = computeScore(i);
       if (s1 < s0) {
-	 s0 = s1;
+	      s0 = s1;
          str += ' ' + s0;
       }
       else
@@ -269,6 +321,7 @@ console.log(Math.floor(1000 * s0));
    if (s0 > large)
       return;
 
+      // F: calculate letter frequency for each finger
    let F = [0,0,0,0,0,0,0,0];
    for (let m = 0 ; m < mapping.length ; m++)
       for (let i = 0 ; i < mapping[m].length ; i++) {
@@ -280,17 +333,19 @@ console.log(Math.floor(1000 * s0));
 
    classifyWords();
 
+   // S: sum homograph number for 100 freq words
    let S = '';
    for (let word in mostFrequentWords)
       S += wordCount[classifyWord(word)];
 
+      // H: calculate word distribution for homograph from 1 to 5
    let H = [0,0,0,0,0,0];
    for (let n = 0 ; n < wordList.length ; n++) {
       let word = wordList[n];
       H[wordCount[classifyWord(word)]]++;
    }
 
-   console.log(Math.floor(1000 * s0), mapping, H, F, S);
+   console.log(s0, mapping, H, F, S);
 }
 
 

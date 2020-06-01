@@ -5,6 +5,10 @@ from wordfreq import *
 top10k = top_n_list('en', 1000000, wordlist="large")
 print(len(top10k))
 
+top40k =top_n_list('en', 40145, wordlist="large")
+with open('top40k.txt', 'w', encoding='utf-8') as filehandle:
+    filehandle.writelines("%s\n" % word for word in top40k)
+
 def get_freq_until(prob):
     sum = 0
     count = 0
