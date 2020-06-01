@@ -64,6 +64,7 @@ public class VSGenerator : MonoBehaviour {
   }
 
   public enum LAYOUT_OPTION { COLUMN, ROW, CIRCLE };
+  public Transform columnLayout, rowLayout, circleLayout;
 
   public string userName;
   public LAYOUT_OPTION userLayout;
@@ -98,7 +99,7 @@ public class VSGenerator : MonoBehaviour {
 
   //public GameObject candPrefab;
   public Transform areaParent;
-  public VSCandHandler[] vscands;
+  [SerializeField] VSCandHandler[] vscands;
 
   private List<VSItem> results;
 
@@ -118,6 +119,27 @@ public class VSGenerator : MonoBehaviour {
     newHistoryIndex = -1;
     newHistoryFrameCount = 0;
     gazeThreshold = 5;
+    vscands = new VSCandHandler[5];
+
+    if (userLayout == LAYOUT_OPTION.COLUMN)
+    {
+      circleLayout.gameObject.SetActive(false);
+      rowLayout.gameObject.SetActive(false);
+      for (int i = 0; i < 5; i++)
+        vscands[i] = columnLayout.Find("VSCand" + (i+1).ToString()).GetComponent<VSCandHandler>();
+    } else if(userLayout == LAYOUT_OPTION.CIRCLE)
+    {
+      columnLayout.gameObject.SetActive(false);
+      rowLayout.gameObject.SetActive(false);
+      for (int i = 0; i < 5; i++)
+        vscands[i] = circleLayout.Find("VSCand" + (i+1).ToString()).GetComponent<VSCandHandler>();
+    } else if (userLayout == LAYOUT_OPTION.ROW)
+    {
+      columnLayout.gameObject.SetActive(false);
+      circleLayout.gameObject.SetActive(false);
+      for (int i = 0; i < 5; i++)
+        vscands[i] = rowLayout.Find("VSCand" + (i+1).ToString()).GetComponent<VSCandHandler>();
+    }
 
     loadCommonWords();
 
@@ -152,7 +174,14 @@ public class VSGenerator : MonoBehaviour {
       verticalOffset = Mathf.Max(0, verticalOffset);
     }
     for (int i = 1; i < vscands.Length; i++) {
-      vscands[i].transform.localPosition = vscands[0].transform.localPosition + Vector3.back * verticalOffset * i;
+      if(userLayout == LAYOUT_OPTION.COLUMN)
+        vscands[i].transform.localPosition = vscands[0].transform.localPosition + Vector3.back * verticalOffset * i;
+      else if(userLayout == LAYOUT_OPTION.ROW)
+      {
+        // 1.64 is the constant width of word 'environmental'
+        // use 60% of it which is
+        vscands[i].transform.localPosition = vscands[0].transform.localPosition + Vector3.right * (verticalOffset+1.64f*0.6f) * ((int)(i+1)/2) * (i%2==0?1:-1);
+      }
     }
   }
 
@@ -160,7 +189,7 @@ public class VSGenerator : MonoBehaviour {
     // call when obj losts gaze, we can finalize history here
     int index = Array.IndexOf(currentWordList, word);
     if (index != -1) {
-      if(Time.frameCount - newHistoryFrameCount <= gazeThreshold) {
+      if(Time.frameCount - newHistoryFrameCount <= gazeThreshold && gazeHistory.Count > 2) {
         if(newHistoryIndex == gazeHistory[gazeHistory.Count - 1].gazeIndex) {
           // too short
           print("remove too short gaze: " + word + " " + (DateTime.Now - gazeAtCorrect).TotalMilliseconds);
@@ -204,7 +233,7 @@ public class VSGenerator : MonoBehaviour {
         return;
       }
       tapTimer = DateTime.Now;
-      if(Time.frameCount - newHistoryFrameCount <= gazeThreshold) {
+      if((Time.frameCount - newHistoryFrameCount <= gazeThreshold) && (gazeHistory.Count > 2)) {
         print("[space]remove too short gaze: " + currentWordList[gazeHistory[gazeHistory.Count - 1].gazeIndex]);
         gazeHistory.RemoveAt(gazeHistory.Count - 1);
         gazeAtCorrect = gazeHistory[gazeHistory.Count - 1].gazeTime;
