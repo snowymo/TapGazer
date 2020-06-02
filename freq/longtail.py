@@ -1,13 +1,18 @@
 # top_n_list(lang, n, wordlist='best')
 
 from wordfreq import *
+import re
 
 top10k = top_n_list('en', 1000000, wordlist="large")
 print(len(top10k))
 
 top40k =top_n_list('en', 40145, wordlist="large")
 with open('top40k.txt', 'w', encoding='utf-8') as filehandle:
-    filehandle.writelines("%s\n" % word for word in top40k)
+    for word in top40k:
+        word = word.lower()
+        if re.match('^[a-z]+$',word):
+            if len(word) > 3 or word_frequency(word, "en", "large") > word_frequency("confessed", "en"):
+                filehandle.writelines("%s\n" % word)
 
 def get_freq_until(prob):
     sum = 0

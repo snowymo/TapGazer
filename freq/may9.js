@@ -1,4 +1,5 @@
 var fs = require("fs");
+var SortedMap = require("collections/sorted-map");
 
 // prepare large vocabulary
 var text = fs.readFileSync("./top40k.txt").toString('utf-8');
@@ -190,11 +191,23 @@ let randomInt = n => Math.floor(n * random());
 
 let wordCount = {}, mapping = [];
 
+suggestedMappings = [[ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ],
+[ 'fok', 'vbe', 'lzxquw', 'ims', 'tr', 'gya', 'pjd', 'hcn' ],
+[ 'dwfq', 'hnp', 'uzs', 'jyir', 'ckga', 'vbe', 'lt', 'xom' ],
+[ 'figm', 'vs', 'odc', 'zlyu', 'jewr', 'bqt', 'xpa', 'knh' ]];
 let createRandomMapping = n => {
    random(n);
    mapping = ['','','','','','','',''];
    for (let i = 0 ; i < 26 ; i++)
       mapping[randomInt(8)] += String.fromCharCode(97 + i);
+   if(n < 4){
+      mapping = suggestedMappings[n];
+   }else{
+      random(n);
+      mapping = ['','','','','','','',''];
+      for (let i = 0 ; i < 26 ; i++)
+         mapping[randomInt(8)] += String.fromCharCode(97 + i);
+   }   
 }
 
 let modifyMapping = () => {
@@ -209,9 +222,14 @@ let modifyMapping = () => {
 }
 
 let classifyWord = word => {
+   word = word.toLowerCase();
    let s = '';
    for (let n = 0 ; n < word.length ; n++) {
       let ch = word.substring(n, n+1);
+      // validate the word first
+      if(ch > 'z' || ch < 'a')
+         return "";
+
       for (let bin = 0 ; bin < mapping.length ; bin++)
          if (mapping[bin].indexOf(ch) >= 0) {
 	    s += bin;
@@ -226,6 +244,8 @@ let classifyWords = n => {
    for (let i = 0 ; i < wordList.length ; i++) {
       let word = wordList[i];
       let c = classifyWord(word);
+      if(c == "")
+         continue;
       if (wordCount[c] === undefined)
          wordCount[c] = 0;
       wordCount[c]++;
@@ -268,6 +288,8 @@ let computerMT = w => {
    moveTime = 0;
    // MT = time for each finger + visual search + tap
    let fingerSeq = classifyWord(word);
+   if(fingerSeq == "")
+      return 0;
    for(let i = 0; i < fingerSeq.length; i++){
       if(i == 0 || 
          ((fingerSeq[i-1]<= '3' && fingerSeq[i] > '3') || (fingerSeq[i-1]> '3' && fingerSeq[i] <= '3'))){
@@ -286,36 +308,40 @@ let computeScore = i => {
    for (let n = 0 ; n < wordList.length ; n++) {
       let word = wordList[n];
       let count = wordCount[classifyWord(word)];
-      if (count > 5){
+      if (count > 10){
          bHomograph = false;
          score = Number.MAX_SAFE_INTEGER;
          break;
       }
       // calculate the MT for each common word and calculate the weighted sum 
-      score += (computerMT(word) + computeVisualSearch(count) + tapTime) * wordnfreq[word]
+      score += (computerMT(word) + computeVisualSearch(count) + tapTime) * wordnfreq[word];
+      //console.log("score[+" + word + "]=" + score);
    }
    return score;
 }
 
-let tryMapping = m => {
+let T = 90; // temperture
+let tryMapping = (m, iter, anneal) => {
    mapping = m;
    classifyWords();
    let s0 = computeScore(0);
-   console.log(s0);
+   //console.log(mapping, s0);
    let str = s0;
 
-   // each mapping has 1000 iterations
-   for (let i = 0 ; i < 1000 ; i++) {
+   // Gradient)Descent))500#itera)ons#
+   // each mapping has 500 iterations
+   for (let i = 0 ; i < iter ; i++) {
       let saveMapping = mapping.slice();
       modifyMapping();
       classifyWords();
       let s1 = computeScore(i);
+      // strict compare
       if (s1 < s0) {
-	      s0 = s1;
+         s0 = s1;
          str += ' ' + s0;
       }
       else
-         mapping = saveMapping;
+         mapping = saveMapping;    
    }
 
    if (s0 > large)
@@ -345,16 +371,89 @@ let tryMapping = m => {
       H[wordCount[classifyWord(word)]]++;
    }
 
-   console.log(s0, mapping, H, F, S);
+   //console.log(s0, mapping, H, F, S);
+   return s0;
 }
 
+let annealMapping = n => {
+   mapping = m;
+   classifyWords();
+   let s0 = computeScore(0);
+   //console.log(s0);
+   let str = s0;
 
-for (let n = 0 ; n < 100 ; n++) {
+   let saveMapping = mapping.slice();
+   modifyMapping();
+   classifyWords();
+   let s1 = computeScore(i);
+
+   T = Math.max(20,T);
+   var pr = 1 / ( 1 + Math.exp((s0-s1)/T--));
+   if(Math.random() < pr){
+      s0 = s1;
+   }else{
+      mapping = saveMapping;
+   }
+}
+
+let bestMappings = new SortedMap();
+let bestScore = 0;
+// start from 5000 random layouts
+console.log("stage 1: Gradient Descent 500 iter for 5000 random layouts");
+for (let n = 0 ; n < 5000 ; n++) {
    console.log(n);
    createRandomMapping(n);
-   tryMapping(mapping);
+   // Gradient descent 500 iteration
+   bestScore = tryMapping(mapping, 500, false);
+   // add to list
+   if(bestScore < large){
+      //console.log("add to list")
+      curMapCopy = JSON.parse(JSON.stringify(mapping));
+      bestMappings.set(curMapCopy, bestScore);
+      console.log(bestScore, mapping.toString());
+   }   
+}
+// only keep the top 100
+console.log("stage 2: Anneal top 100 for 10 times and Gradient Descent 3000 iter for each layout");
+let bestCount = Math.min(bestMappings.length, 100);
+for(let i = 0; i < bestCount; i++){
+   let curEntry = bestMappings.entries()[i];
+   mapping = curEntry.key;
+   // anneal 10 times
+   T = 90;
+   for(let j = 0; j < 10; j++){
+      annealMapping(j);
+      // then iter 3000 times
+      bestScore = tryMapping(mapping, 3000, false);
+      // add to list
+      if(bestScore < large){
+         //console.log("add to list")
+         curMapCopy = JSON.parse(JSON.stringify(mapping));
+         bestMappings.set(curMapCopy, bestScore);
+         console.log(bestScore, mapping.toString());
+      }  
+   }  
+}
+// keep the best 10
+console.log("stage 3: Gradient Descent top 10 for 10000 iter");
+bestCount = Math.min(bestMappings.length, 10);
+for(let i = 0; i < bestCount; i++){
+   let curEntry = bestMappings.entries()[i];
+   mapping = curEntry.key;
+   // lastly iter 10000 times
+   bestScore = tryMapping(mapping, 10000, false);
+   // add to list
+   if(bestScore < large){
+      //console.log("add to list")
+      curMapCopy = JSON.parse(JSON.stringify(mapping));
+      bestMappings.set(curMapCopy, bestScore);
+      console.log(bestScore, mapping.toString());
+   } 
 }
 
+console.log(bestMappings.entries()[0]);
+
+console.log("THE END");
 
 //tryMapping([ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ]);
 //tryMapping([ 'fok', 'vbe', 'lzxquw', 'ims', 'tr', 'gya', 'pjd', 'hcn' ]);
