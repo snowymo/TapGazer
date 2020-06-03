@@ -320,6 +320,41 @@ let computeScore = i => {
    return score;
 }
 
+let evaluateMapping = (curMapping)=>{
+   let originalMapping = mapping.slice();
+   mapping = curMapping;
+
+   classifyWords();
+   // score
+   let curScore = computeScore(0);
+   // F: calculate letter frequency for each finger
+   let F = [0,0,0,0,0,0,0,0];
+   for (let m = 0 ; m < mapping.length ; m++)
+      for (let i = 0 ; i < mapping[m].length ; i++) {
+         let c = mapping[m].substring(i,i+1);
+         F[m] += letterFrequency[c];
+      }
+   for (let n = 0 ; n < F.length ; n++)
+      F[n] = Math.floor(100 * F[n]);  
+
+   // S: sum homograph number for 100 freq words
+   let S = '';
+   for (let word in mostFrequentWords)
+      S += wordCount[classifyWord(word)];
+
+      // H: calculate word distribution for homograph from 1 to 5
+   let H = [0,0,0,0,0,0,0,0,0,0,0];
+   for (let n = 0 ; n < wordList.length ; n++) {
+      let word = wordList[n];
+      H[wordCount[classifyWord(word)]]++;
+   }  
+
+   console.log(curScore, curMapping.toString());
+   console.log("\t# homo", H.toString(), "\tletter", F.toString(), "common", S);
+
+   mapping = originalMapping;
+}
+
 let T = 90; // temperture
 let tryMapping = (m, iter, anneal) => {
    mapping = m;
@@ -347,31 +382,7 @@ let tryMapping = (m, iter, anneal) => {
    if (s0 > large)
       return;
 
-      // F: calculate letter frequency for each finger
-   let F = [0,0,0,0,0,0,0,0];
-   for (let m = 0 ; m < mapping.length ; m++)
-      for (let i = 0 ; i < mapping[m].length ; i++) {
-         let c = mapping[m].substring(i,i+1);
-         F[m] += letterFrequency[c];
-      }
-   for (let n = 0 ; n < F.length ; n++)
-      F[n] = Math.floor(100 * F[n]);
-
-   classifyWords();
-
-   // S: sum homograph number for 100 freq words
-   let S = '';
-   for (let word in mostFrequentWords)
-      S += wordCount[classifyWord(word)];
-
-      // H: calculate word distribution for homograph from 1 to 5
-   let H = [0,0,0,0,0,0];
-   for (let n = 0 ; n < wordList.length ; n++) {
-      let word = wordList[n];
-      H[wordCount[classifyWord(word)]]++;
-   }
-
-   //console.log(s0, mapping, H, F, S);
+      
    return s0;
 }
 
@@ -396,68 +407,103 @@ let annealMapping = n => {
    }
 }
 
-let bestMappings = new SortedMap();
-let bestScore = 0;
-// start from 5000 random layouts
-console.log("stage 1: Gradient Descent 500 iter for 5000 random layouts");
-for (let n = 0 ; n < 5000 ; n++) {
-   console.log(n);
-   createRandomMapping(n);
-   // Gradient descent 500 iteration
-   bestScore = tryMapping(mapping, 500, false);
-   // add to list
-   if(bestScore < large){
-      //console.log("add to list")
-      curMapCopy = JSON.parse(JSON.stringify(mapping));
-      bestMappings.set(curMapCopy, bestScore);
-      console.log(bestScore, mapping.toString());
-   }   
-}
-// only keep the top 100
-console.log("stage 2: Anneal top 100 for 10 times and Gradient Descent 3000 iter for each layout");
-let bestCount = Math.min(bestMappings.length, 100);
-for(let i = 0; i < bestCount; i++){
-   let curEntry = bestMappings.entries()[i];
-   mapping = curEntry.key;
-   // anneal 10 times
-   T = 90;
-   for(let j = 0; j < 10; j++){
-      annealMapping(j);
-      // then iter 3000 times
-      bestScore = tryMapping(mapping, 3000, false);
+let FindOptimalLayout = () => {
+   let bestMappings = new SortedMap();
+   let bestScore = 0;
+   // start from 5000 random layouts
+   console.log("stage 1: Gradient Descent 500 iter for 5000 random layouts");
+   for (let n = 0 ; n < 5000 ; n++) {
+      console.log(n);
+      createRandomMapping(n);
+      // Gradient descent 500 iteration
+      bestScore = tryMapping(mapping, 500, false);
       // add to list
       if(bestScore < large){
          //console.log("add to list")
          curMapCopy = JSON.parse(JSON.stringify(mapping));
          bestMappings.set(curMapCopy, bestScore);
          console.log(bestScore, mapping.toString());
+      }   
+   }
+   // only keep the top 100
+   console.log("stage 2: Anneal top 100 for 10 times and Gradient Descent 3000 iter for each layout");
+   let bestCount = Math.min(bestMappings.length, 100);
+   for(let i = 0; i < bestCount; i++){
+      let curEntry = bestMappings.entries()[i];
+      mapping = curEntry.key;
+      // anneal 10 times
+      T = 90;
+      for(let j = 0; j < 10; j++){
+         annealMapping(j);
+         // then iter 3000 times
+         bestScore = tryMapping(mapping, 3000, false);
+         // add to list
+         if(bestScore < large){
+            //console.log("add to list")
+            curMapCopy = JSON.parse(JSON.stringify(mapping));
+            bestMappings.set(curMapCopy, bestScore);
+            console.log(bestScore, mapping.toString());
+         }  
       }  
-   }  
-}
-// keep the best 10
-console.log("stage 3: Gradient Descent top 10 for 10000 iter");
-bestCount = Math.min(bestMappings.length, 10);
-for(let i = 0; i < bestCount; i++){
-   let curEntry = bestMappings.entries()[i];
-   mapping = curEntry.key;
-   // lastly iter 10000 times
-   bestScore = tryMapping(mapping, 10000, false);
-   // add to list
-   if(bestScore < large){
-      //console.log("add to list")
-      curMapCopy = JSON.parse(JSON.stringify(mapping));
-      bestMappings.set(curMapCopy, bestScore);
-      console.log(bestScore, mapping.toString());
-   } 
+   }
+   // keep the best 10
+   console.log("stage 3: Gradient Descent top 10 for 10000 iter");
+   bestCount = Math.min(bestMappings.length, 10);
+   for(let i = 0; i < bestCount; i++){
+      let curEntry = bestMappings.entries()[i];
+      mapping = curEntry.key;
+      // lastly iter 10000 times
+      bestScore = tryMapping(mapping, 10000, false);
+      // add to list
+      if(bestScore < large){
+         //console.log("add to list")
+         curMapCopy = JSON.parse(JSON.stringify(mapping));
+         bestMappings.set(curMapCopy, bestScore);
+         console.log(bestScore, mapping.toString());
+      } 
+   }   
+   console.log("BEST ONE:" + bestMappings.entries()[0]); 
 }
 
-console.log(bestMappings.entries()[0]);
-
-console.log("THE END");
+// main entry point
+//FindOptimalLayout();
 
 //tryMapping([ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ]);
 //tryMapping([ 'fok', 'vbe', 'lzxquw', 'ims', 'tr', 'gya', 'pjd', 'hcn' ]);
 //tryMapping([ 'dwfq', 'hnp', 'uzs', 'jyir', 'ckga', 'vbe', 'lt', 'xom' ]);
 //tryMapping([ 'figm', 'vs', 'odc', 'zlyu', 'jewr', 'bqt', 'xpa', 'knh' ]);
+//evaluateMapping(['os','zujcxgp','efw','mn','it','ahd','lbqr','vyk']);
+//evaluateMapping(['oyxk','fbe','jlzgu','dwi','qctr','ma','svp','hn']);
 
+let potentialMappings = [['os','zujcxgp','efw','mn','it','ahd','lbqr','vyk'],
+['oyxk','fbe','jlzgu','dwi','qctr','ma','svp','hn'],
+['dwvuf','xhqn','ys','kjir','cga','pbe','lt','ozm'],
+['fim','bvs','od','qlcgy','jewr','kzut','hpa','xn'],
+['xvpy','hms','cje','ti','kno','rba','lwzuqg','fd'],
+['lxhz','qnt','ir','cjwe','kus','bfgvy','dpo','am'],
+['it','jcru','ywvd','bpn','efh','gms','al','qxkzo'],
+['wny','ap','hrm','it','geqzb','vfcd','os','kjxlu'],
+['mzyo','gid','wn','ha','efl','tqr','xuckpjv','bs'],
+['ig','ewn','qcfjr','mdzu','bvxhy','as','ot','klp'],
+['lcqxy','it','pjn','rvs','afm','ugbhk','zwo','ed'],
+['gps','imy','af','olz','wbqe','vcdxh','tur','kjn'],
+['mok','cls','gbdu','jri','qxhyvn','wef','pa','zt'],
+['brk','ghvf','ywzo','ut','pecj','sa','ldi','nmxq'],
+['xzco','jdi','lt','egm','khsu','an','prvbq','wyf'],
+['mqr','nh','zgwe','at','ylo','vpdxbk','jucs','fi'],
+['gdbv','sl','fuh','xjcqn','tra','kmo','ewzp','iy'],
+['ot','cpxn','urw','gal','ehbv','iky','dfm','zjqs'],
+['wjzce','tr','ma','sbu','kxogql','nh','dpi','vyf'],
+['wvdfx','ucs','img','zlo','at','eh','pqrkb','yjn'],
+['hbkgu','pa','jdox','zcrmq','elw','si','fvt','ny'],
+['hmzx','vfdp','ijr','ubs','agl','cnw','qet','kyo'],
+['sn','djfr','hzpqx','cay','vubt','okl','ewg','im'],
+['kuxy','en','ba','ljpr','dfwi','zcgo','qhvt','ms'],
+['wn','amr','kqoy','fvxph','bis','cdlu','egjz','t'],
+['lt','mcfv','nkp','grh','jei','zoqwy','as','bdxu'],
+['gze','dwi','rt','vcfxmu','sa','pbn','hyql','kjo'],
+];
 
+// evaluate the potential mappings
+for(let i = 0; i < potentialMappings.length; i++)
+   evaluateMapping(potentialMappings[i]);
