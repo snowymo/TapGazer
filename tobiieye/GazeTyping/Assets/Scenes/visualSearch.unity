@@ -289,6 +289,26 @@ PrefabInstance:
       propertyPath: m_HorizontalFit
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
     - {fileID: 4066567397464527077, guid: 4228080e872467548b580cc691b99d6b, type: 3}
@@ -652,6 +672,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_textAlignment
       value: 2049
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
@@ -3159,6 +3199,26 @@ PrefabInstance:
       propertyPath: m_textAlignment
       value: 2052
       objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.00000001090119
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 4228080e872467548b580cc691b99d6b, type: 3}
@@ -3909,7 +3969,7 @@ MonoBehaviour:
   rowLayout: {fileID: 547309821}
   circleLayout: {fileID: 1843664367}
   userName: hehe
-  userLayout: 0
+  userLayout: 2
   commonWordPath: 
   countdownTimer: {fileID: 1635026691}
   areaParent: {fileID: 1254354637}
@@ -6224,6 +6284,26 @@ PrefabInstance:
       propertyPath: m_textAlignment
       value: 2049
       objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4228080e872467548b580cc691b99d6b, type: 3}
 --- !u!224 &1994270497 stripped
@@ -6495,6 +6575,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_textAlignment
       value: 2052
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124778032617887342, guid: 4228080e872467548b580cc691b99d6b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}

@@ -228,6 +228,7 @@ public class VSGenerator : MonoBehaviour {
   void handle() {
     // gaze and check if 'b' or 'n' is pressed for selection
     if (Input.GetKeyDown(KeyCode.Space)) {
+      print("tap space at " + Time.frameCount + "-" + DateTime.Now.ToLongTimeString() + "." + DateTime.Now.Millisecond);
       if(gazeHistory.Count == 0) {
         Debug.LogWarning("haven't gaze at any word");
         return;
@@ -249,7 +250,6 @@ public class VSGenerator : MonoBehaviour {
       gazeStartTimer = DateTime.MinValue;
       gazeHistory.Clear();
       newHistoryIndex = -1;
-
       //
       prepare();
     }
@@ -282,11 +282,13 @@ public class VSGenerator : MonoBehaviour {
       vscands[i].SetText("");
       //vscands[i].SetColor("white");
     }
+    // show bounding box to indicate where the target word is
+    vscands[currentTargetIdx].ShowBorder();
   }
 
   void countdown() {
     if(countdownTimer.text != "") {
-      countdownCollider.enabled = true;
+      //countdownCollider.enabled = true;
       if (startTimer == DateTime.MinValue) {
         startTimer = DateTime.Now;
       } 

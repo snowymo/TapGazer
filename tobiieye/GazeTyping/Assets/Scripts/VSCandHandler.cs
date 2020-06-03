@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Tobii.G2OM;
+using System;
 
 public class VSCandHandler : MonoBehaviour, IGazeFocusable {
 
@@ -13,6 +14,7 @@ public class VSCandHandler : MonoBehaviour, IGazeFocusable {
   int hasBox;
   private string pureText;
   private MeshRenderer mr;
+  public GameObject border;
 
   //
   float minColliderWidth = 0.5f;
@@ -46,6 +48,7 @@ public class VSCandHandler : MonoBehaviour, IGazeFocusable {
     hasBox = 0;
     mr.enabled = false;
     bc.enabled = false;
+    border.SetActive(false);
     //if (bc != null) {
     //  Destroy(bc);
     //}
@@ -60,6 +63,10 @@ public class VSCandHandler : MonoBehaviour, IGazeFocusable {
     bc.enabled = true;
     //textComp.text = "<color=" + colorName + ">" + pureText + "</color>";
     //textComp.fontStyle = FontStyles.Normal;
+  }
+
+  public void ShowBorder() {
+    border.SetActive(true);
   }
 
   void adjustColliderHeight() {
@@ -100,7 +107,7 @@ public class VSCandHandler : MonoBehaviour, IGazeFocusable {
   public void GazeFocusChanged(bool hasFocus) {
     //If this object received focus, fade the object's color to highlight color
     if (hasFocus) {
-      print("glance at " + pureText + " at " + Time.frameCount);
+      print("glance at " + pureText + " at " + Time.frameCount + "-" + DateTime.Now.ToLongTimeString() + "." + DateTime.Now.Millisecond);
       //textComp.fontStyle = TMPro.FontStyles.Underline;
       if (pureText == "")
         return;
