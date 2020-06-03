@@ -16,6 +16,7 @@ let wordnfreq = JSON.parse(fs.readFileSync('top40k-freq.json'));
 let fingerSkill = JSON.parse(fs.readFileSync('fingerSkill.json'));
 // tap
 let tapTime = 0.277547;
+let tapAltTime = 0.1053388228;
 
 // prepare 100 common words
 let getMostFrequentWords = () => {
@@ -175,6 +176,7 @@ let random = function() {
       seed = (seed - (seed % 30306)) / 30306;
       z    = (seed % 30322) + 1;
    }
+   // seed
    init(2);
    return function(s) {
       if (s !== undefined)
@@ -188,34 +190,48 @@ let random = function() {
 let mostFrequentWords = getMostFrequentWords();
 
 let randomInt = n => Math.floor(n * random());
+let randomMathInt = n => Math.floor(Math.random()*n);
 
 let wordCount = {}, mapping = [];
 
-suggestedMappings = [[ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ],
-[ 'fok', 'vbe', 'lzxquw', 'ims', 'tr', 'gya', 'pjd', 'hcn' ],
-[ 'dwfq', 'hnp', 'uzs', 'jyir', 'ckga', 'vbe', 'lt', 'xom' ],
-[ 'figm', 'vs', 'odc', 'zlyu', 'jewr', 'bqt', 'xpa', 'knh' ]];
+// suggestedMappings = [[ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ],
+// [ 'fok', 'vbe', 'lzxquw', 'ims', 'tr', 'gya', 'pjd', 'hcn' ],
+// [ 'dwfq', 'hnp', 'uzs', 'jyir', 'ckga', 'vbe', 'lt', 'xom' ],
+// [ 'figm', 'vs', 'odc', 'zlyu', 'jewr', 'bqt', 'xpa', 'knh' ]];
+let potentialMappings = [];
+// load potential mappings
+let LoadPotentialMappings = ()=>{
+   var maptext = fs.readFileSync("./potentialMappings.txt").toString('utf-8');
+   let mappings = maptext.split("\n");
+   mappings.forEach(m => {
+      curMapping = m.split(",");
+      if(curMapping.length > 8)
+         curMapping.pop();
+      potentialMappings.push(curMapping);
+   });
+}
+
 let createRandomMapping = n => {
-   random(n);
+   //random(n);
    mapping = ['','','','','','','',''];
    for (let i = 0 ; i < 26 ; i++)
-      mapping[randomInt(8)] += String.fromCharCode(97 + i);
-   if(n < 4){
-      mapping = suggestedMappings[n];
+      mapping[randomMathInt(8)] += String.fromCharCode(97 + i);
+   if(n < potentialMappings.length){
+      mapping = potentialMappings[n];
    }else{
-      random(n);
+      //random(n);
       mapping = ['','','','','','','',''];
       for (let i = 0 ; i < 26 ; i++)
-         mapping[randomInt(8)] += String.fromCharCode(97 + i);
+         mapping[randomMathInt(8)] += String.fromCharCode(97 + i);
    }   
 }
 
 let modifyMapping = () => {
    let i, j, M = mapping;
-   while (i = randomInt(8), M[i].length == 0) ;
-   for (j = i ; j == i ; j = randomInt(8)) ;
-   let ki = randomInt(M[i].length);
-   let kj = randomInt(M[j].length);
+   while (i = randomMathInt(8), M[i].length == 0) ;
+   for (j = i ; j == i ; j = randomMathInt(8)) ;
+   let ki = randomMathInt(M[i].length);
+   let kj = randomMathInt(M[j].length);
    let ch = M[i].substring(ki, ki+1);
    M[i] = M[i].substring(0, ki) +      M[i].substring(ki+1, M[i].length);
    M[j] = M[j].substring(0, kj) + ch + M[j].substring(kj  , M[j].length);
@@ -278,8 +294,11 @@ let classifyWords = n => {
 // y = 52x + 227.3 (ms)
 let computeVisualSearch = c => {
    // take homograph count as the parameter
-   count = c;
-   return (52.0 * count + 227.3)/1000.0;
+   // novice model
+   // count = c;
+   // return (52.0 * count + 227.3)/1000.0;
+   // expert model
+   return 0.02679;
 }
 
 let computerMT = w => {
@@ -308,13 +327,19 @@ let computeScore = i => {
    for (let n = 0 ; n < wordList.length ; n++) {
       let word = wordList[n];
       let count = wordCount[classifyWord(word)];
-      if (count > 10){
+      if (count > 10 ||
+         (word in mostFrequentWords && count > 5)){
          bHomograph = false;
          score = Number.MAX_SAFE_INTEGER;
          break;
       }
       // calculate the MT for each common word and calculate the weighted sum 
-      score += (computerMT(word) + computeVisualSearch(count) + tapTime) * wordnfreq[word];
+      if(count == 1){
+         // save the visual search if there is only one candidate word
+         score += (computerMT(word) + tapAltTime) * wordnfreq[word];
+      }else{
+         score += (computerMT(word) + computeVisualSearch(count) + tapTime) * wordnfreq[word];
+      }      
       //console.log("score[+" + word + "]=" + score);
    }
    return score;
@@ -413,7 +438,7 @@ let FindOptimalLayout = () => {
    // start from 5000 random layouts
    console.log("stage 1: Gradient Descent 500 iter for 5000 random layouts");
    for (let n = 0 ; n < 5000 ; n++) {
-      console.log(n);
+      // console.log(n);
       createRandomMapping(n);
       // Gradient descent 500 iteration
       bestScore = tryMapping(mapping, 500, false);
@@ -422,8 +447,13 @@ let FindOptimalLayout = () => {
          //console.log("add to list")
          curMapCopy = JSON.parse(JSON.stringify(mapping));
          bestMappings.set(curMapCopy, bestScore);
-         console.log(bestScore, mapping.toString());
-      }   
+
+         JSON.stringify({'mapping':mapping,'score':bestScore});
+         console.log("'"+n+"':{" + JSON.stringify({'mapping':mapping,'score':bestScore}) + "},");
+         // console.log(bestScore, mapping.toString());
+      }else{
+         console.log("'"+n+"':{'mapping':[]},");
+      }
    }
    // only keep the top 100
    console.log("stage 2: Anneal top 100 for 10 times and Gradient Descent 3000 iter for each layout");
@@ -466,44 +496,16 @@ let FindOptimalLayout = () => {
 }
 
 // main entry point
-//FindOptimalLayout();
+FindOptimalLayout();
 
-//tryMapping([ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ]);
+// tryMapping([ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ]);
 //tryMapping([ 'fok', 'vbe', 'lzxquw', 'ims', 'tr', 'gya', 'pjd', 'hcn' ]);
 //tryMapping([ 'dwfq', 'hnp', 'uzs', 'jyir', 'ckga', 'vbe', 'lt', 'xom' ]);
 //tryMapping([ 'figm', 'vs', 'odc', 'zlyu', 'jewr', 'bqt', 'xpa', 'knh' ]);
-//evaluateMapping(['os','zujcxgp','efw','mn','it','ahd','lbqr','vyk']);
+// evaluateMapping(['os','zujcxgp','efw','mn','it','ahd','lbqr','vyk']);
+// evaluateMapping([ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ]);
 //evaluateMapping(['oyxk','fbe','jlzgu','dwi','qctr','ma','svp','hn']);
 
-let potentialMappings = [['os','zujcxgp','efw','mn','it','ahd','lbqr','vyk'],
-['oyxk','fbe','jlzgu','dwi','qctr','ma','svp','hn'],
-['dwvuf','xhqn','ys','kjir','cga','pbe','lt','ozm'],
-['fim','bvs','od','qlcgy','jewr','kzut','hpa','xn'],
-['xvpy','hms','cje','ti','kno','rba','lwzuqg','fd'],
-['lxhz','qnt','ir','cjwe','kus','bfgvy','dpo','am'],
-['it','jcru','ywvd','bpn','efh','gms','al','qxkzo'],
-['wny','ap','hrm','it','geqzb','vfcd','os','kjxlu'],
-['mzyo','gid','wn','ha','efl','tqr','xuckpjv','bs'],
-['ig','ewn','qcfjr','mdzu','bvxhy','as','ot','klp'],
-['lcqxy','it','pjn','rvs','afm','ugbhk','zwo','ed'],
-['gps','imy','af','olz','wbqe','vcdxh','tur','kjn'],
-['mok','cls','gbdu','jri','qxhyvn','wef','pa','zt'],
-['brk','ghvf','ywzo','ut','pecj','sa','ldi','nmxq'],
-['xzco','jdi','lt','egm','khsu','an','prvbq','wyf'],
-['mqr','nh','zgwe','at','ylo','vpdxbk','jucs','fi'],
-['gdbv','sl','fuh','xjcqn','tra','kmo','ewzp','iy'],
-['ot','cpxn','urw','gal','ehbv','iky','dfm','zjqs'],
-['wjzce','tr','ma','sbu','kxogql','nh','dpi','vyf'],
-['wvdfx','ucs','img','zlo','at','eh','pqrkb','yjn'],
-['hbkgu','pa','jdox','zcrmq','elw','si','fvt','ny'],
-['hmzx','vfdp','ijr','ubs','agl','cnw','qet','kyo'],
-['sn','djfr','hzpqx','cay','vubt','okl','ewg','im'],
-['kuxy','en','ba','ljpr','dfwi','zcgo','qhvt','ms'],
-['wn','amr','kqoy','fvxph','bis','cdlu','egjz','t'],
-['lt','mcfv','nkp','grh','jei','zoqwy','as','bdxu'],
-['gze','dwi','rt','vcfxmu','sa','pbn','hyql','kjo'],
-];
-
 // evaluate the potential mappings
-for(let i = 0; i < potentialMappings.length; i++)
-   evaluateMapping(potentialMappings[i]);
+// for(let i = 0; i < potentialMappings.length; i++)
+//    evaluateMapping(potentialMappings[i]);
