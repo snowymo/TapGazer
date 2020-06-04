@@ -1,0 +1,28 @@
+{
+  "name": "optimize",
+  "version": "1.0.0",
+  "description": "optimize the layout for in-place typing",
+  "main": "may9.js",
+  "dependencies": {
+    "line-reader": "^0.4.0",
+    "collections": "^5.1.11",
+    "sorted-map": "^0.1.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node may9.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/futurerealitylab/sensel.git"
+  },
+  "keywords": [
+    "optimization"
+  ],
+  "author": "Zhenyi He",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/futurerealitylab/sensel/issues"
+  },
+  "homepage": "https://github.com/futurerealitylab/sensel#readme"
+}
