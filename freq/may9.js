@@ -213,9 +213,8 @@ let LoadPotentialMappings = ()=>{
 
 let createRandomMapping = n => {
    //random(n);
-   mapping = ['','','','','','','',''];
-   for (let i = 0 ; i < 26 ; i++)
-      mapping[randomMathInt(8)] += String.fromCharCode(97 + i);
+   // don't need to start from potential mapping
+   potentialMappings = [];
    if(n < potentialMappings.length){
       mapping = potentialMappings[n];
    }else{
@@ -515,14 +514,18 @@ let FindOptimalLayout = (startingLevel) => {
    }   
 }
 
-// load stage1 result from stage1.json
-let stage1Result = JSON.parse(fs.readFileSync('stage1.json'));
-Object.keys(stage1Result).forEach(function(key) {
-   bestMappings.add(key.split(","), stage1Result[key]);
- });
+let stageStartLevel = 1;
+
+if(stageStartLevel == 2){
+   // load stage1 result from stage1.json
+   let stage1Result = JSON.parse(fs.readFileSync('stage1.json'));
+   Object.keys(stage1Result).forEach(function(key) {
+      bestMappings.add(key.split(","), stage1Result[key]);
+   });
+}
 
 // main entry point
-FindOptimalLayout(2);
+FindOptimalLayout(stageStartLevel);
 
 // tryMapping([ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ]);
 //tryMapping([ 'fok', 'vbe', 'lzxquw', 'ims', 'tr', 'gya', 'pjd', 'hcn' ]);
