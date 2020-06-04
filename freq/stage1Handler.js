@@ -1,5 +1,6 @@
 
-var fs = require("fs");
+const fs = require("fs");
+const readline = require('readline');
 
 stage1result = {};
 // load results of mappings
@@ -17,6 +18,20 @@ Object.keys(seed2result).forEach(function(key) {
     var mapping = entry["mapping"];
     if(mapping.length > 0)
         stage1result[mapping.toString()] = entry["score"];
+  });
+
+  // load tobii ken result
+const readInterface = readline.createInterface({
+    input: fs.createReadStream('tobii3.txt'),
+    crlfDelay: Infinity,
+    output: process.stdout,
+    console: false
+});
+readInterface.on('line', function (line) {
+    var entry = line.split(" ");
+    if(entry.length == 2){
+        stage1result[entry[1].toString()] = entry[0];
+    }
   });
 
 fs.writeFileSync('stage1.json', JSON.stringify(stage1result));;
