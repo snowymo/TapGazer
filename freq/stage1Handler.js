@@ -17,6 +17,10 @@ stage1result = {};
   loadRandomResults("result_common5.txt");
   loadRandomResults("result_common5-2.txt");
   loadRandomResults("result_common5-3.txt");
+  loadRandomResults("test.json");
+  loadRandomResults("test2.json");
+  loadRandomResults("test3.json");
+  loadRandomResults("test4.json");
 
   // load tobii ken result
   let tobii3 = fs.readFileSync("tobii3.txt").toString('utf-8').split("\n");
