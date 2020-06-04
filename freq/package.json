@@ -2,7 +2,7 @@
   "name": "optimize",
   "version": "1.0.0",
   "description": "optimize the layout for in-place typing",
-  "main": "may9.js",
+  
   "dependencies": {
     "line-reader": "^0.4.0",
     "collections": "^5.1.11",

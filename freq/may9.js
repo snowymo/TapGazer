@@ -484,9 +484,9 @@ let FindOptimalLayout = (startingLevel) => {
                curMapCopy = JSON.parse(JSON.stringify(mapping));
                bestMappings.add(curMapCopy, bestScore);
                // console.log(bestScore, mapping.toString());
-               console.log("\""+j+"\":" + JSON.stringify({'mapping':mapping,'score':bestScore}) + ",");
+               console.log("\""+i+"-"+j+"\":" + JSON.stringify({'mapping':mapping,'score':bestScore}) + ",");
             }  else{
-               console.log("\""+j+"\":{\"mapping\":[]},");
+               console.log("\""+i+"-"+j+"\":{\"mapping\":[]},");
             }
          }  
       }
