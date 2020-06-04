@@ -411,7 +411,7 @@ let tryMapping = (m, iter, anneal) => {
    return s0;
 }
 
-let annealMapping = n => {
+let annealMapping = (n,m) => {
    mapping = m;
    classifyWords();
    let s0 = computeScore(0);
@@ -432,70 +432,97 @@ let annealMapping = n => {
    }
 }
 
-let FindOptimalLayout = () => {
-   let bestMappings = new SortedMap();
-   let bestScore = 0;
+let bestMappings = new SortedMap();
+let bestScore = 0;
+let FindOptimalLayout = (startingLevel) => {   
    // start from 5000 random layouts
-   console.log("stage 1: Gradient Descent 500 iter for 5000 random layouts");
-   for (let n = 0 ; n < 5000 ; n++) {
-      // console.log(n);
-      createRandomMapping(n);
-      // Gradient descent 500 iteration
-      bestScore = tryMapping(mapping, 500, false);
-      // add to list
-      if(bestScore < large){
-         //console.log("add to list")
-         curMapCopy = JSON.parse(JSON.stringify(mapping));
-         bestMappings.set(curMapCopy, bestScore);
-
-         console.log("\""+n+"\":" + JSON.stringify({'mapping':mapping,'score':bestScore}) + ",");
-         // console.log(bestScore, mapping.toString());
-      }else{
-         console.log("\""+n+"\":{\"mapping\":[]},");
-      }
-   }
-   // only keep the top 100
-   console.log("stage 2: Anneal top 100 for 10 times and Gradient Descent 3000 iter for each layout");
-   let bestCount = Math.min(bestMappings.length, 100);
-   for(let i = 0; i < bestCount; i++){
-      let curEntry = bestMappings.entries()[i];
-      mapping = curEntry.key;
-      // anneal 10 times
-      T = 90;
-      for(let j = 0; j < 10; j++){
-         annealMapping(j);
-         // then iter 3000 times
-         bestScore = tryMapping(mapping, 3000, false);
+   if(startingLevel <= 1){
+      console.log("stage 1: Gradient Descent 500 iter for 5000 random layouts");
+      for (let n = 0 ; n < 5000 ; n++) {
+         // console.log(n);
+         createRandomMapping(n);
+         // Gradient descent 500 iteration
+         bestScore = tryMapping(mapping, 500, false);
          // add to list
          if(bestScore < large){
             //console.log("add to list")
             curMapCopy = JSON.parse(JSON.stringify(mapping));
-            bestMappings.set(curMapCopy, bestScore);
-            console.log(bestScore, mapping.toString());
-         }  
-      }  
+            bestMappings.add(curMapCopy, bestScore);
+   
+            console.log("\""+n+"\":" + JSON.stringify({'mapping':mapping,'score':bestScore}) + ",");
+            // console.log(bestScore, mapping.toString());
+         }else{
+            console.log("\""+n+"\":{\"mapping\":[]},");
+         }
+      }
    }
-   // keep the best 10
-   console.log("stage 3: Gradient Descent top 10 for 10000 iter");
-   bestCount = Math.min(bestMappings.length, 10);
-   for(let i = 0; i < bestCount; i++){
-      let curEntry = bestMappings.entries()[i];
-      mapping = curEntry.key;
-      // lastly iter 10000 times
-      bestScore = tryMapping(mapping, 10000, false);
-      // add to list
-      if(bestScore < large){
-         //console.log("add to list")
-         curMapCopy = JSON.parse(JSON.stringify(mapping));
-         bestMappings.set(curMapCopy, bestScore);
-         console.log(bestScore, mapping.toString());
-      } 
+   if(startingLevel <= 2){
+      // only keep the top 100
+      console.log("stage 2: Anneal top 100 for 10 times and Gradient Descent 3000 iter for each layout");
+      let bestCount = Math.min(bestMappings.length, 100);
+      // bestMappings.sort();
+      // let it = bestMappings.entries();
+      // let result = it.next();
+      // while (!result.done) {
+      //  console.log(result.value); // 1 3 5 7 9
+      //  result = it.next();
+      // }
+
+      let entryArray = Array.from(bestMappings.entries());
+      for(let i = 0; i < bestCount; i++){
+         let curEntry = entryArray[i];
+         mapping = curEntry[1];
+         // anneal 10 times
+         T = 90;
+         for(let j = 0; j < 10; j++){
+            annealMapping(j,curEntry[1]);
+            // then iter 3000 times
+            bestScore = tryMapping(mapping, 3000, false);
+            // add to list
+            if(bestScore < large){
+               //console.log("add to list")
+               curMapCopy = JSON.parse(JSON.stringify(mapping));
+               bestMappings.add(curMapCopy, bestScore);
+               // console.log(bestScore, mapping.toString());
+               console.log("\""+j+"\":" + JSON.stringify({'mapping':mapping,'score':bestScore}) + ",");
+            }  else{
+               console.log("\""+j+"\":{\"mapping\":[]},");
+            }
+         }  
+      }
+   }
+   if(startingLevel <= 3){
+      // keep the best 10
+      console.log("stage 3: Gradient Descent top 10 for 10000 iter");
+      bestCount = Math.min(bestMappings.length, 10);
+      for(let i = 0; i < bestCount; i++){
+         let curEntry = bestMappings.entries()[i];
+         mapping = curEntry.key;
+         // lastly iter 10000 times
+         bestScore = tryMapping(mapping, 10000, false);
+         // add to list
+         if(bestScore < large){
+            //console.log("add to list")
+            curMapCopy = JSON.parse(JSON.stringify(mapping));
+            bestMappings.add(curMapCopy, bestScore);
+            // console.log(bestScore, mapping.toString());
+            console.log("\""+i+"\":" + JSON.stringify({'mapping':mapping,'score':bestScore}) + ",");
+         } else{
+            console.log("\""+i+"\":{\"mapping\":[]},");
+         }
+      }   
+      console.log("BEST ONE:" + bestMappings.entries()[0]); 
    }   
-   console.log("BEST ONE:" + bestMappings.entries()[0]); 
 }
 
+// load stage1 result from stage1.json
+let stage1Result = JSON.parse(fs.readFileSync('stage1.json'));
+Object.keys(stage1Result).forEach(function(key) {
+   bestMappings.add(key.split(","), stage1Result[key]);
+ });
+
 // main entry point
-FindOptimalLayout();
+FindOptimalLayout(2);
 
 // tryMapping([ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ]);
 //tryMapping([ 'fok', 'vbe', 'lzxquw', 'ims', 'tr', 'gya', 'pjd', 'hcn' ]);
