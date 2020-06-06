@@ -546,8 +546,9 @@ FindOptimalLayout(stageStartLevel);
 //evaluateMapping(['oyxk','fbe','jlzgu','dwi','qctr','ma','svp','hn']);
 
 // evaluate the potential mappings
-// let entryArray = Array.from(bestMappings.entries());
-// for(let i = 0; i < bestMappings.length; i++){
-//    let curEntry = entryArray[i];
-//    evaluateMapping(curEntry[1]);
-// }
+/* let entryArray = Array.from(bestMappings.entries());
+for(let i = 0; i < bestMappings.length; i++){
+   let curEntry = entryArray[i];
+   evaluateMapping(curEntry[1]);
+} */
+
