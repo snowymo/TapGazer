@@ -17,8 +17,8 @@ stage1result = {};
   loadRandomResults("result_common5.txt");
   loadRandomResults("result_common5-2.txt");
   loadRandomResults("result_common5-3.txt");
-  loadRandomResults("test.json");
-  loadRandomResults("test2.json");
+  loadRandomResults("test.txt");
+  loadRandomResults("test2.txt");
   loadRandomResults("test3.json");
   loadRandomResults("test4.json");
 

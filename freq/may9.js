@@ -7,6 +7,7 @@ let wordList = text.split("\n")
 for(var i = 0; i < wordList.length; i++){
     wordList[i] = wordList[i].replace(/\s+/g, '');
 }
+let vocabulary56k = require("./vocabulary56k.js");
 
 // load frequencies
 let wordnfreq = JSON.parse(fs.readFileSync('top40k-freq.json'));
@@ -320,14 +321,14 @@ let computerMT = w => {
    return moveTime;
 }
 
-let computeScore = i => {
+let computeScore = (i, strict = true) => {
    let score = 0; // typing time for the 100 common words
    let bHomograph = true;
    for (let n = 0 ; n < wordList.length ; n++) {
       let word = wordList[n];
       let count = wordCount[classifyWord(word)];
       if (count > 10 ||
-         (word in mostFrequentWords && count > 5)){
+         (strict && word in mostFrequentWords && count > 5)){
          bHomograph = false;
          score = Number.MAX_SAFE_INTEGER;
          break;
@@ -350,7 +351,7 @@ let evaluateMapping = (curMapping)=>{
 
    classifyWords();
    // score
-   let curScore = computeScore(0);
+   let curScore = computeScore(0, false);
    // F: calculate letter frequency for each finger
    let F = [0,0,0,0,0,0,0,0];
    for (let m = 0 ; m < mapping.length ; m++)
@@ -363,8 +364,17 @@ let evaluateMapping = (curMapping)=>{
 
    // S: sum homograph number for 100 freq words
    let S = '';
-   for (let word in mostFrequentWords)
-      S += wordCount[classifyWord(word)];
+   for (let word in mostFrequentWords){
+      let wc = wordCount[classifyWord(word)];
+      if(wc > 5)
+         S += wc;
+   }
+   S += '--';
+   for(let i = 0; i < vocabulary56k.length; i++){
+      let wc = wordCount[classifyWord(vocabulary56k[i])];
+      if(wc > 5)
+         S += wc;
+   }
 
       // H: calculate word distribution for homograph from 1 to 5
    let H = [0,0,0,0,0,0,0,0,0,0,0];
@@ -514,7 +524,7 @@ let FindOptimalLayout = (startingLevel) => {
    }   
 }
 
-let stageStartLevel = 1;
+let stageStartLevel = 2;
 
 if(stageStartLevel == 2){
    // load stage1 result from stage1.json
@@ -525,7 +535,7 @@ if(stageStartLevel == 2){
 }
 
 // main entry point
-FindOptimalLayout(stageStartLevel);
+// FindOptimalLayout(stageStartLevel);
 
 // tryMapping([ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ]);
 //tryMapping([ 'fok', 'vbe', 'lzxquw', 'ims', 'tr', 'gya', 'pjd', 'hcn' ]);
@@ -536,5 +546,8 @@ FindOptimalLayout(stageStartLevel);
 //evaluateMapping(['oyxk','fbe','jlzgu','dwi','qctr','ma','svp','hn']);
 
 // evaluate the potential mappings
-// for(let i = 0; i < potentialMappings.length; i++)
-//    evaluateMapping(potentialMappings[i]);
+let entryArray = Array.from(bestMappings.entries());
+for(let i = 0; i < bestMappings.length; i++){
+   let curEntry = entryArray[i];
+   evaluateMapping(curEntry[1]);
+}
