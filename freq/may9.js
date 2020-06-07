@@ -504,9 +504,11 @@ let FindOptimalLayout = (startingLevel) => {
       // keep the best 10
       console.log("stage 3: Gradient Descent top 10 for 10000 iter");
       bestCount = Math.min(bestMappings.length, 10);
+
+      let entryArray = Array.from(bestMappings.entries());
       for(let i = 0; i < bestCount; i++){
-         let curEntry = bestMappings.entries()[i];
-         mapping = curEntry.key;
+         let curEntry = entryArray[i];
+         mapping = curEntry[1];
          // lastly iter 10000 times
          bestScore = tryMapping(mapping, 10000, false);
          // add to list
@@ -524,13 +526,21 @@ let FindOptimalLayout = (startingLevel) => {
    }   
 }
 
-let stageStartLevel = 2;
+let stageStartLevel = 3;
 
 if(stageStartLevel == 2){
    // load stage1 result from stage1.json
    let stage1Result = JSON.parse(fs.readFileSync('stage1.json'));
    Object.keys(stage1Result).forEach(function(key) {
       bestMappings.add(key.split(","), stage1Result[key]);
+   });
+}
+
+if(stageStartLevel == 3){
+   // load stage1 result from stage1.json
+   let stage2Result = JSON.parse(fs.readFileSync('stage2.json'));
+   Object.keys(stage2Result).forEach(function(key) {
+      bestMappings.add(key.split(","), stage2Result[key]);
    });
 }
 
