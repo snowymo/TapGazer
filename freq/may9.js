@@ -216,7 +216,9 @@ let LoadPotentialMappings = () => {
 let createRandomMapping = n => {
    //random(n);
    // don't need to start from potential mapping
-   potentialMappings = [];
+   // potentialMappings = [];
+   // start from potential mapping
+   LoadPotentialMappings();
    if (n < potentialMappings.length) {
       mapping = potentialMappings[n];
    } else {
@@ -556,7 +558,7 @@ let FindOptimalLayout = (startingLevel) => {
             console.log("\"" + i + "\":{\"mapping\":[]},");
          }
       }
-      console.log("BEST ONE:" + bestMappings.entries()[0]);
+      console.log("BEST ONE:" + Array.from(bestMappings.entries())[0]);
    }
 }
 

@@ -71,6 +71,7 @@ let loadStage1 = () => {
 let loadStage2 = () => {
   stage2results = {};
   loadRandomResults("stage2-tobii.txt", stage2results);
+  loadRandomResults("stage2-bk-1.txt", stage2results);
   
   fs.writeFileSync('stage2.json', JSON.stringify(stage2results));
 };

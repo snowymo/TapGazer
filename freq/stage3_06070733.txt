@@ -5,3 +5,8 @@ stage 3: Gradient Descent top 10 for 10000 iter
 "3":{"mapping":["mtvu","ozpkq","ys","bir","ecwg","la","jhn","fxd"],"score":0.6346675837281971},
 "4":{"mapping":["vpyh","ot","udm","jri","bwef","cqn","agzxl","ks"],"score":0.6347722561998522},
 "5":{"mapping":["cuvyh","rt","mqo","bdi","jwef","nkzp","agxl","s"],"score":0.6349889221446096},
+"6":{"mapping":["xukyh","rt","mo","bdi","wjezf","vnp","aqgl","cs"],"score":0.6353005000143552},
+"7":{"mapping":["me","igl","nzu","wva","ftqr","xcbdp","hjs","koy"],"score":0.6355323143428484},
+"8":{"mapping":["mt","lgs","dvo","bizqr","cpje","yakw","hxfu","n"],"score":0.6355358586899968},
+"9":{"mapping":["dclv","at","gmxu","kjqyo","ibr","wpfe","hzn","s"],"score":0.6355847680897804},
+BEST ONE:undefined

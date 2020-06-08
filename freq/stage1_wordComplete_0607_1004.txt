@@ -1,0 +1,7 @@
+stage 1: Gradient Descent 500 iter for 5000 random layouts
+"0":{"mapping":[]},
+"1":{"mapping":[]},
+"2":{"mapping":[]},
+"3":{"mapping":[]},
+"4":{"mapping":["os","zujxgqp","ew","mfn","it","ahd","lbr","vcyk"],"score":0.5701181302130668},
+"5":{"mapping":["oyxk","fbe","jlzgqu","dwi","ncr","ma","svp","ht"],"score":0.5705482333921499},

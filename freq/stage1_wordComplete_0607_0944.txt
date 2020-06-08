@@ -1,1 +1,10 @@
 stage 1: Gradient Descent 500 iter for 5000 random layouts
+"0":{"mapping":[]},
+"1":{"mapping":[]},
+"2":{"mapping":[]},
+"3":{"mapping":[]},
+"4":{"mapping":[]},
+"5":{"mapping":[]},
+"6":{"mapping":[]},
+"7":{"mapping":[]},
+"8":{"mapping":[]},
