@@ -1,5 +1,6 @@
 var fs = require("fs");
 var SortedMap = require("collections/sorted-map");
+const yargs = require('yargs');
 
 // prepare large vocabulary
 var text = fs.readFileSync("./top40k.txt").toString('utf-8');
@@ -281,26 +282,30 @@ let classifyWords = n => {
          wordCount[c] = 0;
       wordCount[c]++;
       // for word completion
-      for (let ci = 1; ci < c.length-1; ci++) {
-         addIncompleteWord(word, c.substr(0, ci));
+      if(enableWordComplete){
+         for (let ci = 1; ci < c.length-1; ci++) {
+            addIncompleteWord(word, c.substr(0, ci));
+         }
       }
    }
    // go through all the words again, assign a minimum input string to each word
    // when we compute the score, we will inquiry the minimum input string for cost calculation
-   for(var curFingerSeq in wordComplete) {
-      var curWordComplete = wordComplete[curFingerSeq];
-      let curEntry = Array.from(curWordComplete.entries());
-      for (let iwi = wordCount[curFingerSeq]; iwi < 5; iwi++) {
-         // fill with incomplete words
-         let startIndex = Math.max(0, curEntry.length - (5 - iwi));
-         // if curFingerSeq is smaller than the one in dict, update it
-         if(minInputString[curEntry[startIndex][1]].length > curFingerSeq.length){
-            minInputString[curEntry[startIndex][1]] = curFingerSeq;
-            // update wordCount
-            wordCount[curFingerSeq]++;
+   if(enableWordComplete){
+      for(var curFingerSeq in wordComplete) {
+         var curWordComplete = wordComplete[curFingerSeq];
+         let curEntry = Array.from(curWordComplete.entries());
+         for (let iwi = wordCount[curFingerSeq]; iwi < 5; iwi++) {
+            // fill with incomplete words
+            let startIndex = Math.max(0, curEntry.length - (5 - iwi));
+            // if curFingerSeq is smaller than the one in dict, update it
+            if(minInputString[curEntry[startIndex][1]].length > curFingerSeq.length){
+               minInputString[curEntry[startIndex][1]] = curFingerSeq;
+               // update wordCount
+               wordCount[curFingerSeq]++;
+            }
          }
       }
-   }
+   }   
 }
 
 // Ken's computerScore
@@ -562,7 +567,26 @@ let FindOptimalLayout = (startingLevel) => {
    }
 }
 
-let stageStartLevel = 1;
+// === command line parameters ===
+const argv = yargs
+    .option('startLevel', {
+         description: 'the stage level to start',
+         alias: 'sl',
+         type: 'number',
+         default: 1,
+    })
+    .option('wordComplete', {
+        alias: 'wc',
+        description: 'Enable word completion or not',
+        type: 'boolean',
+        default: false,
+    })
+    .help()
+    .alias('help', 'h')
+    .argv;
+
+let stageStartLevel = argv.startLevel;
+let enableWordComplete = argv.wordComplete;
 
 if (stageStartLevel == 2) {
    // load stage1 result from stage1.json

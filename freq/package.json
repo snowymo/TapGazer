@@ -2,11 +2,11 @@
   "name": "optimize",
   "version": "1.0.0",
   "description": "optimize the layout for in-place typing",
-  
   "dependencies": {
-    "line-reader": "^0.4.0",
     "collections": "^5.1.11",
-    "sorted-map": "^0.1.8"
+    "line-reader": "^0.4.0",
+    "sorted-map": "^0.1.8",
+    "yargs": "^15.3.1"
   },
   "devDependencies": {},
   "scripts": {
