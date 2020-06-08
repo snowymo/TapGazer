@@ -11,6 +11,7 @@ public class Candidate : MonoBehaviour {
   public CandidateHandler candidateHandler;
   public GameObject planeCollider;
   public string pureText;
+  public BoxCollider textCollider;
 
   float kWidthScale;
 
@@ -58,7 +59,7 @@ public class Candidate : MonoBehaviour {
     kOriginalZScale = ProfileLoader.outputMode == ProfileLoader.OutputMode.Devkit ? 0.1f : 0.18f;
   }
 
-  private const float kOriginalSize = 120f;
+  private const float kOriginalSize = 4f;
   private float kOriginalZScale = 0.08f;
   public float firstOverflowCharacterIndex;
 
@@ -78,6 +79,16 @@ public class Candidate : MonoBehaviour {
       StartCoroutine(checkReverseEllipsis(text, progress));
     } else
       CandText.enableWordWrapping = false;
+
+    //textCollider.enabled = false;
+    StartCoroutine(renewTextCollider());
+  }
+
+  float minColliderWidth = 0.85f, colliderHeight = 0.35f;
+  IEnumerator renewTextCollider() {
+    yield return new WaitForEndOfFrame();
+    //textCollider.enabled = true;
+    textCollider.size = new Vector3(Mathf.Max(minColliderWidth, CandText.preferredWidth), colliderHeight);
   }
 
   IEnumerator checkReverseEllipsis(string text, int progress) {

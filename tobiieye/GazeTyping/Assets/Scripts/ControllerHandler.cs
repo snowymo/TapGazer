@@ -12,9 +12,10 @@ public class ControllerHandler : MonoBehaviour
 
     void updateTypingSection()
     {
-        // reset the input area, put it in front of the current camera
-        TypingSection.position = Camera.main.gameObject.transform.position;
-        Quaternion quat = Camera.main.gameObject.transform.rotation;
+    // reset the input area, put it in front of the current camera
+    Quaternion quat = Camera.main.gameObject.transform.rotation;
+    TypingSection.position = Camera.main.gameObject.transform.position + quat * Vector3.forward * 10;
+        
         Vector3 angle = quat.eulerAngles;
         angle.z = 0;
         TypingSection.rotation = Quaternion.Euler(angle);
