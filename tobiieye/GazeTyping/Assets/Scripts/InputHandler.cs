@@ -226,7 +226,7 @@ public class InputHandler : MonoBehaviour {
         break;
       }
       if (Input.GetKeyUp(inputStringTemplate[i])) {
-        // process the key down
+        // process the key up
         selectedFingers[i].SetActive(false);
         // move the finger back but keep the color changes
         if (i < 5)

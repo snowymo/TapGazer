@@ -23,6 +23,7 @@ public class Measurement : MonoBehaviour {
   private float finishedSeconds;
 
   private DateTime startTime, endTime;
+  private float passedTime;
 
   public bool allowInput;
 
@@ -46,6 +47,7 @@ public class Measurement : MonoBehaviour {
     }
     totalGazeSelection = 0;
     correctGazeSelection = 0;
+    passedTime = 0;
   }
 
   public void AddInputStream(string inputStream) {
@@ -68,9 +70,10 @@ public class Measurement : MonoBehaviour {
         F += 1;
       }
     }
-    // udpate the clock
-    if (allowInput && startTime != DateTime.MinValue) {
-      clock.text = ((DateTime.Now - startTime).Minutes).ToString("00") + ":" + ((DateTime.Now - startTime).Seconds % 60).ToString("00");
+    // update the clock
+    if (allowInput) {
+      float curTime = passedTime + ((startTime == DateTime.MinValue) ? 0f : (float)(DateTime.Now - startTime).TotalSeconds);
+      clock.text = ((int)(curTime/60)).ToString("00") + ":" + (curTime% 60).ToString("00");
     } else if (!allowInput)
       clock.text = "<color=red>" + (finishedSeconds / 60).ToString("00") + ":" + (finishedSeconds % 60).ToString("00");
 
@@ -89,6 +92,16 @@ public class Measurement : MonoBehaviour {
     if (startTime == DateTime.MinValue)
       startTime = DateTime.Now;
   }
+
+  public void PauseClock() {
+    // pause the clock
+    passedTime += (float)(DateTime.Now - startTime).TotalSeconds;
+    startTime = DateTime.MinValue;
+  }
+
+//   public void ResumeClock() {
+//     startTime = DateTime.Now;
+//   }
 
   public void UpdateTestMeasure(string presented, string transribed, bool isGazeCorrect) {
     // handle presented, from words to inputString
@@ -122,7 +135,8 @@ public class Measurement : MonoBehaviour {
     calculateMetric();
     //WPM += 1;// it is possible user deleted words
     endTime = DateTime.Now;
-    finishedSeconds = (float)(endTime - startTime).TotalSeconds;
+    finishedSeconds = startTime == DateTime.MinValue ? passedTime : (float)(endTime - startTime).TotalSeconds + passedTime;
+    print("finishedSeconds:" + finishedSeconds);
     WPM = (words - 1f) / finishedSeconds * 60.0f / 5.0f;
     if (finishedSeconds > typingSeconds) {
       saveData();
@@ -161,8 +175,7 @@ public class Measurement : MonoBehaviour {
   }
 
   public void OnRegularInput(TMPro.TMP_InputField inputField) {
-    if (startTime == DateTime.MinValue)
-      startTime = DateTime.Now;
+    StartClock();
     string curText = inputField.text;
     // we should calculate c, inf, if, f based on curText and the correct answer
     string correctString = phraseLoader.GetCurPhrase();
@@ -183,7 +196,7 @@ public class Measurement : MonoBehaviour {
         calculateMetric();
         words += transribed.Length;
         endTime = DateTime.Now;
-        finishedSeconds = (endTime - startTime).Minutes * 60.0f + (endTime - startTime).Seconds;
+        finishedSeconds = finishedSeconds = startTime == DateTime.MinValue ? passedTime : (float)(endTime - startTime).TotalSeconds + passedTime;
         WPM = (words - 1.0f) / finishedSeconds * 60.0f / 5.0f;
         if (finishedSeconds > typingSeconds) {
           Debug.Log("time is up");

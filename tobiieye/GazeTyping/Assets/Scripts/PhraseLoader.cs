@@ -77,11 +77,15 @@ public class PhraseLoader : MonoBehaviour {
     curTypingPhrase = 0;
     UpdatePhrase();
     isNewPhrase = true;
+    // pause the clock
+    measurement.PauseClock();
   }
 
   public void PrevPhrases() {
     --curPhraseIndex;
     UpdatePhrase();
+    // pause the clock
+    measurement.PauseClock();
   }
 
   public void UpdatePhrase() {
@@ -208,7 +212,7 @@ public class PhraseLoader : MonoBehaviour {
   }
 
   private void Update() {
-    // test NextPhrases
+    // DEBUG test NextPhrases
     if (ProfileLoader.typingMode != ProfileLoader.TypingMode.REGULAR) {
       if (Input.GetKeyDown(KeyCode.Space)) {
         Debug.Log("next phrase by pressing space");
