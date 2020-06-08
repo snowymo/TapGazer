@@ -1,0 +1,1 @@
+stage 1: Gradient Descent 500 iter for 5000 random layouts
