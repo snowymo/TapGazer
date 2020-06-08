@@ -367,6 +367,8 @@ let computeScore = (i, strict = true) => {
    let bHomograph = true;
    for (let n = 0; n < wordList.length; n++) {
       let word = wordList[n];
+      if(word.length == 0)
+         continue;
       let count = wordCount[classifyWord(word)];
       if (count > 10 ||
          (strict && word in mostFrequentWords && count > 5)) {
@@ -381,7 +383,7 @@ let computeScore = (i, strict = true) => {
       } else {
          score += (computeMT(word) + computeVisualSearch(count) + tapTime) * wordnfreq[word];
       }
-      //console.log("score[+" + word + "]=" + score);
+      // console.log("score[+" + word + "]=" + score);
    }
    return score;
 }
@@ -596,7 +598,7 @@ if (stageStartLevel == 2) {
    });
 }
 else if (stageStartLevel == 3) {
-   // load stage1 result from stage1.json
+   // load stage2result from stage2.json
    let stage2Result = JSON.parse(fs.readFileSync('stage2.json'));
    Object.keys(stage2Result).forEach(function (key) {
       bestMappings.add(key.split(","), stage2Result[key]);
@@ -604,7 +606,20 @@ else if (stageStartLevel == 3) {
 }
 
 // main entry point
-FindOptimalLayout(stageStartLevel);
+// FindOptimalLayout(stageStartLevel);
+
+// eval the results
+// load stage3result from stage3.json
+let stage3Result = JSON.parse(fs.readFileSync('stage3.json'));
+Object.keys(stage3Result).forEach(function (key) {
+   bestMappings.add(key.split(","), stage3Result[key]);
+});
+let entryArray = Array.from(bestMappings.entries());
+for (let i = 0; i < entryArray.length; i++) {
+   let curEntry = entryArray[i];
+   mapping = curEntry[1];
+   evaluateMapping(mapping);
+}
 
 // KEN
 // evaluateMapping([ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ]);
