@@ -32,6 +32,10 @@ public class Candidate : MonoBehaviour {
         CandText.fontStyle = TMPro.FontStyles.Underline;
         candidateHandler.GazedCandidate = candidateIndex;
         candidateHandler.CurrentGazedText = pureText;// TODO: TESTING removeFormat(CandText.text);
+        if(candidateHandler.candidateLayout == CandidateHandler.CandLayout.DIVISION)
+        {
+          candidateHandler.UpdateDivisionGaze(candidateIndex % 3);
+        }
       } else {
         CandText.fontStyle = TMPro.FontStyles.Normal;
         //candidateHandler.GazedCandidate = 0;

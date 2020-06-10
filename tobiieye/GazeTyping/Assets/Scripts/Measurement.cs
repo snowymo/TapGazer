@@ -136,7 +136,7 @@ public class Measurement : MonoBehaviour {
     //WPM += 1;// it is possible user deleted words
     endTime = DateTime.Now;
     finishedSeconds = startTime == DateTime.MinValue ? passedTime : (float)(endTime - startTime).TotalSeconds + passedTime;
-    print("finishedSeconds:" + finishedSeconds);
+    //print("finishedSeconds:" + finishedSeconds);
     WPM = (words - 1f) / finishedSeconds * 60.0f / 5.0f;
     if (finishedSeconds > typingSeconds) {
       saveData();

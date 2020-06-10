@@ -25,23 +25,22 @@ public class HandlerScreenGaze : MonoBehaviour {
       // disable it
       transform.gameObject.GetComponent<HandlerScreenGaze>().enabled = false;
     }
-    _renderer = GetComponent<Renderer>();
-    _originalColor = _renderer.material.color;
-    _targetColor = _originalColor;
+//     _renderer = GetComponent<Renderer>();
+//     _originalColor = _renderer.material.color;
+//     _targetColor = _originalColor;
   }
 
   // Update is called once per frame
-  void Update() {
-    //This lerp will fade the color of the object
-    if (_renderer.material.HasProperty(Shader.PropertyToID("_BaseColor"))) // new rendering pipeline (lightweight, hd, universal...)
-    {
-      _renderer.material.SetColor("_BaseColor", Color.Lerp(_renderer.material.GetColor("_BaseColor"), _targetColor, Time.deltaTime * (1 / AnimationTime)));
-    } else // old standard rendering pipline
-      {
-      _renderer.material.color = Color.Lerp(_renderer.material.color, _targetColor, Time.deltaTime * (1 / AnimationTime));
-    }
-
-  }
+//   void Update() {
+//     //This lerp will fade the color of the object
+//     if (_renderer.material.HasProperty(Shader.PropertyToID("_BaseColor"))) // new rendering pipeline (lightweight, hd, universal...)
+//     {
+//       _renderer.material.SetColor("_BaseColor", Color.Lerp(_renderer.material.GetColor("_BaseColor"), _targetColor, Time.deltaTime * (1 / AnimationTime)));
+//     } else // old standard rendering pipline
+//       {
+//       _renderer.material.color = Color.Lerp(_renderer.material.color, _targetColor, Time.deltaTime * (1 / AnimationTime));
+//     }
+//   }
 
   Vector3 gazeWorldCoord;
   Vector2 curgazeScreenCoord;
@@ -62,17 +61,17 @@ public class HandlerScreenGaze : MonoBehaviour {
       Debug.Log("Did Hit");
       //hit.collider.gameObject.GetComponent<Tobii.XR.Examples.HandlerFocusAtGaze>().SetGaze(true);
       if (hit.collider.transform.parent.name.Equals(transform.parent.name)) {
-        _targetColor = HighlightColor;
+//        _targetColor = HighlightColor;
         // underline?
         isGazed = true;
       } else {
-        _targetColor = _originalColor;
+//        _targetColor = _originalColor;
         isGazed = false;
       }
     } else {
       //Debug.DrawRay(gazeWorldCoord, Vector3.forward * 1000, Color.white);
       Debug.Log("Did not Hit");
-      _targetColor = _originalColor;
+//      _targetColor = _originalColor;
       isGazed = false;
     }
   }

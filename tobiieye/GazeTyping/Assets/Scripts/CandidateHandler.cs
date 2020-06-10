@@ -24,7 +24,7 @@ public class CandidateHandler : MonoBehaviour
   Dictionary<int, int> fanHorizontalMap;
   List<List<string>> candidateColumns;
 
-  public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD };
+  public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD, DIVISION };
   public CandLayout candidateLayout;
 
   private List<GameObject> candidateObjects;
@@ -49,6 +49,12 @@ public class CandidateHandler : MonoBehaviour
     set { screenGazeOffset = value; }
   }
 
+  private int curGazedDivision;
+  public int CurGazedDivision
+  {
+    get { return curGazedDivision; }
+    set { curGazedDivision = value; }
+  }
   // map btw regular keys and input string
   Dictionary<char, int> mapKey2Column = new Dictionary<char, int>()
     {
@@ -70,6 +76,7 @@ public class CandidateHandler : MonoBehaviour
     CandidateHeight = ProfileLoader.outputMode == ProfileLoader.OutputMode.Devkit ? -0.36f : -2.5f;
     CandidateStartHeight = ProfileLoader.outputMode == ProfileLoader.OutputMode.Devkit ? -2.1f : -2.5f;
     screenGazeIndicator.SetActive(ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar);
+    curGazedDivision = 1; // gaze at the middle division by default
 
     if (candidateLayout == CandLayout.ROW)
       CreateRowLayout();
@@ -85,6 +92,108 @@ public class CandidateHandler : MonoBehaviour
     } else if (candidateLayout == CandLayout.WORDCLOUD)
     {
       CreateWordCloudLayout();
+    } else if (candidateLayout == CandLayout.DIVISION)
+    {
+      CreateDivisionLayout();
+    }
+  }
+
+  private void CreateDivisionLayout() {
+    CandidateCount = 15;
+    CandidatePerRow = 3;
+    CandidateWidth = perWidth * 8;
+
+    for (int i = 0; i < CandidateCount; i++)
+    {
+      GameObject go = Instantiate(CandidatePrefab, transform);
+      go.name = "Cand" + (i).ToString();
+      go.transform.localPosition = new Vector3(
+        -CandidateWidth * (CandidatePerRow - 1) / 2 + (i % CandidatePerRow) * CandidateWidth,
+        i / CandidatePerRow * CandidateHeight + CandidateStartHeight, 0);
+      go.GetComponent<Candidate>().SetCandidateText("");
+      go.GetComponent<Candidate>().candidateIndex = i;
+      go.GetComponent<Candidate>().candidateHandler = this;
+      candidateObjects.Add(go);
+    }
+  }
+
+  public void UpdateDivisionGaze(int divIndex) {
+    curGazedDivision = divIndex;
+    if(cachedCandidates != null)
+      UpdateDivisionLayout(cachedCandidates, cachedProgress);
+  }
+
+  private string[] leftDivision = new string[5], middleDivision = new string[5], rightDivision = new string[5];
+  private char firstLetterDivSep1 = 'h', firstLetterDivSep2 = 'q';
+  private void UpdateDivisionLayout(string[] candidates, int progress) {
+    int maxLength = 8;// Mathf.Max(4, candidates[0].Length);
+    CandidateWidth = perWidth * maxLength;
+
+    // retrieve the candidates for each division, at most 5
+    leftDivision = new string[5] { "", "", "", "", "" };
+    middleDivision = new string[5] { "", "", "", "", "" };
+    rightDivision = new string[5] { "", "", "", "", "" };
+    int leftDivIndex = 0, midDivIndex = 0, rightDivIndex = 0;
+    bool leftDone = false, midDone = false, rightDone = false;
+
+    for (int i = 0; i < candidates.Length; i++)
+    {
+      if (leftDone && rightDone && midDone)
+        break;
+      string curWord = candidates[i].ToLower();
+      if (!leftDone && curWord[0] < firstLetterDivSep1)
+      {
+        if ((i < 5) || (curGazedDivision == 0 && leftDivIndex < 5))
+        {
+          leftDivision[leftDivIndex] = candidates[i];
+          candidateObjects[leftDivIndex * 3].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, maxLength - 1);
+          candidateObjects[leftDivIndex * 3].transform.localPosition = new Vector3(
+            -CandidateWidth, leftDivIndex * CandidateHeight + CandidateStartHeight, 0);
+          ++leftDivIndex;
+        } else
+          leftDone = true;
+      } else if (!midDone && curWord[0] < firstLetterDivSep2 && curWord[0] >= firstLetterDivSep1)
+      {
+        if ((i < 5) || ((curGazedDivision == 1) && (midDivIndex < 5)))
+        {
+          middleDivision[midDivIndex] = candidates[i];
+          candidateObjects[midDivIndex * 3 + 1].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, maxLength - 1);
+          candidateObjects[midDivIndex * 3 + 1].transform.localPosition = new Vector3(
+            0, midDivIndex * CandidateHeight + CandidateStartHeight, 0);
+          ++midDivIndex;
+        } else
+          midDone = true;
+      } else if(!rightDone && curWord[0] >= firstLetterDivSep2)
+      {
+        if ((i < 5) || ((curGazedDivision == 2) && (rightDivIndex < 5)))
+        {
+          rightDivision[rightDivIndex] = candidates[i];
+          candidateObjects[rightDivIndex * 3 + 2].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, maxLength - 1);
+          candidateObjects[rightDivIndex * 3 + 2].transform.localPosition = new Vector3(
+            CandidateWidth, rightDivIndex * CandidateHeight + CandidateStartHeight, 0);
+          ++rightDivIndex;
+        } else
+          rightDone = true;
+      }
+    }
+    // now we can reset the rest
+    for (int i = leftDivIndex; i < 5; i++)
+    {
+      candidateObjects[i * 3].GetComponent<Candidate>().SetCandidateText("");
+      candidateObjects[i * 3].transform.localPosition = new Vector3(
+            -CandidateWidth, i * CandidateHeight + CandidateStartHeight, 0);
+    }
+    for (int i = midDivIndex; i < 5; i++)
+    {
+      candidateObjects[i * 3 + 1].GetComponent<Candidate>().SetCandidateText("");
+      candidateObjects[i * 3 + 1].transform.localPosition = new Vector3(
+            0, i * CandidateHeight + CandidateStartHeight, 0);
+    }
+    for (int i = rightDivIndex; i < 5; i++)
+    {
+      candidateObjects[i * 3 + 2].GetComponent<Candidate>().SetCandidateText("");
+      candidateObjects[i * 3 + 2].transform.localPosition = new Vector3(
+            CandidateWidth, i * CandidateHeight + CandidateStartHeight, 0);
     }
   }
 
@@ -446,7 +555,16 @@ public class CandidateHandler : MonoBehaviour
     }
   }
 
+  private string[] cachedCandidates;
+  private int cachedProgress;
+  private string[] cachedCompleteCand;
   public void UpdateCandidates(string[] candidates, int progress, string[] completedCand) {
+    cachedCandidates = new string[candidates.Length];
+    candidates.CopyTo(cachedCandidates, 0);
+    cachedProgress = progress;
+    cachedCompleteCand = new string[completedCand.Length];
+    completedCand.CopyTo(cachedCompleteCand, 0);
+
     if (candidateLayout == CandLayout.ROW)
       UpdateRowLayoutCandidate(candidates, progress);
     else if (candidateLayout == CandLayout.FAN)
@@ -467,6 +585,9 @@ public class CandidateHandler : MonoBehaviour
       int totalNumber = 16;
       string[] newCand = ReorgCandidates(candidates, totalNumber, completedCand, false);
       UpdateWordCloudLayout(newCand, candidates, progress);
+    } else if (candidateLayout == CandLayout.DIVISION)
+    {
+      UpdateDivisionLayout(candidates, progress);
     }
   }
 
@@ -550,13 +671,15 @@ public class CandidateHandler : MonoBehaviour
     {
       candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
     }
+    cachedCandidates = null;
+    cachedCompleteCand = null;
   }
 
   // Update is called once per frame
-  void Update() {
+  //void Update() {
     //if (Input.GetKeyDown("c"))
     //{
     //CreateFanLayout();
     //}        
-  }
+  //}
 }
