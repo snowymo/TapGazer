@@ -26,6 +26,9 @@ let loadStage1 = () => {
   loadRandomResults("test3.json",stage1result);
   loadRandomResults("test4.json",stage1result);
 
+  loadRandomResults("stage1_wordCompleteTobii_0607_0949.txt", stage1result);
+  loadRandomResults("stage2_wordCompleteTobii_0609_0243.txt", stage1result);
+
   // load tobii ken result
   let tobii3 = fs.readFileSync("tobii3.txt").toString('utf-8').split("\n");
   tobii3.forEach(line => {
@@ -62,7 +65,7 @@ let loadStage1 = () => {
   //     stage1result[mapping.toString()] = entry["score"];
   //   });
 
-  fs.writeFileSync('stage1.json', JSON.stringify(stage1result));
+  fs.writeFileSync('stage1_wc.json', JSON.stringify(stage1result));
 };
 
 
@@ -72,9 +75,28 @@ let loadStage2 = () => {
   stage2results = {};
   loadRandomResults("stage2-tobii.txt", stage2results);
   loadRandomResults("stage2-bk-1.txt", stage2results);
+  loadRandomResults("stage2-bk-2.txt", stage2results);
+  loadRandomResults("stage2-bk-3.txt", stage2results);
+  loadRandomResults("stage2.txt", stage2results);
+  loadRandomResults("tobii_stage2_0605_1239_1.txt", stage2results);
+  loadRandomResults("tobii_stage2_0605_1239_2.txt", stage2results);
+  loadRandomResults("tobii_stage2_0605_1239_3.txt", stage2results);
+  loadRandomResults("stage2_tobii_06060050_1.txt", stage2results);
+  loadRandomResults("stage2_tobii_06060050_2.txt", stage2results);
+  loadRandomResults("stage2_tobii_06060050_3.txt", stage2results);
+  loadRandomResults("stage2_tobii_06060050_4.txt", stage2results);
   
   fs.writeFileSync('stage2.json', JSON.stringify(stage2results));
 };
 
-// loadStage1();
-loadStage2();
+// stage3 result
+let loadStage3 = () => {
+  stage3results = {};
+  loadRandomResults("stage3\\stage3_bk_0607_1110.txt", stage3results);
+  loadRandomResults("stage3\\stage3_06070733.txt", stage3results);
+  
+  fs.writeFileSync('stage3.json', JSON.stringify(stage3results));
+};
+
+loadStage1();
+// loadStage2();

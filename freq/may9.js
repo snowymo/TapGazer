@@ -592,7 +592,7 @@ let enableWordComplete = argv.wordComplete;
 
 if (stageStartLevel == 2) {
    // load stage1 result from stage1.json
-   let stage1Result = JSON.parse(fs.readFileSync('stage1.json'));
+   let stage1Result = JSON.parse(fs.readFileSync('stage1_wc.json'));
    Object.keys(stage1Result).forEach(function (key) {
       bestMappings.add(key.split(","), stage1Result[key]);
    });
