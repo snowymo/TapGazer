@@ -212,6 +212,11 @@ let LoadPotentialMappings = () => {
          curMapping.pop();
       potentialMappings.push(curMapping);
    });
+   let bestCount = Math.min(bestMappings.length);
+   let entryArray = Array.from(bestMappings.entries());
+   for (let i = 0; i < bestCount; i++) {
+      potentialMappings.push(entryArray[i][1]);
+   }
 }
 
 let createRandomMapping = n => {
@@ -590,9 +595,16 @@ const argv = yargs
 let stageStartLevel = argv.startLevel;
 let enableWordComplete = argv.wordComplete;
 
-if (stageStartLevel == 2) {
+if (stageStartLevel == 1) {
    // load stage1 result from stage1.json
    let stage1Result = JSON.parse(fs.readFileSync('stage1_wc.json'));
+   Object.keys(stage1Result).forEach(function (key) {
+      bestMappings.add(key.split(","), stage1Result[key]);
+   });
+}
+else if (stageStartLevel == 2) {
+   // load stage1 result from stage1.json
+   let stage1Result = JSON.parse(fs.readFileSync('stage1.json'));
    Object.keys(stage1Result).forEach(function (key) {
       bestMappings.add(key.split(","), stage1Result[key]);
    });
