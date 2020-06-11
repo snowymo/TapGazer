@@ -24,7 +24,7 @@ public class CandidateHandler : MonoBehaviour
   Dictionary<int, int> fanHorizontalMap;
   List<List<string>> candidateColumns;
 
-  public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD, DIVISION };
+  public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD, DIVISION, DIVISION_END };
   public CandLayout candidateLayout;
 
   private List<GameObject> candidateObjects;
@@ -92,7 +92,7 @@ public class CandidateHandler : MonoBehaviour
     } else if (candidateLayout == CandLayout.WORDCLOUD)
     {
       CreateWordCloudLayout();
-    } else if (candidateLayout == CandLayout.DIVISION)
+    } else if (candidateLayout == CandLayout.DIVISION || candidateLayout == CandLayout.DIVISION_END)
     {
       CreateDivisionLayout();
     }
@@ -120,12 +120,12 @@ public class CandidateHandler : MonoBehaviour
   public void UpdateDivisionGaze(int divIndex) {
     curGazedDivision = divIndex;
     if(cachedCandidates != null)
-      UpdateDivisionLayout(cachedCandidates, cachedProgress);
+      UpdateDivisionLayout(cachedCandidates, cachedProgress, candidateLayout == CandLayout.DIVISION ? 0 : 1);
   }
 
   private string[] leftDivision = new string[5], middleDivision = new string[5], rightDivision = new string[5];
-  private char firstLetterDivSep1 = 'h', firstLetterDivSep2 = 'q';
-  private void UpdateDivisionLayout(string[] candidates, int progress) {
+  private char[] firstLetterDivSep1 = { 'h', 'e' }, firstLetterDivSep2 = { 'q', 'r' };
+  private void UpdateDivisionLayout(string[] candidates, int progress, int divideLatter) {
     int maxLength = 8;// Mathf.Max(4, candidates[0].Length);
     CandidateWidth = perWidth * maxLength;
 
@@ -135,13 +135,17 @@ public class CandidateHandler : MonoBehaviour
     rightDivision = new string[5] { "", "", "", "", "" };
     int leftDivIndex = 0, midDivIndex = 0, rightDivIndex = 0;
     bool leftDone = false, midDone = false, rightDone = false;
+    
 
     for (int i = 0; i < candidates.Length; i++)
     {
       if (leftDone && rightDone && midDone)
         break;
+
       string curWord = candidates[i].ToLower();
-      if (!leftDone && curWord[0] < firstLetterDivSep1)
+      char letter = divideLatter == 0 ? curWord[0] : curWord[curWord.Length - 1];
+
+      if (!leftDone && letter < firstLetterDivSep1[divideLatter])
       {
         if ((i < 5) || (curGazedDivision == 0 && leftDivIndex < 5))
         {
@@ -152,7 +156,7 @@ public class CandidateHandler : MonoBehaviour
           ++leftDivIndex;
         } else
           leftDone = true;
-      } else if (!midDone && curWord[0] < firstLetterDivSep2 && curWord[0] >= firstLetterDivSep1)
+      } else if (!midDone && letter < firstLetterDivSep2[divideLatter] && letter >= firstLetterDivSep1[divideLatter])
       {
         if ((i < 5) || ((curGazedDivision == 1) && (midDivIndex < 5)))
         {
@@ -163,7 +167,7 @@ public class CandidateHandler : MonoBehaviour
           ++midDivIndex;
         } else
           midDone = true;
-      } else if(!rightDone && curWord[0] >= firstLetterDivSep2)
+      } else if(!rightDone && letter >= firstLetterDivSep2[divideLatter])
       {
         if ((i < 5) || ((curGazedDivision == 2) && (rightDivIndex < 5)))
         {
@@ -587,7 +591,10 @@ public class CandidateHandler : MonoBehaviour
       UpdateWordCloudLayout(newCand, candidates, progress);
     } else if (candidateLayout == CandLayout.DIVISION)
     {
-      UpdateDivisionLayout(candidates, progress);
+      UpdateDivisionLayout(candidates, progress, 0);
+    }else if(candidateLayout == CandLayout.DIVISION_END)
+    {
+      UpdateDivisionLayout(candidates, progress, 1);
     }
   }
 
