@@ -445,8 +445,6 @@ let tryMapping = (m, iter, anneal) => {
    //console.log(mapping, s0);
    let str = s0;
 
-   // Gradient)Descent))500#itera)ons#
-   // each mapping has 500 iterations
    for (let i = 0; i < iter; i++) {
       let saveMapping = mapping.slice();
       modifyMapping();
@@ -464,7 +462,6 @@ let tryMapping = (m, iter, anneal) => {
    if (s0 > large)
       return;
 
-
    return s0;
 }
 
@@ -473,7 +470,6 @@ let annealMapping = (n, m) => {
    classifyWords();
    let s0 = computeScore(0);
    //console.log(s0);
-   let str = s0;
 
    let saveMapping = mapping.slice();
    modifyMapping();
@@ -505,9 +501,7 @@ let FindOptimalLayout = (startingLevel) => {
             //console.log("add to list")
             curMapCopy = JSON.parse(JSON.stringify(mapping));
             bestMappings.add(curMapCopy, bestScore);
-
             console.log("\"" + n + "\":" + JSON.stringify({ 'mapping': mapping, 'score': bestScore }) + ",");
-            // console.log(bestScore, mapping.toString());
          } else {
             console.log("\"" + n + "\":{\"mapping\":[]},");
          }
@@ -517,14 +511,6 @@ let FindOptimalLayout = (startingLevel) => {
       // only keep the top 100
       console.log("stage 2: Anneal top 100 for 10 times and Gradient Descent 3000 iter for each layout");
       let bestCount = Math.min(bestMappings.length, 100);
-      // bestMappings.sort();
-      // let it = bestMappings.entries();
-      // let result = it.next();
-      // while (!result.done) {
-      //  console.log(result.value); // 1 3 5 7 9
-      //  result = it.next();
-      // }
-
       let entryArray = Array.from(bestMappings.entries());
       for (let i = 0; i < bestCount; i++) {
          let curEntry = entryArray[i];
@@ -537,10 +523,8 @@ let FindOptimalLayout = (startingLevel) => {
             bestScore = tryMapping(mapping, 3000, false);
             // add to list
             if (bestScore < large) {
-               //console.log("add to list")
                curMapCopy = JSON.parse(JSON.stringify(mapping));
                bestMappings.add(curMapCopy, bestScore);
-               // console.log(bestScore, mapping.toString());
                console.log("\"" + i + "-" + j + "\":" + JSON.stringify({ 'mapping': mapping, 'score': bestScore }) + ",");
             } else {
                console.log("\"" + i + "-" + j + "\":{\"mapping\":[]},");
@@ -552,7 +536,6 @@ let FindOptimalLayout = (startingLevel) => {
       // keep the best 10
       console.log("stage 3: Gradient Descent top 10 for 10000 iter");
       bestCount = Math.min(bestMappings.length, 10);
-
       let entryArray = Array.from(bestMappings.entries());
       for (let i = 0; i < bestCount; i++) {
          let curEntry = entryArray[i];
@@ -561,10 +544,8 @@ let FindOptimalLayout = (startingLevel) => {
          bestScore = tryMapping(mapping, 10000, false);
          // add to list
          if (bestScore < large) {
-            //console.log("add to list")
             curMapCopy = JSON.parse(JSON.stringify(mapping));
             bestMappings.add(curMapCopy, bestScore);
-            // console.log(bestScore, mapping.toString());
             console.log("\"" + i + "\":" + JSON.stringify({ 'mapping': mapping, 'score': bestScore }) + ",");
          } else {
             console.log("\"" + i + "\":{\"mapping\":[]},");
@@ -603,7 +584,6 @@ if (stageStartLevel == 1) {
    });
 }
 else if (stageStartLevel == 2) {
-   // load stage1 result from stage1.json
    let stage1Result = JSON.parse(fs.readFileSync('stage1.json'));
    Object.keys(stage1Result).forEach(function (key) {
       bestMappings.add(key.split(","), stage1Result[key]);
@@ -618,7 +598,7 @@ else if (stageStartLevel == 3) {
 }
 
 // main entry point
-FindOptimalLayout(stageStartLevel);
+// FindOptimalLayout(stageStartLevel);
 
 // eval the results
 // load stage3result from stage3.json
@@ -633,14 +613,13 @@ FindOptimalLayout(stageStartLevel);
 //    evaluateMapping(mapping);
 // }
 
-// KEN
-// evaluateMapping([ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ]);
-//evaluateMapping([ 'fok', 'vbe', 'lzxquw', 'ims', 'tr', 'gya', 'pjd', 'hcn' ]);
-//evaluateMapping([ 'dwfq', 'hnp', 'uzs', 'jyir', 'ckga', 'vbe', 'lt', 'xom' ]);
-//evaluateMapping([ 'figm', 'vs', 'odc', 'zlyu', 'jewr', 'bqt', 'xpa', 'knh' ]);
+// eval KEN's mappings
+evaluateMapping([ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ]);
+evaluateMapping([ 'fok', 'vbe', 'lzxquw', 'ims', 'tr', 'gya', 'pjd', 'hcn' ]);
+evaluateMapping([ 'dwfq', 'hnp', 'uzs', 'jyir', 'ckga', 'vbe', 'lt', 'xom' ]);
+evaluateMapping([ 'figm', 'vs', 'odc', 'zlyu', 'jewr', 'bqt', 'xpa', 'knh' ]);
 
 // evaluateMapping(['os','zujcxgp','efw','mn','it','ahd','lbqr','vyk']);
-// evaluateMapping([ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ]);
 //evaluateMapping(['oyxk','fbe','jlzgu','dwi','qctr','ma','svp','hn']);
 
 // evaluate the potential mappings
