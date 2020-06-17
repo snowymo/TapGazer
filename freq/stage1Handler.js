@@ -28,6 +28,14 @@ let loadStage1 = () => {
 
   loadRandomResults("stage1_wordCompleteTobii_0607_0949.txt", stage1result);
   loadRandomResults("stage2_wordCompleteTobii_0609_0243.txt", stage1result);
+  
+  loadRandomResults("stage1_wordCompleteBK_0610_1219.txt", stage1result);
+  loadRandomResults("stage2_wordCompleteBK_0607_1111.txt", stage1result);
+  loadRandomResults("stage2_wordCompleteBK_0607_1044.txt", stage1result);
+  loadRandomResults("stage1_wordCompleteBK_0607_0947.txt", stage1result);
+
+  loadRandomResults("stage1_wordCompleteTobii_06101215.txt", stage1result);
+  loadRandomResults("stage1_wordCompleteTobii_06101217.txt", stage1result);
 
   // load tobii ken result
   let tobii3 = fs.readFileSync("tobii3.txt").toString('utf-8').split("\n");
