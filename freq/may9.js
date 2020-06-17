@@ -194,7 +194,7 @@ let mostFrequentWords = getMostFrequentWords();
 let randomInt = n => Math.floor(n * random());
 let randomMathInt = n => Math.floor(Math.random() * n);
 
-let wordCount = {}, mapping = [], wordComplete = {}, minInputString = {};
+let wordCount = {}, mapping = [], wordComplete = {}, minInputString = {}, wordCountFirst = {}, wordCountLast = {};
 // wordComplete saves incomplete words for each input string, at most 5, according to the word freq
 
 // suggestedMappings = [[ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ],
@@ -276,41 +276,79 @@ let addIncompleteWord = (curWord, curFingerSeq) => {
 }
 
 let classifyWords = n => {
-   wordCount = {}; wordComplete = {}; minInputString = {};
+   wordCount = {}; wordComplete = {}; minInputString = {}, wordCountFirst = {}, wordCountLast = {};
    for (let i = 0; i < wordList.length; i++) {
       let word = wordList[i];
       let c = classifyWord(word);
       minInputString[word] = c;
       if (c == "")
          continue;
-      if (wordCount[c] === undefined)
+      if (wordCount[c] === undefined) {
          wordCount[c] = 0;
+      }
       wordCount[c]++;
       // for word completion
-      if(enableWordComplete){
-         for (let ci = 1; ci < c.length-1; ci++) {
+      if (enableWordComplete) {
+         for (let ci = 1; ci < c.length - 1; ci++) {
             addIncompleteWord(word, c.substr(0, ci));
          }
       }
    }
    // go through all the words again, assign a minimum input string to each word
    // when we compute the score, we will inquiry the minimum input string for cost calculation
-   if(enableWordComplete){
-      for(var curFingerSeq in wordComplete) {
+   if (enableWordComplete) {
+      for (var curFingerSeq in wordComplete) {
          var curWordComplete = wordComplete[curFingerSeq];
          let curEntry = Array.from(curWordComplete.entries());
          for (let iwi = wordCount[curFingerSeq]; iwi < 5; iwi++) {
             // fill with incomplete words
             let startIndex = Math.max(0, curEntry.length - (5 - iwi));
             // if curFingerSeq is smaller than the one in dict, update it
-            if(minInputString[curEntry[startIndex][1]].length > curFingerSeq.length){
+            if (minInputString[curEntry[startIndex][1]].length > curFingerSeq.length) {
                minInputString[curEntry[startIndex][1]] = curFingerSeq;
                // update wordCount
                wordCount[curFingerSeq]++;
             }
          }
       }
-   }   
+   }
+   // for division layout
+   if (enableDivision > 0) {
+      for (let i = 0; i < wordList.length; i++) {
+         let word = wordList[i];
+         let fingerSeq = minInputString[word];
+         if (wordCountFirst[fingerSeq] === undefined) {
+            wordCountFirst[fingerSeq] = {};
+            wordCountFirst[fingerSeq][0] = 0; wordCountFirst[fingerSeq][1] = 0; wordCountFirst[fingerSeq][2] = 0;
+         }
+         if (wordCountLast[fingerSeq] === undefined) {
+            wordCountLast[fingerSeq] = {};
+            wordCountLast[fingerSeq][0] = 0; wordCountLast[fingerSeq][1] = 0; wordCountLast[fingerSeq][2] = 0;
+         }
+         if (enableDivision == 1) {
+            // divided by start letter. We need to know how many candidates does corresponding division have
+            // we split the candidates into [a-g][h-p][q-z]
+            if (word[0] < 'h') {
+               ++wordCountFirst[fingerSeq][0];
+            } else if (word[0] < 'q') {
+               ++wordCountFirst[fingerSeq][1];
+            } else {
+               ++wordCountFirst[fingerSeq][2];
+            }
+         } else {
+            // divided by ending letter. We need to know how many candidates does corresponding division have
+            // we split the candidates into [a-d][e-q][r-z]
+            let endingLetter = word[word.length - 1];
+            if (endingLetter < 'e') {
+               ++wordCountLast[fingerSeq][0];
+            } else if (endingLetter < 'r') {
+               ++wordCountLast[fingerSeq][1];
+            } else {
+               ++wordCountLast[fingerSeq][2];
+            }
+         }
+      }      
+   }
 }
 
 // Ken's computerScore
@@ -372,23 +410,46 @@ let computeScore = (i, strict = true) => {
    let bHomograph = true;
    for (let n = 0; n < wordList.length; n++) {
       let word = wordList[n];
-      if(word.length == 0)
+      if (word.length == 0)
          continue;
-      let count = wordCount[classifyWord(word)];
+      let count = wordCount[minInputString[word]];
       if (count > 10 ||
          (strict && word in mostFrequentWords && count > 5)) {
          bHomograph = false;
          score = Number.MAX_SAFE_INTEGER;
          break;
       }
-      // calculate the MT for each common word and calculate the weighted sum 
-      if (count == 1) {
-         // save the visual search if there is only one candidate word
-         score += (computeMT(word) + tapAltTime) * wordnfreq[word];
-      } else {
-         score += (computeMT(word) + computeVisualSearch(count) + tapTime) * wordnfreq[word];
-      }
+
       // console.log("score[+" + word + "]=" + score);
+      if (enableDivision == 0) {
+         // calculate the MT for each common word and calculate the weighted sum 
+         if (count == 1) {
+            // save the visual search if there is only one candidate word
+            score += (computeMT(word) + tapAltTime) * wordnfreq[word];
+         } else {
+            score += (computeMT(word) + computeVisualSearch(count) + tapTime) * wordnfreq[word];
+         }
+      } else {
+         let fingerSeq = minInputString[word];
+         if (enableDivision == 1) {
+            // divided by start letter. We need to know how many candidates does corresponding division have
+            // we split the candidates into [a-g][h-p][q-z]
+            let div = word[0] < 'h' ? 0 : (word[0] < 'q' ? 1 : 2);
+            if(wordCountFirst[fingerSeq][div] == 1)
+               score += (computeMT(word) + tapAltTime) * wordnfreq[word];
+            else
+               score += (computeMT(word) + computeVisualSearch(wordCountFirst[div]) + tapTime) * wordnfreq[word];
+         } else {
+            // divided by ending letter. We need to know how many candidates does corresponding division have
+            // we split the candidates into [a-d][e-q][r-z]
+            let endingWord = word[word.length-1];
+            let div = endingWord < 'e' ? 0 : (endingWord < 'r' ? 1 : 2);
+            if(wordCountLast[fingerSeq][div] == 1)
+               score += (computeMT(word) + tapAltTime) * wordnfreq[word];
+            else
+               score += (computeMT(word) + computeVisualSearch(wordCountLast[div]) + tapTime) * wordnfreq[word];
+         }
+      }
    }
    return score;
 }
@@ -557,24 +618,31 @@ let FindOptimalLayout = (startingLevel) => {
 
 // === command line parameters ===
 const argv = yargs
-    .option('startLevel', {
-         description: 'the stage level to start',
-         alias: 'sl',
-         type: 'number',
-         default: 1,
-    })
-    .option('wordComplete', {
-        alias: 'wc',
-        description: 'Enable word completion or not',
-        type: 'boolean',
-        default: false,
-    })
-    .help()
-    .alias('help', 'h')
-    .argv;
+   .option('startLevel', {
+      description: 'the stage level to start',
+      alias: 'sl',
+      type: 'number',
+      default: 4,
+   })
+   .option('wordComplete', {
+      alias: 'wc',
+      description: 'Enable word completion or not',
+      type: 'boolean',
+      default: true,
+   })
+   .option('division', {
+      alias: 'div',
+      description: 'Enable word completion or not',
+      type: 'int',
+      default: 1,
+   })
+   .help()
+   .alias('help', 'h')
+   .argv;
 
 let stageStartLevel = argv.startLevel;
 let enableWordComplete = argv.wordComplete;
+let enableDivision = argv.division;
 
 if (stageStartLevel == 1) {
    // load stage1 result from stage1.json
@@ -601,23 +669,23 @@ else if (stageStartLevel == 3) {
 // FindOptimalLayout(stageStartLevel);
 
 // eval the results
-// load stage3result from stage3.json
-// let stage3Result = JSON.parse(fs.readFileSync('stage3.json'));
-// Object.keys(stage3Result).forEach(function (key) {
-//    bestMappings.add(key.split(","), stage3Result[key]);
-// });
-// let entryArray = Array.from(bestMappings.entries());
-// for (let i = 0; i < entryArray.length; i++) {
-//    let curEntry = entryArray[i];
-//    mapping = curEntry[1];
-//    evaluateMapping(mapping);
-// }
+//load stage3result from stage3.json
+let stage3Result = JSON.parse(fs.readFileSync('stage3.json'));
+Object.keys(stage3Result).forEach(function (key) {
+   bestMappings.add(key.split(","), stage3Result[key]);
+});
+let entryArray = Array.from(bestMappings.entries());
+for (let i = 0; i < entryArray.length; i++) {
+   let curEntry = entryArray[i];
+   mapping = curEntry[1];
+   evaluateMapping(mapping);
+}
 
 // eval KEN's mappings
-evaluateMapping([ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ]);
-evaluateMapping([ 'fok', 'vbe', 'lzxquw', 'ims', 'tr', 'gya', 'pjd', 'hcn' ]);
-evaluateMapping([ 'dwfq', 'hnp', 'uzs', 'jyir', 'ckga', 'vbe', 'lt', 'xom' ]);
-evaluateMapping([ 'figm', 'vs', 'odc', 'zlyu', 'jewr', 'bqt', 'xpa', 'knh' ]);
+// evaluateMapping(['os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt']);
+// evaluateMapping(['fok', 'vbe', 'lzxquw', 'ims', 'tr', 'gya', 'pjd', 'hcn']);
+// evaluateMapping(['dwfq', 'hnp', 'uzs', 'jyir', 'ckga', 'vbe', 'lt', 'xom']);
+// evaluateMapping(['figm', 'vs', 'odc', 'zlyu', 'jewr', 'bqt', 'xpa', 'knh']);
 
 // evaluateMapping(['os','zujcxgp','efw','mn','it','ahd','lbqr','vyk']);
 //evaluateMapping(['oyxk','fbe','jlzgu','dwi','qctr','ma','svp','hn']);
