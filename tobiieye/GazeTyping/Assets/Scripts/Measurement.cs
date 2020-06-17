@@ -41,7 +41,7 @@ public class Measurement : MonoBehaviour {
     if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR) {
       typingSeconds = 60;
     } else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST) {
-      typingSeconds = 300;
+      typingSeconds = 60;// 300;
     } else {
       typingSeconds = 600;
     }

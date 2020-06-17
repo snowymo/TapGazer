@@ -118,9 +118,12 @@ public class CandidateHandler : MonoBehaviour
   }
 
   public void UpdateDivisionGaze(int divIndex) {
-    curGazedDivision = divIndex;
-    if(cachedCandidates != null)
-      UpdateDivisionLayout(cachedCandidates, cachedProgress, candidateLayout == CandLayout.DIVISION ? 0 : 1);
+    if(candidateLayout == CandLayout.DIVISION || candidateLayout == CandLayout.DIVISION_END)
+    {
+      curGazedDivision = divIndex;
+      if (cachedCandidates != null)
+        UpdateDivisionLayout(cachedCandidates, cachedProgress, candidateLayout == CandLayout.DIVISION ? 0 : 1);
+    }    
   }
 
   private string[] leftDivision = new string[5], middleDivision = new string[5], rightDivision = new string[5];
