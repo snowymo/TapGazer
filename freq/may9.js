@@ -622,7 +622,7 @@ const argv = yargs
       description: 'the stage level to start',
       alias: 'sl',
       type: 'number',
-      default: 4,
+      default: 1,
    })
    .option('wordComplete', {
       alias: 'wc',
@@ -666,20 +666,20 @@ else if (stageStartLevel == 3) {
 }
 
 // main entry point
-// FindOptimalLayout(stageStartLevel);
+FindOptimalLayout(stageStartLevel);
 
 // eval the results
 //load stage3result from stage3.json
-let stage3Result = JSON.parse(fs.readFileSync('stage3.json'));
-Object.keys(stage3Result).forEach(function (key) {
-   bestMappings.add(key.split(","), stage3Result[key]);
-});
-let entryArray = Array.from(bestMappings.entries());
-for (let i = 0; i < entryArray.length; i++) {
-   let curEntry = entryArray[i];
-   mapping = curEntry[1];
-   evaluateMapping(mapping);
-}
+// let stage3Result = JSON.parse(fs.readFileSync('stage3.json'));
+// Object.keys(stage3Result).forEach(function (key) {
+//    bestMappings.add(key.split(","), stage3Result[key]);
+// });
+// let entryArray = Array.from(bestMappings.entries());
+// for (let i = 0; i < entryArray.length; i++) {
+//    let curEntry = entryArray[i];
+//    mapping = curEntry[1];
+//    evaluateMapping(mapping);
+// }
 
 // eval KEN's mappings
 // evaluateMapping(['os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt']);
