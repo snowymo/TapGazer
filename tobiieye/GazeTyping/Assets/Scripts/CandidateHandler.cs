@@ -27,6 +27,8 @@ public class CandidateHandler : MonoBehaviour
   public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD, DIVISION, DIVISION_END };
   public CandLayout candidateLayout;
 
+  public bool enableWordCompletion;
+
   private List<GameObject> candidateObjects;
   public string CurrentGazedText;
   [SerializeField]
@@ -457,7 +459,8 @@ public class CandidateHandler : MonoBehaviour
     // we need to update the position at the same time
     // calculate the word length for both lines, find the longer one
     // or find the longest candidate, use that as the template, and re-calculate the width and place them
-    int maxLength = Mathf.Max(4, candidates[0].Length);
+    
+    int maxLength = Mathf.Max(4, candidates.Length > 0 ? candidates[0].Length : 0);
     //         CandidateCount = 13;
     //         CandidatePerRow = 4;
     for (int i = 1; i < Mathf.Min(CandidateCount, candidates.Length); i++)
@@ -566,42 +569,48 @@ public class CandidateHandler : MonoBehaviour
   private int cachedProgress;
   private string[] cachedCompleteCand;
   public void UpdateCandidates(string[] candidates, int progress, string[] completedCand) {
-    cachedCandidates = new string[candidates.Length];
-    candidates.CopyTo(cachedCandidates, 0);
+    cachedCandidates = new string[0];
+    if (enableWordCompletion)
+    {
+      cachedCandidates = new string[candidates.Length];
+      candidates.CopyTo(cachedCandidates, 0);
+    }
+    
     cachedProgress = progress;
     cachedCompleteCand = new string[completedCand.Length];
     completedCand.CopyTo(cachedCompleteCand, 0);
 
     if (candidateLayout == CandLayout.ROW)
-      UpdateRowLayoutCandidate(candidates, progress);
+      UpdateRowLayoutCandidate(cachedCandidates, progress);
     else if (candidateLayout == CandLayout.FAN)
-      UpdateFanLayoutCandidate(candidates, progress);
+      UpdateFanLayoutCandidate(cachedCandidates, progress);
     else if (candidateLayout == CandLayout.LEXIC)
     {
       int totalNumber = 13;
-      string[] newCand = ReorgCandidates(candidates, totalNumber, completedCand);
+      string[] newCand = ReorgCandidates(cachedCandidates, totalNumber, cachedCompleteCand);
       //for (int i = 0; i < newCand.Length; i++) {
       //    Debug.Log("newCand[" + i + "]:" + newCand[i]);
       //}
       UpdateLexicalCandidate(newCand, progress);
     } else if (candidateLayout == CandLayout.BYCOL)
     {
-      UpdateByColumnCandidate(candidates, progress);
+      UpdateByColumnCandidate(cachedCandidates, progress);
     } else if (candidateLayout == CandLayout.WORDCLOUD)
     {
       int totalNumber = 16;
-      string[] newCand = ReorgCandidates(candidates, totalNumber, completedCand, false);
-      UpdateWordCloudLayout(newCand, candidates, progress);
+      string[] newCand = ReorgCandidates(cachedCandidates, totalNumber, cachedCompleteCand, false);
+      UpdateWordCloudLayout(newCand, cachedCandidates, progress);
     } else if (candidateLayout == CandLayout.DIVISION)
     {
-      UpdateDivisionLayout(candidates, progress, 0);
+      UpdateDivisionLayout(cachedCandidates, progress, 0);
     }else if(candidateLayout == CandLayout.DIVISION_END)
     {
-      UpdateDivisionLayout(candidates, progress, 1);
+      UpdateDivisionLayout(cachedCandidates, progress, 1);
     }
   }
 
   private string[] ReorgCandidates(string[] candidates, int totalNumber, string[] completedCand, bool remainFirst = true) {
+    remainFirst = remainFirst && enableWordCompletion;
     // make sure the complete candidates are placed in candidates before totalNumber
     int completeCandNumber = completedCand.Length;
     string[] newCand = new string[totalNumber];
@@ -617,7 +626,7 @@ public class CandidateHandler : MonoBehaviour
     int copyNumber = Mathf.Min(completedCand.Length, totalNumber);
 
     int completeNotFirst = -1;
-    if (remainFirst)
+    if (remainFirst && candidates.Length > 0)
     {
       newCand[0] = candidates[0];
       copyNumber = Mathf.Min(completedCand.Length, totalNumber - 1);
@@ -652,7 +661,7 @@ public class CandidateHandler : MonoBehaviour
       toCopy = remainFirst ? copyNumber : (copyNumber - 1);
     }
 
-    for (int i = toCopy + 1, j = (remainFirst ? 1 : 0); i < totalNumber; i++)
+    for (int i = toCopy + 1, j = (remainFirst ? 1 : 0); i < totalNumber && completedCand.Length > 0; i++)
     {
       while (j < candidates.Length && candidates[j].Length == completedCand[0].Length)
       {
