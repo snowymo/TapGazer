@@ -66,6 +66,8 @@ public class VSGenerator : MonoBehaviour {
   public enum LAYOUT_OPTION { COLUMN, ROW, CIRCLE };
   public Transform columnLayout, rowLayout, circleLayout;
 
+  public bool showHint;
+
   public string userName;
   public LAYOUT_OPTION userLayout;
   public string commonWordPath;
@@ -283,7 +285,8 @@ public class VSGenerator : MonoBehaviour {
       //vscands[i].SetColor("white");
     }
     // show bounding box to indicate where the target word is
-    vscands[currentTargetIdx].ShowBorder();
+    if(showHint)
+      vscands[currentTargetIdx].ShowBorder();
   }
 
   void countdown() {

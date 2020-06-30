@@ -647,7 +647,8 @@ MonoBehaviour:
   verticalScale: 1
   fanAngle: 30
   textHeight: 0.2
-  candidateLayout: 5
+  candidateLayout: 3
+  enableWordCompletion: 1
   CurrentGazedText: 
   kSizeScale: 0.1
   isEllipsis: 0
