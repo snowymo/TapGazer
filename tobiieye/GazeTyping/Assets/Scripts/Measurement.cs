@@ -38,9 +38,14 @@ public class Measurement : MonoBehaviour {
   void Start() {
     startTime = DateTime.MinValue;
     allowInput = true;
-    if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR) {
+    if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING) {
       typingSeconds = 60;
-    } else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST) {
+    }
+    if (TapProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR || TapProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
+    {
+      typingSeconds = 60;
+    }
+    else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST) {
       typingSeconds = 60;// 300;
     } else {
       typingSeconds = 600;

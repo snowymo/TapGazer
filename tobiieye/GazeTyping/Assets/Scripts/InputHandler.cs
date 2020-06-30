@@ -107,7 +107,7 @@ public class InputHandler : MonoBehaviour {
             if (currentInputLine[currentInputLine.Length - 1] == 'n') {
               currentTypedWords.RemoveAt(currentTypedWords.Count - 1);
               // curTypingPhrase should move back to previous word too
-              if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
+              if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
                 phraseLoader.PreviousWord();
             }
             currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1); // b won't be put inside currentLine, n will, behave as space
@@ -160,6 +160,15 @@ public class InputHandler : MonoBehaviour {
     }
   }
 
+  private string classifyWord(string word) {
+    string fingerSeq = "";
+    for(int i = 0; i < word.Length; i++)
+    {
+      fingerSeq += ProfileLoader.configMap[word[i].ToString()];
+    }
+    return fingerSeq;
+  }
+
   private void HandleNewKeyboard() {
     for (int i = 0; i < inputStringTemplate.Length; i++) {
       if (Input.GetKeyDown(inputStringTemplate[i])) {
@@ -180,7 +189,7 @@ public class InputHandler : MonoBehaviour {
             if (currentInputLine[currentInputLine.Length - 1] == 'n') {
               currentTypedWords.RemoveAt(currentTypedWords.Count - 1);
               // curTypingPhrase should move back to previous word too
-              if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
+              if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
                 phraseLoader.PreviousWord();
             }
             currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1); // b won't be put inside currentLine, n will, behave as space
@@ -203,7 +212,17 @@ public class InputHandler : MonoBehaviour {
             curWord = candidateHandler.CurrentGazedText == "" ? wordListLoader.currentCandidates[0] : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result                        
           }
           // check if correct
-          curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
+          if(ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
+          {
+            // classify the word to type
+            string correctFingerSeq = classifyWord(presented);
+            curWord = (correctFingerSeq.Equals(currentInputString) ? presented : curWord);
+            curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
+          } else
+          {
+            curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
+          }
+          
           //Debug.Log("cur word:" + curWord);
           currentTypedWords.Add(curWord);
           // pass corredsponding parameter to measurement

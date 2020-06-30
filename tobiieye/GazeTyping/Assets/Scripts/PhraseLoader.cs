@@ -59,7 +59,7 @@ public class PhraseLoader : MonoBehaviour {
     }
     // curPhraseIndex is decided by mode, layout, and session
     curPhraseIndex = 0;
-    if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR)
+    if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
       curPhraseIndex = 0;
     else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST) {
       if ((candidateHandler.candidateLayout == CandidateHandler.CandLayout.ROW) || (candidateHandler.candidateLayout == CandidateHandler.CandLayout.LEXIC)) {
@@ -149,7 +149,7 @@ public class PhraseLoader : MonoBehaviour {
       arrowText += "<color=white>" + curPhrases[i] + "</color> ";
       if (typingMode == ProfileLoader.TypingMode.TRAINING)
         newText += "<color=green>" + curPhrases[i] + "</color> ";
-      else if (typingMode == ProfileLoader.TypingMode.TEST)
+      else if (typingMode == ProfileLoader.TypingMode.TEST || typingMode == ProfileLoader.TypingMode.TAPPING)
         newText += "<color=#c3c3c3>" + curPhrases[i] + "</color> ";
     }
     if (curTypingPhrase < curPhrases.Length) {
@@ -188,7 +188,7 @@ public class PhraseLoader : MonoBehaviour {
         // just wrong
         return false;
       }
-    } else if (typingMode == ProfileLoader.TypingMode.TEST) {
+    } else if (typingMode == ProfileLoader.TypingMode.TEST || typingMode == ProfileLoader.TypingMode.TAPPING) {
       bool result = candidate.Equals(curPhrases[curTypingPhrase], System.StringComparison.InvariantCultureIgnoreCase);
       if (curTypingPhrase < (curPhrases.Length - 1)) {
         measurement.AddWPM(curPhrases[curTypingPhrase].Length);

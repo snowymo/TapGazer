@@ -33,7 +33,7 @@ public class ProfileLoader : MonoBehaviour {
   // training is new keyboard + type correct then continue
   // test is new keyboard + keep typing
   // regular is regular keyboard + keep typing
-  public enum TypingMode { TRAINING, TEST, REGULAR };
+  public enum TypingMode { TRAINING, TEST, REGULAR, TAPPING };
   public enum OutputMode { Devkit, Trackerbar };
   public enum InputMode { KEYBOARD, TOUCH };
   public static InputMode inputMode;
@@ -67,6 +67,10 @@ public class ProfileLoader : MonoBehaviour {
       newKeyboardInput.SetActive(false);
     else
       regularInput.SetActive(false);
+
+    if(typingMode == TypingMode.REGULAR || typingMode == TypingMode.TAPPING)
+      // screen mode
+      UnityEngine.XR.XRSettings.enabled = false;
   }
 
   private void loadEnvironemnt() {
@@ -80,7 +84,7 @@ public class ProfileLoader : MonoBehaviour {
     }
   }
 
-  private void loadConfigFile() {
+  protected void loadConfigFile() {
     configMap = new Dictionary<string, string>();
     string configPath = Application.dataPath + "/Resources/config" + profile + ".json";
     string configContent = File.ReadAllText(configPath);
@@ -96,7 +100,7 @@ public class ProfileLoader : MonoBehaviour {
     }
   }
 
-  private void updateRenderTexture() {
+  protected void updateRenderTexture() {
     renderTextureIndices = new int[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
     // iterate all the keys in configMap and put them in the correct place
     foreach (string key in configMap.Keys) {
