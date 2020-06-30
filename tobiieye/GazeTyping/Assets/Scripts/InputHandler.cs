@@ -193,12 +193,24 @@ public class InputHandler : MonoBehaviour {
               if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
                 phraseLoader.PreviousWord();
             }
-            currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1); // b won't be put inside currentLine, n will, behave as space
-            retrieveInputStringFromLine();
-            if (currentInputString.Length > 0)
-              wordListLoader.UpdateCandidates(currentInputString);
-            else
+            if (candidateHandler.enableDeleteEntire)
+            {
+              // remove the entire word rather than one letter
+              int lastN = currentInputLine.LastIndexOf('n');
+              currentInputLine = lastN == -1 ? "" : currentInputLine.Substring(0, lastN+1);
+              currentInputString = "";
               candidateHandler.ResetCandidates();
+            } else
+            {
+              // remove one letter
+              currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1); // b won't be put inside currentLine, n will, behave as space
+              retrieveInputStringFromLine();
+              if (currentInputString.Length > 0)
+                wordListLoader.UpdateCandidates(currentInputString);
+              else
+                candidateHandler.ResetCandidates();
+            }
+            
           } else {
             currentInputLine = "";
             currentInputString = "";

@@ -649,6 +649,8 @@ MonoBehaviour:
   textHeight: 0.2
   candidateLayout: 7
   enableWordCompletion: 1
+  enableDeleteEntire: 1
+  defaultWord: 
   CurrentGazedText: 
   kSizeScale: 0.1
   isEllipsis: 0

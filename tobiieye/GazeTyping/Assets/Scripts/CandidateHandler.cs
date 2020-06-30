@@ -28,6 +28,7 @@ public class CandidateHandler : MonoBehaviour
   public CandLayout candidateLayout;
 
   public bool enableWordCompletion;
+  public bool enableDeleteEntire;
 
   private List<GameObject> candidateObjects;
   public string defaultWord;
