@@ -39,9 +39,9 @@ public class WordlistLoader : MonoBehaviour {
         currentCandidates = new string[preloadedCandidates];
 
         if (wordlistPath == "")
-            wordlistPath = Application.dataPath + "/Resources/noswear10k-result.json";
+            wordlistPath = Application.streamingAssetsPath + "/noswear10k-result.json";
         else
-            wordlistPath = Application.dataPath + "/Resources/" + wordlistPath;
+            wordlistPath = Application.streamingAssetsPath + "/" + wordlistPath;
         completeCandPath = wordlistPath.Replace("result", "cand");
         wordlistContent = File.ReadAllText(wordlistPath);
         completeCandContent = File.ReadAllText(completeCandPath);

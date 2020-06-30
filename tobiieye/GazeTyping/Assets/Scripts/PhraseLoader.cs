@@ -43,9 +43,9 @@ public class PhraseLoader : MonoBehaviour {
   void Start() {
     // load phrase file into string lists, line by line
     if (phrasePath == "")
-      phrasePath = Application.dataPath + "/Resources/phrases2.txt";
+      phrasePath = Application.streamingAssetsPath + "/phrases2.txt";
     else
-      phrasePath = Application.dataPath + "/Resources/" + phrasePath;
+      phrasePath = Application.streamingAssetsPath + "/" + phrasePath;
     using (StreamReader sr = new StreamReader(phrasePath)) {
       phraseCount = File.ReadAllLines(phrasePath).Length;
       phrases = new string[phraseCount];

@@ -200,7 +200,9 @@ public class InputHandler : MonoBehaviour {
               currentInputLine = lastN == -1 ? "" : currentInputLine.Substring(0, lastN+1);
               currentInputString = "";
               candidateHandler.ResetCandidates();
-            } else
+            }
+            if (currentInputLine[currentInputLine.Length - 1] == 'n' || 
+              !candidateHandler.enableDeleteEntire)
             {
               // remove one letter
               currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1); // b won't be put inside currentLine, n will, behave as space

@@ -155,7 +155,7 @@ public class Measurement : MonoBehaviour {
 
   private void saveData() {
     // save to file
-    string destination = Application.dataPath + "/Resources/Participants.csv";
+    string destination = Application.streamingAssetsPath + "/Participants.csv";
     if (!File.Exists(destination)) {
       File.WriteAllText(destination, "Data,Name,C,INF,IF,F,WPM, Correct Gaze, Total Gaze\n");
     }

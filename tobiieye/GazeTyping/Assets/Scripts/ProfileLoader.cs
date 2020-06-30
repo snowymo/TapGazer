@@ -86,7 +86,7 @@ public class ProfileLoader : MonoBehaviour {
 
   protected void loadConfigFile() {
     configMap = new Dictionary<string, string>();
-    string configPath = Application.dataPath + "/Resources/config" + profile + ".json";
+    string configPath = Application.streamingAssetsPath + "/config" + profile + ".json";
     string configContent = File.ReadAllText(configPath);
 
 

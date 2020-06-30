@@ -259,12 +259,13 @@ public class VSGenerator : MonoBehaviour {
     // press Q to save and exit
     if (Input.GetKeyDown(KeyCode.Q)) {
       saveData();
+      Application.Quit();
     }
   }
 
   void saveData() {
     // save to file
-    string destination = Application.dataPath + "/Resources/VisualSearch_" + userName + ".csv";
+    string destination = Application.streamingAssetsPath + "/VisualSearch_" + userName + ".csv";
     if (!File.Exists(destination)) {
       File.WriteAllText(destination, "Layout, Timestamp, Words,  word len 0, word len 1, word len 2, word len 3, word len 4, word count,  target index, target word, target word len,correct, history, gaze duration, tap duration\n");
     }
@@ -344,9 +345,9 @@ public class VSGenerator : MonoBehaviour {
 
   void loadCommonWords() {
     if (commonWordPath == "")
-      commonWordPath = Application.dataPath + "/Resources/commonword.txt";
+      commonWordPath = Application.streamingAssetsPath + "/commonword.txt";
     else
-      commonWordPath = Application.dataPath + "/Resources/" + commonWordPath;
+      commonWordPath = Application.streamingAssetsPath + "/" + commonWordPath;
     using (StreamReader sr = new StreamReader(commonWordPath)) {
       commonWordCount = File.ReadAllLines(commonWordPath).Length;
       commonWordList = new string[commonWordCount];
