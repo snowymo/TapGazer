@@ -125,7 +125,7 @@ public class InputHandler : MonoBehaviour {
         case 5:
             // n
             {
-            string presented = phraseLoader.GetCurWord();
+            string presented = phraseLoader.GetCurWord().ToLower();
             // enter
             currentInputLine += 'n';
             string curWord = "null";
@@ -162,7 +162,8 @@ public class InputHandler : MonoBehaviour {
 
   private string classifyWord(string word) {
     string fingerSeq = "";
-    for(int i = 0; i < word.Length; i++)
+    word = word.ToLower();
+    for (int i = 0; i < word.Length; i++)
     {
       fingerSeq += ProfileLoader.configMap[word[i].ToString()];
     }
