@@ -139,6 +139,7 @@ public class WordlistLoader : MonoBehaviour {
     public void ResetCandidates()
     {
         currentProgress = 0;
+    currentCandidates = new string[0];
         //candText0.SetCandidateText("");
         candidateHandler.ResetCandidates();
     }

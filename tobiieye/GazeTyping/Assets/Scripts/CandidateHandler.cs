@@ -24,12 +24,13 @@ public class CandidateHandler : MonoBehaviour
   Dictionary<int, int> fanHorizontalMap;
   List<List<string>> candidateColumns;
 
-  public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD, DIVISION, DIVISION_END };
+  public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD, DIVISION, DIVISION_END, ONE };
   public CandLayout candidateLayout;
 
   public bool enableWordCompletion;
 
   private List<GameObject> candidateObjects;
+  public string defaultWord;
   public string CurrentGazedText;
   [SerializeField]
   private float kSizeScale;
@@ -86,6 +87,11 @@ public class CandidateHandler : MonoBehaviour
       updateFanLayout();
     else if (candidateLayout == CandLayout.LEXIC)
     {
+      CandidateCount = 13;
+      CandidatePerRow = 4;
+
+      CandidateCount = 7;
+      CandidatePerRow = 3;
       CreateRowLayout();
       // order the candidates by lexical order
     } else if (candidateLayout == CandLayout.BYCOL)
@@ -97,6 +103,12 @@ public class CandidateHandler : MonoBehaviour
     } else if (candidateLayout == CandLayout.DIVISION || candidateLayout == CandLayout.DIVISION_END)
     {
       CreateDivisionLayout();
+    } else if (candidateLayout == CandLayout.ONE)
+    {
+      // for now, and circle later
+      CandidateCount = 5;
+      CandidatePerRow = 2;
+      CreateRowLayout();
     }
   }
 
@@ -120,12 +132,12 @@ public class CandidateHandler : MonoBehaviour
   }
 
   public void UpdateDivisionGaze(int divIndex) {
-    if(candidateLayout == CandLayout.DIVISION || candidateLayout == CandLayout.DIVISION_END)
+    if (candidateLayout == CandLayout.DIVISION || candidateLayout == CandLayout.DIVISION_END)
     {
       curGazedDivision = divIndex;
       if (cachedCandidates != null)
         UpdateDivisionLayout(cachedCandidates, cachedProgress, candidateLayout == CandLayout.DIVISION ? 0 : 1);
-    }    
+    }
   }
 
   private string[] leftDivision = new string[5], middleDivision = new string[5], rightDivision = new string[5];
@@ -140,7 +152,7 @@ public class CandidateHandler : MonoBehaviour
     rightDivision = new string[5] { "", "", "", "", "" };
     int leftDivIndex = 0, midDivIndex = 0, rightDivIndex = 0;
     bool leftDone = false, midDone = false, rightDone = false;
-    
+
 
     for (int i = 0; i < candidates.Length; i++)
     {
@@ -172,7 +184,7 @@ public class CandidateHandler : MonoBehaviour
           ++midDivIndex;
         } else
           midDone = true;
-      } else if(!rightDone && letter >= firstLetterDivSep2[divideLatter])
+      } else if (!rightDone && letter >= firstLetterDivSep2[divideLatter])
       {
         if ((i < 5) || ((curGazedDivision == 2) && (rightDivIndex < 5)))
         {
@@ -185,6 +197,8 @@ public class CandidateHandler : MonoBehaviour
           rightDone = true;
       }
     }
+    // TODO
+    defaultWord = candidateObjects[curGazedDivision].GetComponent<Candidate>().pureText;
     // now we can reset the rest
     for (int i = leftDivIndex; i < 5; i++)
     {
@@ -307,14 +321,11 @@ public class CandidateHandler : MonoBehaviour
         candidateObjects[randIndex].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, maxLength - 1, candSize, isEllipsis);
       }
     }
+    defaultWord = candidates[0];
   }
 
   void CreateRowLayout() {
-    CandidateCount = 13;
-    CandidatePerRow = 4;
 
-    CandidateCount = 7;
-    CandidatePerRow = 3;
 
     // the first one is placed in the center
     GameObject go = Instantiate(CandidatePrefab, transform);
@@ -435,7 +446,7 @@ public class CandidateHandler : MonoBehaviour
     int candNum = Mathf.Min(candidates.Length, CandidateCount);
 
     // row layout
-
+    defaultWord = candidates[0];
     for (int i = 0; i < candNum; i++)
     {
       if (i == 0)
@@ -459,7 +470,7 @@ public class CandidateHandler : MonoBehaviour
     // we need to update the position at the same time
     // calculate the word length for both lines, find the longer one
     // or find the longest candidate, use that as the template, and re-calculate the width and place them
-    
+
     int maxLength = Mathf.Max(4, candidates.Length > 0 ? candidates[0].Length : 0);
     //         CandidateCount = 13;
     //         CandidatePerRow = 4;
@@ -502,6 +513,7 @@ public class CandidateHandler : MonoBehaviour
         -CandidateWidth * (CandidatePerRow - 1) / 2 + ((i - 1) % CandidatePerRow) * CandidateWidth,
         ((i - 1) / CandidatePerRow + 1) * CandidateHeight + CandidateStartHeight, 0);
     }
+    defaultWord = candidates[0];
   }
 
   int candidateNumberPerColumn = 6;
@@ -575,7 +587,7 @@ public class CandidateHandler : MonoBehaviour
       cachedCandidates = new string[candidates.Length];
       candidates.CopyTo(cachedCandidates, 0);
     }
-    
+
     cachedProgress = progress;
     cachedCompleteCand = new string[completedCand.Length];
     completedCand.CopyTo(cachedCompleteCand, 0);
@@ -603,9 +615,61 @@ public class CandidateHandler : MonoBehaviour
     } else if (candidateLayout == CandLayout.DIVISION)
     {
       UpdateDivisionLayout(cachedCandidates, progress, 0);
-    }else if(candidateLayout == CandLayout.DIVISION_END)
+    } else if (candidateLayout == CandLayout.DIVISION_END)
     {
       UpdateDivisionLayout(cachedCandidates, progress, 1);
+    } else if (candidateLayout == CandLayout.ONE)
+    {
+      UpdateOneLayout(candidates, progress);
+    }
+  }
+
+  private void UpdateOneLayout(string[] candidates, int progress) {
+    // show at most 5 complete candidates; If there are more than 5, show the most frequent ones
+    // later we will filter the words that do not meet this requirement if we are using qwerty
+    if (cachedCompleteCand.Length > 0)
+    {
+      defaultWord = cachedCompleteCand[0];
+      int maxLength = Mathf.Max(4, cachedCompleteCand[0].Length);
+      int candNum = Mathf.Min(cachedCompleteCand.Length, CandidateCount);
+      for (int i = 1; i < candNum; i++)
+      {
+        if (cachedCompleteCand[i].Length > maxLength)
+          maxLength = cachedCompleteCand[i].Length;
+      }
+      CandidateWidth = perWidth * maxLength;
+
+      for (int i = 0; i < CandidateCount; i++)
+      {
+        candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedCompleteCand[i] : "", progress, maxLength - 1);
+        if (i > 0)
+        {
+          candidateObjects[i].transform.localPosition = new Vector3(
+            -CandidateWidth * (CandidatePerRow - 1) / 2 + ((i - 1) % CandidatePerRow) * CandidateWidth,
+            ((i - 1) / CandidatePerRow + 1) * CandidateHeight + CandidateStartHeight, 0);//(i / CandidatePerRow + 1)
+        }
+      }
+    }
+    // show one word when there is no complete candidates
+    // pick the shortest one for now
+    else
+    {
+      int minLengthCand = candidates[0].Length;
+      string oneCand = candidates[0];
+      for(int i = 1; i < candidates.Length; i++)
+      {
+        if(candidates[i].Length == progress + 1)
+        {
+          oneCand = candidates[i];
+          break;
+        } else if(minLengthCand > candidates[i].Length)
+        {
+          minLengthCand = candidates[i].Length;
+          oneCand = candidates[i];
+        }
+      }
+      defaultWord = oneCand;
+      candidateObjects[0].GetComponent<Candidate>().SetCandidateText(oneCand, progress, Mathf.Max(4, oneCand.Length));
     }
   }
 
@@ -696,9 +760,9 @@ public class CandidateHandler : MonoBehaviour
 
   // Update is called once per frame
   //void Update() {
-    //if (Input.GetKeyDown("c"))
-    //{
-    //CreateFanLayout();
-    //}        
+  //if (Input.GetKeyDown("c"))
+  //{
+  //CreateFanLayout();
+  //}        
   //}
 }

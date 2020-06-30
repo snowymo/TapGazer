@@ -210,7 +210,7 @@ public class InputHandler : MonoBehaviour {
           currentInputLine += 'n';
           string curWord = "null";
           if (wordListLoader.currentCandidates.Length > 0 && wordListLoader.currentCandidates[0] != null) {
-            curWord = candidateHandler.CurrentGazedText == "" ? wordListLoader.currentCandidates[0] : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result                        
+            curWord = candidateHandler.CurrentGazedText == "" ? candidateHandler.defaultWord : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result                        
           }
           // check if correct
           if(ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
@@ -234,7 +234,9 @@ public class InputHandler : MonoBehaviour {
           measurement.UpdateTestMeasure(presented, currentInputString, curWord.Contains("=green"));
           // flush input
           currentInputString = "";
-          candidateHandler.ResetCandidates();
+          /*candidateHandler.ResetCandidates();*/
+          wordListLoader.ResetCandidates();
+          candidateHandler.defaultWord = "";
         } else {
           // regular input
           measurement.StartClock();
