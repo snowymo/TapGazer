@@ -347,7 +347,7 @@ let classifyWords = n => {
                ++wordCountLast[fingerSeq][2];
             }
          }
-      }      
+      }
    }
 }
 
@@ -381,7 +381,22 @@ let computeVisualSearch = c => {
    // count = c;
    // return (52.0 * count + 227.3)/1000.0;
    // expert model
-   return 0.02679;
+   if (c > 1)
+      return 0.02679;
+   else
+      return 0;
+}
+
+let computeRealVisualSearch = c => {
+   // take homograph count as the parameter
+   // novice model
+   // count = c;
+   // return (52.0 * count + 227.3)/1000.0;
+   // expert model
+   if (c > 1)
+      return (52.0 * c + 227.3) / 1000.0;
+   else
+      return 0;
 }
 
 let computeMT = w => {
@@ -405,6 +420,63 @@ let computeMT = w => {
    return moveTime;
 }
 
+let tapSpeedAvg = 0.07;
+
+let computeExpertScore = w => {
+   // tap the entire words and then apply visual search once
+   // moveTime = (tapSpeedAvg * w.length + computeVisualSearch(count) + tapSpeedAvg) * wordnfreq[word]
+   // = (tapSpeedAvg * (w.length+1) + computeVisualSearch(count)) * wordnfreq[word]
+   // add different numbers for different fingers later
+   let score = 0; // typing time for the 100 common words
+   let sumFreq = 0, entireFreq = 0;
+   let lenWord = 0;
+   for (let n = 0; n < wordList.length; n++) {
+      let word = wordList[n];
+      entireFreq += wordnfreq[word];
+      if (word.length == 0)
+         continue;
+         
+      let count = wordCount[minInputString[word]];
+      if (count > 10) {
+         if (word in mostFrequentWords)
+            console.log("risky words", word);
+         continue;
+      }
+      score += (tapSpeedAvg * word.length + computeRealVisualSearch(count) + tapSpeedAvg) * wordnfreq[word];
+      sumFreq += wordnfreq[word];
+      lenWord += word.length * wordnfreq[word];
+   }
+   score /= sumFreq;
+   lenWord /= sumFreq;
+   console.log(mapping.toString(), tapSpeedAvg, ",", score, "seconds per word,", (60 / score * lenWord + 60 / score - 1) / 5, "wpm", sumFreq, entireFreq);
+}
+
+let computeNoviceScore = w => {
+   // tap one letter and do visual search one time
+   // moveTime = ((tapSpeedAvg + computeVisualSearch(count)) * minInputString[word].length + tapSpeedAvg) * wordnfreq[word]
+   let score = 0; // typing time for the 100 common words
+   let sumFreq = 0, entireFreq = 0;
+   let lenWord = 0;
+   for (let n = 0; n < wordList.length; n++) {
+      let word = wordList[n];
+      if (word.length == 0)
+         continue;
+      entireFreq += wordnfreq[word];
+      let count = wordCount[minInputString[word]];
+      if (count > 10) {
+         if (word in mostFrequentWords)
+            console.log("risky words", word, count, Array.from(wordComplete[minInputString[word]].entries()).toString() );
+         continue;
+      }
+      score += ((tapSpeedAvg + computeRealVisualSearch(count)) * minInputString[word].length + tapSpeedAvg) * wordnfreq[word];
+      sumFreq += wordnfreq[word];
+      lenWord += word.length * wordnfreq[word];
+   }
+   score /= sumFreq;
+   lenWord /= sumFreq;
+   console.log(mapping.toString(), tapSpeedAvg, ",", score, "seconds per word,", (60 / score * lenWord + 60 / score - 1) / 5, "wpm", sumFreq, entireFreq);
+}
+
 let computeScore = (i, strict = true) => {
    let score = 0; // typing time for the 100 common words
    let bHomograph = true;
@@ -413,8 +485,7 @@ let computeScore = (i, strict = true) => {
       if (word.length == 0)
          continue;
       let count = wordCount[minInputString[word]];
-      if (count > 10 ||
-         (strict && word in mostFrequentWords && count > 5)) {
+      if (count > 10) {
          bHomograph = false;
          score = Number.MAX_SAFE_INTEGER;
          break;
@@ -435,16 +506,16 @@ let computeScore = (i, strict = true) => {
             // divided by start letter. We need to know how many candidates does corresponding division have
             // we split the candidates into [a-g][h-p][q-z]
             let div = word[0] < 'h' ? 0 : (word[0] < 'q' ? 1 : 2);
-            if(wordCountFirst[fingerSeq][div] == 1)
+            if (wordCountFirst[fingerSeq][div] == 1)
                score += (computeMT(word) + tapAltTime) * wordnfreq[word];
             else
                score += (computeMT(word) + computeVisualSearch(wordCountFirst[div]) + tapTime) * wordnfreq[word];
          } else {
             // divided by ending letter. We need to know how many candidates does corresponding division have
             // we split the candidates into [a-d][e-q][r-z]
-            let endingWord = word[word.length-1];
+            let endingWord = word[word.length - 1];
             let div = endingWord < 'e' ? 0 : (endingWord < 'r' ? 1 : 2);
-            if(wordCountLast[fingerSeq][div] == 1)
+            if (wordCountLast[fingerSeq][div] == 1)
                score += (computeMT(word) + tapAltTime) * wordnfreq[word];
             else
                score += (computeMT(word) + computeVisualSearch(wordCountLast[div]) + tapTime) * wordnfreq[word];
@@ -616,6 +687,29 @@ let FindOptimalLayout = (startingLevel) => {
    }
 }
 
+let evalModels = (curMapping) => {
+   let originalMapping = mapping.slice();
+   mapping = curMapping;
+
+   enableWordComplete = true;
+   classifyWords();
+   // score
+   for (var i = 0; i < 20; i++) {
+      computeNoviceScore(0, false);
+      tapSpeedAvg += 0.005;
+   }
+
+   tapSpeedAvg = 0.07;
+   enableWordComplete = false;
+   classifyWords();
+   for (var i = 0; i < 20; i++) {
+      computeExpertScore(0, false);
+      tapSpeedAvg += 0.005;
+   }
+
+   mapping = originalMapping;
+}
+
 // === command line parameters ===
 const argv = yargs
    .option('startLevel', {
@@ -666,20 +760,25 @@ else if (stageStartLevel == 3) {
 }
 
 // main entry point
-FindOptimalLayout(stageStartLevel);
+// FindOptimalLayout(stageStartLevel);
+
+// eval the models
+mapping = ['qaz', 'wsx', 'edc', 'rfvtgb', 'yhnujm', 'ik', 'ol', 'p'];
+evalModels(mapping);
 
 // eval the results
 //load stage3result from stage3.json
-// let stage3Result = JSON.parse(fs.readFileSync('stage3.json'));
-// Object.keys(stage3Result).forEach(function (key) {
-//    bestMappings.add(key.split(","), stage3Result[key]);
-// });
-// let entryArray = Array.from(bestMappings.entries());
-// for (let i = 0; i < entryArray.length; i++) {
-//    let curEntry = entryArray[i];
-//    mapping = curEntry[1];
-//    evaluateMapping(mapping);
-// }
+let stage3Result = JSON.parse(fs.readFileSync('stage3.json'));
+Object.keys(stage3Result).forEach(function (key) {
+   bestMappings.add(key.split(","), stage3Result[key]);
+});
+let entryArray = Array.from(bestMappings.entries());
+for (let i = 0; i < entryArray.length; i++) {
+   let curEntry = entryArray[i];
+   mapping = curEntry[1];
+   // evaluateMapping(mapping);
+   evalModels(mapping);
+}
 
 // eval KEN's mappings
 // evaluateMapping(['os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt']);
