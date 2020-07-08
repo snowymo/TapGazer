@@ -9,6 +9,8 @@ public class CandidateHandler : MonoBehaviour
 
   public GameObject CandidatePrefab, FanLayoutCandidatePrefab;
 
+  private Transform pentagonArea;
+
   [SerializeField]
   int CandidateCount = 11;
   float CandidateWidth; // roughly it fits for 5-character word
@@ -82,6 +84,8 @@ public class CandidateHandler : MonoBehaviour
     screenGazeIndicator.SetActive(ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar);
     curGazedDivision = 1; // gaze at the middle division by default
 
+    pentagonArea = transform.Find("pentagonArea");
+
     if (candidateLayout == CandLayout.ROW)
       CreateRowLayout();
     else if (candidateLayout == CandLayout.FAN)
@@ -109,7 +113,8 @@ public class CandidateHandler : MonoBehaviour
       // for now, and circle later
       CandidateCount = 5;
       CandidatePerRow = 2;
-      CreateRowLayout();
+      //CreateRowLayout();
+      CreateCircleLayout();
     }
   }
 
@@ -326,8 +331,6 @@ public class CandidateHandler : MonoBehaviour
   }
 
   void CreateRowLayout() {
-
-
     // the first one is placed in the center
     GameObject go = Instantiate(CandidatePrefab, transform);
     go.name = "Cand0";
@@ -347,6 +350,19 @@ public class CandidateHandler : MonoBehaviour
         i / CandidatePerRow * CandidateHeight + CandidateStartHeight, 0);
       go.GetComponent<Candidate>().SetCandidateText("");
       go.GetComponent<Candidate>().candidateIndex = i + 1;
+      go.GetComponent<Candidate>().candidateHandler = this;
+      candidateObjects.Add(go);
+    }
+  }
+
+  void CreateCircleLayout() {
+    pentagonArea.gameObject.SetActive(true);
+    string prefix = "VSCand";
+    for(int i = 1; i <= 5; i++)
+    {
+      GameObject go = pentagonArea.Find(prefix + i.ToString()).gameObject;
+      go.GetComponent<Candidate>().SetCandidateText("");
+      go.GetComponent<Candidate>().candidateIndex = i;
       go.GetComponent<Candidate>().candidateHandler = this;
       candidateObjects.Add(go);
     }
@@ -432,6 +448,7 @@ public class CandidateHandler : MonoBehaviour
       candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
     }
   }
+  
 
   void UpdateRowLayoutCandidate(string[] candidates, int progress) {
     // we need to update the position at the same time
@@ -642,13 +659,14 @@ public class CandidateHandler : MonoBehaviour
 
       for (int i = 0; i < CandidateCount; i++)
       {
+        //candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedCompleteCand[i] : "", progress, maxLength - 1);
         candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedCompleteCand[i] : "", progress, maxLength - 1);
-        if (i > 0)
-        {
-          candidateObjects[i].transform.localPosition = new Vector3(
-            -CandidateWidth * (CandidatePerRow - 1) / 2 + ((i - 1) % CandidatePerRow) * CandidateWidth,
-            ((i - 1) / CandidatePerRow + 1) * CandidateHeight + CandidateStartHeight, 0);//(i / CandidatePerRow + 1)
-        }
+        //if (i > 0)
+        //{
+        //  candidateObjects[i].transform.localPosition = new Vector3(
+        //    -CandidateWidth * (CandidatePerRow - 1) / 2 + ((i - 1) % CandidatePerRow) * CandidateWidth,
+        //    ((i - 1) / CandidatePerRow + 1) * CandidateHeight + CandidateStartHeight, 0);//(i / CandidatePerRow + 1)
+        //}
       }
     }
     // show one word when there is no complete candidates
@@ -671,6 +689,10 @@ public class CandidateHandler : MonoBehaviour
       }
       defaultWord = oneCand;
       candidateObjects[0].GetComponent<Candidate>().SetCandidateText(oneCand, progress, Mathf.Max(4, oneCand.Length));
+      for (int i = 1; i < CandidateCount; i++)
+      {
+        candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
+      }
     }
   }
 

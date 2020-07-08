@@ -201,7 +201,7 @@ public class InputHandler : MonoBehaviour {
               currentInputString = "";
               candidateHandler.ResetCandidates();
             }
-            if (currentInputLine[currentInputLine.Length - 1] == 'n' || 
+            else if (currentInputLine[currentInputLine.Length - 1] == 'n' || 
               !candidateHandler.enableDeleteEntire)
             {
               // remove one letter

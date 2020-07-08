@@ -25,6 +25,7 @@ public class Candidate : MonoBehaviour {
     return richtext;
   }
 
+  [SerializeField] float pw, ph;
   // Update is called once per frame
   void Update() {
     if (ProfileLoader.outputMode == ProfileLoader.OutputMode.Devkit) {
@@ -71,19 +72,41 @@ public class Candidate : MonoBehaviour {
   public void SetCandidateText(string text, int progress = 0, int maxLength=0, float fontSize = kOriginalSize, bool isEllipsis = false) {
     // update the color of first #progress# characters to blue and the rest to red
     pureText = text;
+
     CandText.text = "<color=blue>" + text.Substring(0, Mathf.Min(text.Length, progress)) + "</color>";
     if (progress < text.Length)
       CandText.text += "<color=orange>" + text.Substring(progress) + "</color>";
+
     kWidthScale = 0.12f;
     CandText.fontSize = fontSize;
+
     float minLength = Mathf.Max(maxLength, Mathf.Max(5, text.Length));
     planeCollider.transform.localScale = new Vector3(0.51f * minLength * kWidthScale * fontSize / kOriginalSize, planeCollider.transform.localScale.y, fontSize / kOriginalSize * kOriginalZScale);
+
     firstOverflowCharacterIndex = CandText.characterWidthAdjustment;
     if (isEllipsis) {
       CandText.enableWordWrapping = true;
       StartCoroutine(checkReverseEllipsis(text, progress));
     } else
       CandText.enableWordWrapping = false;
+
+    pw = CandText.preferredWidth;
+    ph = CandText.preferredHeight;
+    if (candidateHandler.candidateLayout == CandidateHandler.CandLayout.ONE)
+    {
+      //circle
+      string parentName = textCollider.transform.parent.name;
+      if (parentName.Contains("1") || parentName.Contains("3") || parentName.Contains("5"))
+      {
+        textCollider.center = new Vector3(pw / 2, 0, textCollider.center.z);
+      } else
+      {
+        textCollider.center = new Vector3(-pw / 2, 0, textCollider.center.z);
+      }
+      minColliderWidth = 0.5f;
+      colliderHeight = 0.25f;
+      textCollider.size = new Vector3(Mathf.Max(minColliderWidth, pw), colliderHeight/*(ph- colliderHeight)*/);
+    }
 
     //textCollider.enabled = false;
     StartCoroutine(renewTextCollider());

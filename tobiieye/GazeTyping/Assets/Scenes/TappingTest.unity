@@ -649,6 +649,8 @@ MonoBehaviour:
   textHeight: 0.2
   candidateLayout: 3
   enableWordCompletion: 1
+  enableDeleteEntire: 0
+  defaultWord: 
   CurrentGazedText: 
   kSizeScale: 0.1
   isEllipsis: 0
@@ -887,6 +889,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: rightDivision
       objectReference: {fileID: 0}
+    - target: {fileID: 1792253112131553300, guid: 9778d384a31e27b468fc4461a7efa86c,
+        type: 3}
+      propertyPath: candHandler
+      value: 
+      objectReference: {fileID: 132433879}
     - target: {fileID: 3931648395055586509, guid: 9778d384a31e27b468fc4461a7efa86c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -942,11 +949,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1792253112131553300, guid: 9778d384a31e27b468fc4461a7efa86c,
-        type: 3}
-      propertyPath: candHandler
-      value: 
-      objectReference: {fileID: 132433879}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9778d384a31e27b468fc4461a7efa86c, type: 3}
 --- !u!4 &162644672 stripped
@@ -2750,11 +2752,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 840372617}
     m_Modifications:
-    - target: {fileID: 1511505072106688446, guid: 77c6d8eff7d690f4aa9ae7c19cd69957,
-        type: 3}
-      propertyPath: m_Name
-      value: network4sensel
-      objectReference: {fileID: 0}
     - target: {fileID: 1511505072106688440, guid: 77c6d8eff7d690f4aa9ae7c19cd69957,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2839,6 +2836,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1511505072106688446, guid: 77c6d8eff7d690f4aa9ae7c19cd69957,
+        type: 3}
+      propertyPath: m_Name
+      value: network4sensel
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77c6d8eff7d690f4aa9ae7c19cd69957, type: 3}
@@ -3869,7 +3871,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52a82dbc4a2dc4b44ab15abbc3c81ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curTypingMode: 3
+  curTypingMode: 2
   curProfile: zhenyi
   curSessionNumber: 1
   wordlistLoader: {fileID: 132433878}
@@ -4918,11 +4920,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 840372617}
     m_Modifications:
-    - target: {fileID: 1511505072106688446, guid: 77c6d8eff7d690f4aa9ae7c19cd69957,
-        type: 3}
-      propertyPath: m_Name
-      value: network4gaze
-      objectReference: {fileID: 0}
     - target: {fileID: 1511505072106688440, guid: 77c6d8eff7d690f4aa9ae7c19cd69957,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5007,6 +5004,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1511505072106688446, guid: 77c6d8eff7d690f4aa9ae7c19cd69957,
+        type: 3}
+      propertyPath: m_Name
+      value: network4gaze
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77c6d8eff7d690f4aa9ae7c19cd69957, type: 3}
