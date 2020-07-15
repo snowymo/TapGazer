@@ -278,7 +278,7 @@ public class VSGenerator : MonoBehaviour {
 
   void updateCand() {
     for (int i = 0; i < currentWordCount; i++) {
-      vscands[i].SetText(currentWordList[i], "white");
+      vscands[i].SetText(currentWordList[i]);
       //vscands[i].SetColor("white");
     }
     for (int i = currentWordCount; i < 5; i++) {

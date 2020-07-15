@@ -20,7 +20,7 @@ public class InputHandler : MonoBehaviour {
 
   public GameObject[] selectedFingers;
 
-  public GameObject helpInfo;
+  public GameObject helpInfo, secondKeyHelpInfo;
 
   public HandAnimationCtrl handModel;
 
@@ -170,107 +170,183 @@ public class InputHandler : MonoBehaviour {
     return fingerSeq;
   }
 
+  bool readyForSecondKey = false;
+  int[] keySelectionIndex = new int[] { 2, 7,3,6 };
   private void HandleNewKeyboard() {
-    for (int i = 0; i < inputStringTemplate.Length; i++) {
-      if (Input.GetKeyDown(inputStringTemplate[i])) {
-        // process the key down
-        //selectedFingers[i].SetActive(true);
-        // hand animation
-        if (i < 5)
-          handModel.PressLeftFingers(i);
-        else
-          handModel.PressRightFingers(i - 5);
-        helpInfo.SetActive(false);
-        // reset candidates
-        //candidateHandler.ResetCandidates();
-        if (inputStringTemplate[i] == "b") {
-          // delete  
-          if (currentInputLine.Length > 1) {
-            // if delete 'n', we need to remove the last typed word
-            if (currentInputLine[currentInputLine.Length - 1] == 'n') {
-              currentTypedWords.RemoveAt(currentTypedWords.Count - 1);
-              // curTypingPhrase should move back to previous word too
-              if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
-                phraseLoader.PreviousWord();
-            }
-            if (candidateHandler.enableDeleteEntire)
+    // key selection
+    if (candidateHandler.enableKeySelection && Input.GetKeyDown("n"))
+    {
+      print("[key selection] ready for second key");
+      readyForSecondKey = true;
+    }
+    if (readyForSecondKey) {
+      int candIndex = -1;
+      for (int i = 0; i < keySelectionIndex.Length; i++)
+      {
+        if (Input.GetKeyDown(inputStringTemplate[keySelectionIndex[i]]))
+        {
+          // update candIndex
+          candIndex = i + 1;
+          print("[key selection] via LH " + candIndex.ToString());
+          break;
+        }
+      }
+      if (candIndex == -1)
+      {
+        if (Input.GetKeyUp("n"))
+        {
+          candIndex = 0;
+          print("[key selection] via thumb " + candIndex.ToString());
+        }
+      }
+      if (candIndex != -1)
+      {
+        // using key selection
+        string presented = phraseLoader.GetCurWord();
+        // enter
+        currentInputLine += 'n';
+        string curWord = "null";
+        curWord = candidateHandler.candidateObjects[candIndex].GetComponent<Candidate>().pureText;
+        print("[key selection] curword " + curWord);
+        curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
+
+        //Debug.Log("cur word:" + curWord);
+        currentTypedWords.Add(curWord);
+        // pass corredsponding parameter to measurement
+        // currentInputString is the input stream for current word, without 'n'
+        // candidateHandler.GazedCandidate is the index of the candidates
+        // the combination of the currentInputString and index is the entire input of the transribed=C+INF, presented is retrieved from PhraseLoader
+        // the correct index of the candidates, we'd better find a way to get index from wordListLoader.currentCandidates
+        measurement.UpdateTestMeasure(presented, currentInputString, curWord.Contains("=green"));
+        // flush input
+        currentInputString = "";
+        /*candidateHandler.ResetCandidates();*/
+        wordListLoader.ResetCandidates();
+        candidateHandler.defaultWord = "";
+        readyForSecondKey = false;
+      }
+    } else
+    {
+      //print("[key selection] ready for second key");
+      for (int i = 0; i < inputStringTemplate.Length; i++)
+      {
+        if (Input.GetKeyDown(inputStringTemplate[i]))
+        {
+          // process the key down
+          //selectedFingers[i].SetActive(true);
+          // hand animation
+          if (i < 5)
+            handModel.PressLeftFingers(i);
+          else
+            handModel.PressRightFingers(i - 5);
+          helpInfo.SetActive(false);
+          // reset candidates
+          //candidateHandler.ResetCandidates();
+          if (inputStringTemplate[i] == "b")
+          {
+            // delete  
+            if (currentInputLine.Length > 1)
             {
-              // remove the entire word rather than one letter
-              int lastN = currentInputLine.LastIndexOf('n');
-              currentInputLine = lastN == -1 ? "" : currentInputLine.Substring(0, lastN+1);
+              // if delete 'n', we need to remove the last typed word
+              if (currentInputLine[currentInputLine.Length - 1] == 'n')
+              {
+                currentTypedWords.RemoveAt(currentTypedWords.Count - 1);
+                // curTypingPhrase should move back to previous word too
+                if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
+                  phraseLoader.PreviousWord();
+              }
+              int len = currentInputLine.Length;
+              if (candidateHandler.enableDeleteEntire)
+              {
+                // remove the entire word rather than one letter
+                int lastN = currentInputLine.LastIndexOf('n');
+                currentInputLine = lastN == -1 ? "" : currentInputLine.Substring(0, lastN + 1);
+                currentInputString = "";
+                candidateHandler.ResetCandidates();
+              }
+              if(len == currentInputLine.Length)
+              {
+                if ((currentInputLine.Length > 0 && currentInputLine[currentInputLine.Length - 1] == 'n') ||
+                  !candidateHandler.enableDeleteEntire ||
+                  readyForSecondKey)
+                {
+                  // remove one letter
+                  currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1); // b won't be put inside currentLine, n will, behave as space
+                  retrieveInputStringFromLine();
+                  if (currentInputString.Length > 0)
+                    wordListLoader.UpdateCandidates(currentInputString);
+                  else
+                    candidateHandler.ResetCandidates();
+                }
+              }
+            } else
+            {
+              currentInputLine = "";
               currentInputString = "";
               candidateHandler.ResetCandidates();
             }
-            else if (currentInputLine[currentInputLine.Length - 1] == 'n' || 
-              !candidateHandler.enableDeleteEntire)
-            {
-              // remove one letter
-              currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1); // b won't be put inside currentLine, n will, behave as space
-              retrieveInputStringFromLine();
-              if (currentInputString.Length > 0)
-                wordListLoader.UpdateCandidates(currentInputString);
-              else
-                candidateHandler.ResetCandidates();
-            }
-            
-          } else {
-            currentInputLine = "";
-            currentInputString = "";
-            candidateHandler.ResetCandidates();
-          }
-        } else if (inputStringTemplate[i] == "n") {
-          string presented = phraseLoader.GetCurWord();
-          // enter
-          currentInputLine += 'n';
-          string curWord = "null";
-          if (wordListLoader.currentCandidates.Length > 0 && wordListLoader.currentCandidates[0] != null) {
-            curWord = candidateHandler.CurrentGazedText == "" ? candidateHandler.defaultWord : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result                        
-          }
-          // check if correct
-          if(ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
+          } else if (inputStringTemplate[i] == "n")
           {
-            // classify the word to type
-            string correctFingerSeq = classifyWord(presented);
-            curWord = (correctFingerSeq.Equals(currentInputString) ? presented : curWord);
-            curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
+            if (!candidateHandler.enableKeySelection)
+            {
+              string presented = phraseLoader.GetCurWord();
+              // enter
+              currentInputLine += 'n';
+              string curWord = "null";
+              if (wordListLoader.currentCandidates.Length > 0 && wordListLoader.currentCandidates[0] != null)
+              {
+                curWord = candidateHandler.CurrentGazedText == "" ? candidateHandler.defaultWord : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result                        
+              }
+              // check if correct
+              if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
+              {
+                // classify the word to type
+                string correctFingerSeq = classifyWord(presented);
+                curWord = (correctFingerSeq.Equals(currentInputString) ? presented : curWord);
+                curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
+              } else
+              {
+                curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
+              }
+
+              //Debug.Log("cur word:" + curWord);
+              currentTypedWords.Add(curWord);
+              // pass corredsponding parameter to measurement
+              // currentInputString is the input stream for current word, without 'n'
+              // candidateHandler.GazedCandidate is the index of the candidates
+              // the combination of the currentInputString and index is the entire input of the transribed=C+INF, presented is retrieved from PhraseLoader
+              // the correct index of the candidates, we'd better find a way to get index from wordListLoader.currentCandidates
+              measurement.UpdateTestMeasure(presented, currentInputString, curWord.Contains("=green"));
+              // flush input
+              currentInputString = "";
+              /*candidateHandler.ResetCandidates();*/
+              wordListLoader.ResetCandidates();
+              candidateHandler.defaultWord = "";
+            }
           } else
           {
-            curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
+            // regular input
+            measurement.StartClock();
+            currentInputLine += mapInput2InputString[inputStringTemplate[i]];
+            retrieveInputStringFromLine();
+            //Debug.Log("input string:" + currentInputString);
+            wordListLoader.UpdateCandidates(currentInputString);
           }
-          
-          //Debug.Log("cur word:" + curWord);
-          currentTypedWords.Add(curWord);
-          // pass corredsponding parameter to measurement
-          // currentInputString is the input stream for current word, without 'n'
-          // candidateHandler.GazedCandidate is the index of the candidates
-          // the combination of the currentInputString and index is the entire input of the transribed=C+INF, presented is retrieved from PhraseLoader
-          // the correct index of the candidates, we'd better find a way to get index from wordListLoader.currentCandidates
-          measurement.UpdateTestMeasure(presented, currentInputString, curWord.Contains("=green"));
-          // flush input
-          currentInputString = "";
-          /*candidateHandler.ResetCandidates();*/
-          wordListLoader.ResetCandidates();
-          candidateHandler.defaultWord = "";
-        } else {
-          // regular input
-          measurement.StartClock();
-          currentInputLine += mapInput2InputString[inputStringTemplate[i]];
-          retrieveInputStringFromLine();
-          //Debug.Log("input string:" + currentInputString);
-          wordListLoader.UpdateCandidates(currentInputString);
+          break;
         }
-        break;
-      }
-      if (Input.GetKeyUp(inputStringTemplate[i])) {
-        // process the key up
-        selectedFingers[i].SetActive(false);
-        // move the finger back but keep the color changes
-        if (i < 5)
-          handModel.ReleaseLeftFingers(i);
-        else
-          handModel.ReleaseRightFingers(i - 5);
+        if (Input.GetKeyUp(inputStringTemplate[i]))
+        {
+          // process the key up
+          selectedFingers[i].SetActive(false);
+          // move the finger back but keep the color changes
+          if (i < 5)
+            handModel.ReleaseLeftFingers(i);
+          else
+            handModel.ReleaseRightFingers(i - 5);
+        }
       }
     }
+    
     updateDisplayInput();
   }
 
@@ -330,6 +406,9 @@ public class InputHandler : MonoBehaviour {
       adjustScreenGaze();
       HandleScreenGaze();
     }
+
+    // show second key finger assignment
+    secondKeyHelpInfo.SetActive(readyForSecondKey);
   }
 
   public void HandleScreenGaze() {

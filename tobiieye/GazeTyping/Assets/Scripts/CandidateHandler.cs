@@ -31,8 +31,9 @@ public class CandidateHandler : MonoBehaviour
 
   public bool enableWordCompletion;
   public bool enableDeleteEntire;
+  public bool enableKeySelection;// if enable key selection, (which is the other way of gaze selection), user press 'b' to display the number for candidates, then press with u90[ for candidate 1,2,3,4
 
-  private List<GameObject> candidateObjects;
+  public List<GameObject> candidateObjects;
   public string defaultWord;
   public string CurrentGazedText;
   [SerializeField]
@@ -75,6 +76,10 @@ public class CandidateHandler : MonoBehaviour
 
   // Start is called before the first frame update
   void Start() {
+    // only support non VR for now to save gaze efforts. Support VR later
+    if(enableKeySelection)
+      UnityEngine.XR.XRSettings.enabled = false;
+
     isEllipsis = false;
     candidateObjects = new List<GameObject>();
     perWidth = 0.25f;// 0.73f;

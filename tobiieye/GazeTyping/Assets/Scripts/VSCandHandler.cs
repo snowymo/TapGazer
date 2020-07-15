@@ -40,9 +40,11 @@ public class VSCandHandler : MonoBehaviour, IGazeFocusable {
     bc = GetComponent<BoxCollider>();
   }
 
-  public void SetText(string candText, string colorName = "white") {
+  public void SetText(string candText, int progress = 0, int maxLength = 0) {
     pureText = candText;
-    textComp.text = pureText;// "<color=" + colorName + ">" + pureText + "</color>";
+    textComp.text = "<color=blue>" + candText.Substring(0, Mathf.Min(candText.Length, progress)) + "</color>";
+    if (progress < candText.Length)
+      textComp.text += "<color=orange>" + candText.Substring(progress) + "</color>";
     pw = textComp.preferredWidth;
     ph = textComp.preferredHeight;
     hasBox = 0;
