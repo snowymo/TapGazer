@@ -47,8 +47,13 @@ public class InputHandler : MonoBehaviour
       /*print(duration.TotalMilliseconds);*/
       //print("[in hold] up:" + up + " duration:" + duration);
     }
+    public override string ToString() {
+      return "down:" + down.ToString() + " duration:" + duration.ToString() + " up" + up.ToString();
+    }
   }
   private Dictionary<string, KeyEventTime> controlKeyStatus;
+
+  public TMPro.TextMeshPro spellingModeText;
 
   // Start is called before the first frame update
   void Start() {
@@ -99,6 +104,8 @@ public class InputHandler : MonoBehaviour
       selectionKeys = new string[] { "n", "b" };
       deletionKeys = new string[] { "b", "n" };
     }
+    spellingKeyStatus["t"] = new KeyEventTime();
+    spellingKeyStatus["u"] = new KeyEventTime();
   }
 
   private void updateDisplayInput() {
@@ -296,11 +303,75 @@ public class InputHandler : MonoBehaviour
     candidateHandler.defaultWord = "";
   }
 
+  private bool toggleSpelling = false;
+  private Dictionary<string, KeyEventTime> spellingKeyStatus = new Dictionary<string, KeyEventTime>();
+  bool hitSpellKey = false;
+  private bool updateSpellingMode() {
+    // t and u
+    foreach (KeyValuePair<string, KeyEventTime> eachKey in spellingKeyStatus)
+    {
+      //
+      spellingKeyStatus[eachKey.Key].duration = 0;
+      if (Input.GetKeyDown(eachKey.Key))
+      {
+        //print(eachKey.Key + " down");
+        spellingKeyStatus[eachKey.Key].setDown();
+      }
+      if (Input.GetKey(eachKey.Key))
+      {
+        //print(eachKey.Key + " hold");
+        spellingKeyStatus[eachKey.Key].setHold();
+      }
+      if (Input.GetKeyUp(eachKey.Key))
+      {
+        //print(eachKey.Key + " up");
+        spellingKeyStatus[eachKey.Key].setUp();
+      }
+    }
+
+    if (hitSpellKey)
+    {
+      // previously in deletion, then check if both key up
+      bool bothUp = true;
+      foreach (KeyValuePair<string, KeyEventTime> eachKey in spellingKeyStatus)
+      {
+        bothUp = bothUp && ((eachKey.Value.up >= eachKey.Value.down) && eachKey.Value.down >= 0);
+        //print(eachKey.Value.ToString());
+      }
+      if (bothUp)
+      {
+        toggleSpelling = !toggleSpelling;
+        //print("change spell mode:" + toggleSpelling);
+        hitSpellKey = false;
+        spellingModeText.text = "mode:" + (toggleSpelling ? "spelling" : "word");
+        return true;
+      }
+    } else
+    {
+      // previously not in deletion, then check if current is in deletion
+      bool curHitSpellKey = true;
+      foreach (KeyValuePair<string, KeyEventTime> eachKey in spellingKeyStatus)
+      {
+        curHitSpellKey = curHitSpellKey &&
+          (
+          (eachKey.Value.duration > 0)
+          || (
+          (eachKey.Value.duration == 0)
+            && (eachKey.Value.up == eachKey.Value.down)
+            )
+          );
+      }
+      hitSpellKey = curHitSpellKey;
+    }
+    return hitSpellKey;
+  }
+
   bool readyForSecondKey = false;
   int[] keySelectionIndex = new int[] { 2, 7, 3, 6 };
   bool hitDeletionKey = false;
   bool justHitSelectionKey = false;
-  private void HandleNewKeyboard() {
+
+  private void typeInWordMode() {
     //print("Time.frameCount " + Time.frameCount);
     // retrieve selection and deletion status
     // it is difficult to check two-key down. So let's record the timestamp that b and n is down
@@ -388,7 +459,7 @@ public class InputHandler : MonoBehaviour
               //if(controlKeyStatus[selectionKeys[i]].duration != 0)
               //  print(controlKeyStatus[selectionKeys[i]].duration + "\t" + controlKeyStatus[selectionKeys[1 - i]].up);
               if (
-                (controlKeyStatus[selectionKeys[i]].duration > 1) && (controlKeyStatus[selectionKeys[i]].up < controlKeyStatus[selectionKeys[i]].down)
+                (controlKeyStatus[selectionKeys[i]].duration > 0) && (controlKeyStatus[selectionKeys[i]].up < controlKeyStatus[selectionKeys[i]].down)
               && (controlKeyStatus[selectionKeys[1 - i]].up > controlKeyStatus[selectionKeys[1 - i]].down))
               {
                 hitSelectionKey = true;
@@ -473,7 +544,7 @@ public class InputHandler : MonoBehaviour
             // regular input
             for (int i = 0; i < inputStringTemplate.Length; i++)
             {
-              if (Input.GetKeyDown(inputStringTemplate[i]))
+              if (Input.GetKeyUp(inputStringTemplate[i]))
               {
                 // process the key down
                 //selectedFingers[i].SetActive(true);
@@ -512,6 +583,28 @@ public class InputHandler : MonoBehaviour
     }
 
     updateDisplayInput();
+  }
+
+  private void typeInSpellMode() {
+    // finalize a letter via 1) a different finger 2) enter finger 3) time up
+    // we may still have RT and BT differences
+  }
+
+  private void HandleNewKeyboard() {
+    bool isSpellKeyDown = updateSpellingMode();
+    //print("isSpellKeyDown:" + isSpellKeyDown);
+    if (isSpellKeyDown)
+      return;
+
+    // type in spell mode
+    if (toggleSpelling)
+    {
+      typeInSpellMode();
+    } else
+    {
+      typeInWordMode();
+    }
+    
   }
 
   public void HandleRegularKeyboard(TMPro.TMP_InputField inputField) {
