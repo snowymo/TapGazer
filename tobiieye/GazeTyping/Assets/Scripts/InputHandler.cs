@@ -121,6 +121,16 @@ public class InputHandler : MonoBehaviour
     {
       inputTextMesh.text += currentTypedWords[i] + " ";
     }
+    if (toggleSpelling)
+    {
+      // add letter for spelling mode
+      int lastN = currentInputLine.LastIndexOf(' ');
+      if (lastN + 1 < currentInputLine.Length)
+      {
+        print("[spelling mode] display:" + lastN + " " + currentInputLine.Substring(lastN + 1));
+        inputTextMesh.text += currentInputLine.Substring(lastN + 1);
+      }        
+    }
   }
 
   private void retrieveInputStringFromLine() {
@@ -341,7 +351,7 @@ public class InputHandler : MonoBehaviour
       if (bothUp)
       {
         toggleSpelling = !toggleSpelling;
-        //print("change spell mode:" + toggleSpelling);
+        print("change spell mode:" + toggleSpelling);
         hitSpellKey = false;
         spellingModeText.text = "mode:" + (toggleSpelling ? "spelling" : "word");
         return true;
@@ -544,7 +554,7 @@ public class InputHandler : MonoBehaviour
             // regular input
             for (int i = 0; i < inputStringTemplate.Length; i++)
             {
-              if (Input.GetKeyUp(inputStringTemplate[i]))
+              if (Input.GetKeyDown(inputStringTemplate[i]))
               {
                 // process the key down
                 //selectedFingers[i].SetActive(true);
@@ -555,16 +565,8 @@ public class InputHandler : MonoBehaviour
                   handModel.PressRightFingers(i - 5);
                 helpInfo.SetActive(false);
                 // reset candidates
-                //candidateHandler.ResetCandidates();                
-                if (mapInput2InputString.ContainsKey(inputStringTemplate[i]))
-                {
-                  measurement.StartClock();
-                  currentInputLine += mapInput2InputString[inputStringTemplate[i]];
-                  retrieveInputStringFromLine();
-                  //Debug.Log("input string:" + currentInputString);
-                  wordListLoader.UpdateCandidates(currentInputString);
-                }
-                break;
+                //candidateHandler.ResetCandidates();               
+
               }
               if (Input.GetKeyUp(inputStringTemplate[i]))
               {
@@ -575,6 +577,15 @@ public class InputHandler : MonoBehaviour
                   handModel.ReleaseLeftFingers(i);
                 else
                   handModel.ReleaseRightFingers(i - 5);
+                if (mapInput2InputString.ContainsKey(inputStringTemplate[i]))
+                {
+                  measurement.StartClock();
+                  currentInputLine += mapInput2InputString[inputStringTemplate[i]];
+                  retrieveInputStringFromLine();
+                  //Debug.Log("input string:" + currentInputString);
+                  wordListLoader.UpdateCandidates(currentInputString);
+                }
+                break;
               }
             }
           }
@@ -585,9 +596,201 @@ public class InputHandler : MonoBehaviour
     updateDisplayInput();
   }
 
+  int lastSpellTime = 0;
+  string lastSpellFinger = "";
+  const int spellTimeUp = 40;
+  int curLetterIndex = 0;
+  private bool newLetter(string curSpellFinger) {
+    if (curSpellFinger != lastSpellFinger)
+    {
+      //lastSpellTime = Time.frameCount - spellTimeUp * 2;
+      print("[new letter] different finger");
+      return true;
+    }
+    if (Time.frameCount - lastSpellTime >= spellTimeUp)
+    {
+      print("[new letter] time is up:" + (Time.frameCount - lastSpellTime));
+      return true;
+    }
+    return false;
+  }
   private void typeInSpellMode() {
     // finalize a letter via 1) a different finger 2) enter finger 3) time up
     // we may still have RT and BT differences
+
+    // deal with select and delete keys
+    foreach (KeyValuePair<string, KeyEventTime> eachKey in controlKeyStatus)
+    {
+      //
+      controlKeyStatus[eachKey.Key].duration = 0;
+      if (Input.GetKeyDown(eachKey.Key))
+      {
+        //print(eachKey.Key + " down");
+        controlKeyStatus[eachKey.Key].setDown();
+      }
+      if (Input.GetKey(eachKey.Key))
+      {
+        //print(eachKey.Key + " hold");
+        controlKeyStatus[eachKey.Key].setHold();
+      }
+      if (Input.GetKeyUp(eachKey.Key))
+      {
+        //print(eachKey.Key + " up");
+        controlKeyStatus[eachKey.Key].setUp();
+        justHitSelectionKey = false;
+      }
+    }
+
+    if (hitDeletionKey)
+    {
+      // previously in deletion, then check if both key up
+      bool bothUp = true;
+      // reset
+      readyForSecondKey = false;
+      for (int deletionKeysIndex = 0; deletionKeysIndex < deletionKeys.Length; deletionKeysIndex++)
+      {
+        bothUp = bothUp &&
+          (controlKeyStatus[deletionKeys[deletionKeysIndex]].up
+          > controlKeyStatus[deletionKeys[deletionKeysIndex]].down);
+      }
+      if (bothUp)
+      {
+        print("[spelling mode] delete: " + currentInputLine);
+        lastSpellFinger = "b";
+        if (currentInputLine.Length > 1)
+        {
+          // if delete 'n', we need to remove the last typed word
+          if (currentInputLine[currentInputLine.Length - 1] == ' ')
+          {
+            print("[spelling mode] delete: currentTypedWords.count " + currentTypedWords.Count);
+            currentTypedWords.RemoveAt(currentTypedWords.Count - 1);            
+            // curTypingPhrase should move back to previous word too
+            if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
+              phraseLoader.PreviousWord();
+            currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 2);
+          } else
+          {
+            currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1);
+          }
+        } else
+        {
+          currentInputLine = "";
+        }
+        hitDeletionKey = false;
+      }
+    } else
+    {
+      // previously not in deletion, then check if current is in deletion
+      bool curHitDeletionKey = true;
+      for (int deletionKeysIndex = 0; deletionKeysIndex < deletionKeys.Length; deletionKeysIndex++)
+      {
+        curHitDeletionKey = curHitDeletionKey &&
+          (
+          (controlKeyStatus[deletionKeys[deletionKeysIndex]].duration > 0)
+          || (
+          (controlKeyStatus[deletionKeys[deletionKeysIndex]].duration == 0)
+            && (controlKeyStatus[deletionKeys[deletionKeysIndex]].up == controlKeyStatus[deletionKeys[deletionKeysIndex]].down)
+            )
+          );
+      }
+      hitDeletionKey = curHitDeletionKey;
+      bool hitSelectionKey = false;
+      if (!hitDeletionKey)
+      {
+        if (!justHitSelectionKey)
+        {
+          // check selection key
+          if (selectionKeys.Length == 1)
+          {
+            hitSelectionKey = Input.GetKeyDown(selectionKeys[0]);
+          } else
+          {
+            for (int i = 0; i < selectionKeys.Length; i++)
+            {
+              // one up one down
+              if (
+                (controlKeyStatus[selectionKeys[i]].duration > 0) && (controlKeyStatus[selectionKeys[i]].up < controlKeyStatus[selectionKeys[i]].down)
+              && (controlKeyStatus[selectionKeys[1 - i]].up > controlKeyStatus[selectionKeys[1 - i]].down))
+              {
+                hitSelectionKey = true;
+              }
+            }
+          }
+        }
+      }
+
+      if (hitSelectionKey)
+      {
+        lastSpellFinger = "n";
+        // select current letter or type space
+        if (Time.frameCount - lastSpellTime >= spellTimeUp)
+        {
+          // type space
+          currentInputString = currentInputLine.Substring(currentInputLine.LastIndexOf(" ") + 1);
+          currentInputLine += " ";
+
+          // check if correct
+          string curWord = (phraseLoader.IsCurrentTypingCorrect(currentInputString, ProfileLoader.typingMode) ?
+            "<color=green>" : "<color=red>") + currentInputString + "</color>";
+          Debug.Log("[spelling mode] select:" + currentInputString + " cur word:" + curWord);
+          currentTypedWords.Add(curWord);
+          // update measurement if necessary
+          string presented = phraseLoader.GetCurWord();
+          measurement.UpdateTestMeasure(presented, currentInputString, curWord.Contains("=green"));
+          // flush input
+          currentInputString = "";
+        }
+      } else
+      {
+        // regular input
+        //print("[spelling mode] regular input");
+        for (int i = 0; i < inputStringTemplate.Length; i++)
+        {
+          if (Input.GetKeyDown(inputStringTemplate[i]))
+          {
+            // process the key down
+            // hand animation
+            if (i < 5)
+              handModel.PressLeftFingers(i);
+            else
+              handModel.PressRightFingers(i - 5);
+
+            if (mapInput2InputString.ContainsKey(inputStringTemplate[i]))
+            {
+              measurement.StartClock();
+              // check if it is a new letter or updating current letter
+              if (newLetter(inputStringTemplate[i]))
+              {
+                curLetterIndex = 0;
+                currentInputLine += ProfileLoader.letterMap[mapInput2InputString[inputStringTemplate[i]]][curLetterIndex];
+              } else
+              {
+                currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1);
+                curLetterIndex = curLetterIndex + 1;
+                currentInputLine += ProfileLoader.letterMap[mapInput2InputString[inputStringTemplate[i]]][curLetterIndex];
+              }
+              lastSpellTime = Time.frameCount;
+              lastSpellFinger = inputStringTemplate[i];
+              print("[spelling mode] type: finger - " + lastSpellFinger + " at " + lastSpellTime);
+            }
+            break;
+          }
+          if (Input.GetKeyUp(inputStringTemplate[i]))
+          {
+            // process the key up
+            selectedFingers[i].SetActive(false);
+            // move the finger back but keep the color changes
+            if (i < 5)
+              handModel.ReleaseLeftFingers(i);
+            else
+              handModel.ReleaseRightFingers(i - 5);
+          }
+        }
+      }
+    }
+    // update currentInputLine to textMesh
+    updateDisplayInput();
+    //inputTextMesh.text = currentInputLine;
   }
 
   private void HandleNewKeyboard() {
@@ -604,7 +807,7 @@ public class InputHandler : MonoBehaviour
     {
       typeInWordMode();
     }
-    
+
   }
 
   public void HandleRegularKeyboard(TMPro.TMP_InputField inputField) {

@@ -17,8 +17,14 @@ public class ProfileLoader : MonoBehaviour {
   public static int session_number;
   public int curSessionNumber;
   public WordlistLoader wordlistLoader;
+  /// <summary>
+  /// configMap: 26 -> 8
+  /// letterMap: 8 -> 26
+  /// </summary>
   [SerializeField]
   public static Dictionary<string, string> configMap;
+  [SerializeField]
+  public static Dictionary<string, List<char>> letterMap;
   int[] renderTextureIndices;
   public DynamicHandKey dynamicHandKey;
   public Keyboard dynamicKeyColor;
@@ -100,9 +106,9 @@ public class ProfileLoader : MonoBehaviour {
 
   protected void loadConfigFile() {
     configMap = new Dictionary<string, string>();
+    letterMap = new Dictionary<string, List<char>>();
     string configPath = Application.streamingAssetsPath + "/config" + profile + ".json";
     string configContent = File.ReadAllText(configPath);
-
 
     dynamic configJson = DynamicJson.Parse(configContent);
     foreach (KeyValuePair<string, dynamic> item in configJson) {
@@ -110,6 +116,14 @@ public class ProfileLoader : MonoBehaviour {
         Debug.LogWarning("key: " + item.Key + " already exists.");
       } else {
         configMap.Add(item.Key, item.Value.ToString());
+      }
+      if (letterMap.ContainsKey(item.Value))
+      {
+        letterMap[item.Value].Add(item.Key[0]);
+      } else
+      {
+        letterMap[item.Value] = new List<char>();
+        letterMap[item.Value].Add(item.Key[0]);
       }
     }
   }
