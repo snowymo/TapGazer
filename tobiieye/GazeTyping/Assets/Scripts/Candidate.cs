@@ -33,8 +33,8 @@ public class Candidate : MonoBehaviour {
         CandText.fontStyle = TMPro.FontStyles.Underline;
         candidateHandler.GazedCandidate = candidateIndex;
         candidateHandler.CurrentGazedText = pureText;// TODO: TESTING removeFormat(CandText.text);
-        if(candidateHandler.candidateLayout == CandidateHandler.CandLayout.DIVISION ||
-          candidateHandler.candidateLayout == CandidateHandler.CandLayout.DIVISION_END)
+        if(ProfileLoader.candidateLayout == ProfileLoader.CandLayout.DIVISION ||
+          ProfileLoader.candidateLayout == ProfileLoader.CandLayout.DIVISION_END)
         {
           candidateHandler.UpdateDivisionGaze(candidateIndex % 3);
         }
@@ -92,7 +92,7 @@ public class Candidate : MonoBehaviour {
 
     pw = CandText.preferredWidth;
     ph = CandText.preferredHeight;
-    if (candidateHandler.candidateLayout == CandidateHandler.CandLayout.ONE)
+    if (ProfileLoader.candidateLayout == ProfileLoader.CandLayout.ONE)
     {
       //circle
       string parentName = textCollider.transform.parent.name;

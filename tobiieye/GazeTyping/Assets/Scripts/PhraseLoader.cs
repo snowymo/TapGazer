@@ -62,9 +62,9 @@ public class PhraseLoader : MonoBehaviour {
     if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
       curPhraseIndex = 0;
     else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST) {
-      if ((candidateHandler.candidateLayout == CandidateHandler.CandLayout.ROW) || (candidateHandler.candidateLayout == CandidateHandler.CandLayout.LEXIC)) {
+      if ((ProfileLoader.candidateLayout == ProfileLoader.CandLayout.ROW) || (ProfileLoader.candidateLayout == ProfileLoader.CandLayout.LEXIC)) {
         curPhraseIndex = ProfileLoader.session_number * 100; // 100 or 200
-      } else if (candidateHandler.candidateLayout == CandidateHandler.CandLayout.WORDCLOUD) {
+      } else if (ProfileLoader.candidateLayout == ProfileLoader.CandLayout.WORDCLOUD) {
         curPhraseIndex = 200 + ProfileLoader.session_number * 100; // 300 or 400
       }
     }

@@ -26,12 +26,12 @@ public class CandidateHandler : MonoBehaviour
   Dictionary<int, int> fanHorizontalMap;
   List<List<string>> candidateColumns;
 
-  public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD, DIVISION, DIVISION_END, ONE };
-  public CandLayout candidateLayout;
+  //public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD, DIVISION, DIVISION_END, ONE };
+  private ProfileLoader.CandLayout candidateLayout;
 
   public bool enableWordCompletion;
   public bool enableDeleteEntire;
-  public bool enableKeySelection;// if enable key selection, (which is the other way of gaze selection), user press 'b' to display the number for candidates, then press with u90[ for candidate 1,2,3,4
+  public bool enableChordSelection;// if enable key selection, (which is the other way of gaze selection), user press 'b' to display the number for candidates, then press with u90[ for candidate 1,2,3,4
 
   public List<GameObject> candidateObjects;
   public string defaultWord;
@@ -77,7 +77,7 @@ public class CandidateHandler : MonoBehaviour
   // Start is called before the first frame update
   void Start() {
     // only support non VR for now to save gaze efforts. Support VR later
-    if(enableKeySelection)
+    if (enableChordSelection)
       UnityEngine.XR.XRSettings.enabled = false;
 
     isEllipsis = false;
@@ -91,11 +91,12 @@ public class CandidateHandler : MonoBehaviour
 
     pentagonArea = transform.Find("pentagonArea");
 
-    if (candidateLayout == CandLayout.ROW)
+    candidateLayout = ProfileLoader.candidateLayout;
+    if (candidateLayout == ProfileLoader.CandLayout.ROW)
       CreateRowLayout();
-    else if (candidateLayout == CandLayout.FAN)
+    else if (candidateLayout == ProfileLoader.CandLayout.FAN)
       updateFanLayout();
-    else if (candidateLayout == CandLayout.LEXIC)
+    else if (candidateLayout == ProfileLoader.CandLayout.LEXIC)
     {
       CandidateCount = 13;
       CandidatePerRow = 4;
@@ -104,16 +105,16 @@ public class CandidateHandler : MonoBehaviour
       CandidatePerRow = 3;
       CreateRowLayout();
       // order the candidates by lexical order
-    } else if (candidateLayout == CandLayout.BYCOL)
+    } else if (candidateLayout == ProfileLoader.CandLayout.BYCOL)
     {
       CreateColumnLayout();
-    } else if (candidateLayout == CandLayout.WORDCLOUD)
+    } else if (candidateLayout == ProfileLoader.CandLayout.WORDCLOUD)
     {
       CreateWordCloudLayout();
-    } else if (candidateLayout == CandLayout.DIVISION || candidateLayout == CandLayout.DIVISION_END)
+    } else if (candidateLayout == ProfileLoader.CandLayout.DIVISION || candidateLayout == ProfileLoader.CandLayout.DIVISION_END)
     {
       CreateDivisionLayout();
-    } else if (candidateLayout == CandLayout.ONE)
+    } else if (candidateLayout == ProfileLoader.CandLayout.ONE)
     {
       // for now, and circle later
       CandidateCount = 5;
@@ -143,11 +144,11 @@ public class CandidateHandler : MonoBehaviour
   }
 
   public void UpdateDivisionGaze(int divIndex) {
-    if (candidateLayout == CandLayout.DIVISION || candidateLayout == CandLayout.DIVISION_END)
+    if (candidateLayout == ProfileLoader.CandLayout.DIVISION || candidateLayout == ProfileLoader.CandLayout.DIVISION_END)
     {
       curGazedDivision = divIndex;
       if (cachedCandidates != null)
-        UpdateDivisionLayout(cachedCandidates, cachedProgress, candidateLayout == CandLayout.DIVISION ? 0 : 1);
+        UpdateDivisionLayout(cachedCandidates, cachedProgress, candidateLayout == ProfileLoader.CandLayout.DIVISION ? 0 : 1);
     }
   }
 
@@ -615,11 +616,11 @@ public class CandidateHandler : MonoBehaviour
     cachedCompleteCand = new string[completedCand.Length];
     completedCand.CopyTo(cachedCompleteCand, 0);
 
-    if (candidateLayout == CandLayout.ROW)
+    if (candidateLayout == ProfileLoader.CandLayout.ROW)
       UpdateRowLayoutCandidate(cachedCandidates, progress);
-    else if (candidateLayout == CandLayout.FAN)
+    else if (candidateLayout == ProfileLoader.CandLayout.FAN)
       UpdateFanLayoutCandidate(cachedCandidates, progress);
-    else if (candidateLayout == CandLayout.LEXIC)
+    else if (candidateLayout == ProfileLoader.CandLayout.LEXIC)
     {
       int totalNumber = 13;
       string[] newCand = ReorgCandidates(cachedCandidates, totalNumber, cachedCompleteCand);
@@ -627,21 +628,21 @@ public class CandidateHandler : MonoBehaviour
       //    Debug.Log("newCand[" + i + "]:" + newCand[i]);
       //}
       UpdateLexicalCandidate(newCand, progress);
-    } else if (candidateLayout == CandLayout.BYCOL)
+    } else if (candidateLayout == ProfileLoader.CandLayout.BYCOL)
     {
       UpdateByColumnCandidate(cachedCandidates, progress);
-    } else if (candidateLayout == CandLayout.WORDCLOUD)
+    } else if (candidateLayout == ProfileLoader.CandLayout.WORDCLOUD)
     {
       int totalNumber = 16;
       string[] newCand = ReorgCandidates(cachedCandidates, totalNumber, cachedCompleteCand, false);
       UpdateWordCloudLayout(newCand, cachedCandidates, progress);
-    } else if (candidateLayout == CandLayout.DIVISION)
+    } else if (candidateLayout == ProfileLoader.CandLayout.DIVISION)
     {
       UpdateDivisionLayout(cachedCandidates, progress, 0);
-    } else if (candidateLayout == CandLayout.DIVISION_END)
+    } else if (candidateLayout == ProfileLoader.CandLayout.DIVISION_END)
     {
       UpdateDivisionLayout(cachedCandidates, progress, 1);
-    } else if (candidateLayout == CandLayout.ONE)
+    } else if (candidateLayout == ProfileLoader.CandLayout.ONE)
     {
       UpdateOneLayout(candidates, progress);
     }

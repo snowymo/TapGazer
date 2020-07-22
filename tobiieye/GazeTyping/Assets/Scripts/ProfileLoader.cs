@@ -38,6 +38,18 @@ public class ProfileLoader : MonoBehaviour {
   public enum InputMode { KEYBOARD, TOUCH };
   public static InputMode inputMode;
   public InputMode curInputMode;
+  /// <summary>
+  /// enterMode
+  /// right thumb: only use right thumb for enter, left thumb is reserved for deletion
+  /// both thumb: both thumbs could be used for enter, two thumbs pressing together are for deletion
+  /// </summary>
+  public enum EnterMode { RIGHT_THUMB, BOTH_THUMB};
+  public static EnterMode enterMode;
+  public EnterMode curEnterMode;
+
+  public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD, DIVISION, DIVISION_END, ONE };
+  public CandLayout curCandidateLayout;
+  public static CandLayout candidateLayout;
 
   // Start is called before the first frame update
   void Awake() {
@@ -47,6 +59,8 @@ public class ProfileLoader : MonoBehaviour {
     inputMode = curInputMode;
     session_number = curSessionNumber;
     outputMode = curOutputMode;
+    enterMode = curEnterMode;
+    candidateLayout = curCandidateLayout;
     Debug.Log("typing mode:" + typingMode);
     loadConfigFile();
     if (showHandModel) {

@@ -649,10 +649,9 @@ MonoBehaviour:
   verticalScale: 1
   fanAngle: 30
   textHeight: 0.2
-  candidateLayout: 7
   enableWordCompletion: 1
   enableDeleteEntire: 1
-  enableKeySelection: 1
+  enableChordSelection: 1
   candidateObjects: []
   defaultWord: 
   CurrentGazedText: 
@@ -4070,6 +4069,8 @@ MonoBehaviour:
   newKeyboardInput: {fileID: 1057379355}
   curOutputMode: 0
   curInputMode: 0
+  curEnterMode: 0
+  curCandidateLayout: 7
 --- !u!4 &840372617
 Transform:
   m_ObjectHideFlags: 0

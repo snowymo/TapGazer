@@ -163,7 +163,7 @@ public class Measurement : MonoBehaviour {
     //Write some text to the file
     // name should include profile (aka user name), mode (regular, or test), layout and session
     string name = ProfileLoader.profile + "-" + ProfileLoader.typingMode.ToString() + "-" + (candidateHandler.enableWordCompletion ? "WC" : "noWC" )
-      + "-" + candidateHandler.candidateLayout.ToString() + "-" + ProfileLoader.session_number.ToString();
+      + "-" + ProfileLoader.candidateLayout.ToString() + "-" + ProfileLoader.session_number.ToString();
     File.AppendAllText(destination, DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "," + name + "," + totalC.ToString() + "," + totalINF.ToString() + "," + totalIF.ToString() + "," + totalF.ToString() + "," + WPM.ToString() + ","
         + correctGazeSelection.ToString() + "," + totalGazeSelection.ToString() + "\n");
   }
