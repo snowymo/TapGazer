@@ -189,7 +189,8 @@ public class InputHandler : MonoBehaviour
           string presented = phraseLoader.GetCurWord().ToLower();
           // enter
           currentInputLine += 'n';
-          string curWord = "null";
+            measurement.AddSelectionDurationItem();
+            string curWord = "null";
           if (wordListLoader.currentCandidates.Length > 0 && wordListLoader.currentCandidates[0] != null)
           {
             curWord = candidateHandler.CurrentGazedText == "" ? wordListLoader.currentCandidates[0] : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result                        
@@ -213,6 +214,7 @@ public class InputHandler : MonoBehaviour
           // regular input
           measurement.StartClock();
           currentInputLine += mapInput2InputString[curMessage];
+          measurement.AddTapDurationItem(mapInput2InputString[curMessage]);
           retrieveInputStringFromLine();
           Debug.Log("input string:" + currentInputString);
           wordListLoader.UpdateCandidates(currentInputString);
@@ -281,6 +283,7 @@ public class InputHandler : MonoBehaviour
     string presented = phraseLoader.GetCurWord();
     // enter
     currentInputLine += 'n';
+    measurement.AddSelectionDurationItem();
     string curWord = "null";
     if (wordListLoader.currentCandidates.Length > 0 && wordListLoader.currentCandidates[0] != null)
     {
@@ -522,6 +525,8 @@ public class InputHandler : MonoBehaviour
             string presented = phraseLoader.GetCurWord();
             // enter
             currentInputLine += 'n';  // TODO: still use n to represent selection
+            // record selection time
+            measurement.AddSelectionDurationItem();
             string curWord = "null";
             curWord = candidateHandler.candidateObjects[candIndex].GetComponent<Candidate>().pureText;
             print("[key selection] curword " + curWord);
@@ -581,6 +586,7 @@ public class InputHandler : MonoBehaviour
                 {
                   measurement.StartClock();
                   currentInputLine += mapInput2InputString[inputStringTemplate[i]];
+                  measurement.AddTapDurationItem(mapInput2InputString[inputStringTemplate[i]]);
                   retrieveInputStringFromLine();
                   //Debug.Log("input string:" + currentInputString);
                   wordListLoader.UpdateCandidates(currentInputString);

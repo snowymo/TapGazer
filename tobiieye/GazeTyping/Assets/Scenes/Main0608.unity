@@ -4070,7 +4070,7 @@ MonoBehaviour:
   newKeyboardInput: {fileID: 1057379355}
   curOutputMode: 0
   curInputMode: 0
-  curEnterMode: 0
+  curEnterMode: 1
   curCandidateLayout: 7
 --- !u!4 &840372617
 Transform:
