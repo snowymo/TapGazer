@@ -52,6 +52,14 @@ public class ProfileLoader : MonoBehaviour {
   public enum EnterMode { RIGHT_THUMB, BOTH_THUMB};
   public static EnterMode enterMode;
   public EnterMode curEnterMode;
+  /// <summary>
+  /// wordCompletion mode
+  /// WC: with word completion: show completed word firsts, then from most frequent to not frequent
+  /// NC: no word completion: show one word of which the length is shortest when no complete candidate; show only complete candidates when exist
+  /// </summary>
+  public enum WordCompletionMode { WC, NC};
+  public static WordCompletionMode wcMode;
+  public WordCompletionMode curWcMode;
 
   public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD, DIVISION, DIVISION_END, ONE };
   public CandLayout curCandidateLayout;
@@ -66,6 +74,7 @@ public class ProfileLoader : MonoBehaviour {
     session_number = curSessionNumber;
     outputMode = curOutputMode;
     enterMode = curEnterMode;
+    wcMode = curWcMode;
     candidateLayout = curCandidateLayout;
     Debug.Log("typing mode:" + typingMode);
     loadConfigFile();

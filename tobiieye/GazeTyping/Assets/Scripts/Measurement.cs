@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class Measurement : MonoBehaviour {
+public class Measurement : MonoBehaviour
+{
 
   public PhraseLoader phraseLoader;
 
@@ -52,19 +53,24 @@ public class Measurement : MonoBehaviour {
   private DateTime lastTapTime = DateTime.MinValue;
 
   // Start is called before the first frame update
-  void Start() {
+  void Start()
+  {
     startTime = DateTime.MinValue;
     allowInput = true;
-    if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING) {
+    if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
+    {
       typingSeconds = 60;
     }
     if (TapProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR || TapProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
     {
       typingSeconds = 60;
     }
-    else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST) {
+    else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
+    {
       typingSeconds = 60;// 300;
-    } else {
+    }
+    else
+    {
       typingSeconds = 600;
     }
     totalGazeSelection = 0;
@@ -72,71 +78,88 @@ public class Measurement : MonoBehaviour {
     passedTime = 0;
   }
 
-  public void AddInputStream(string inputStream) {
+  public void AddInputStream(string inputStream)
+  {
     // maybe used by TEST mode
   }
 
   // Update is called once per frame
-  void Update() {
-    if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR) {
+  void Update()
+  {
+    if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR)
+    {
       // check backspace, left arrow and right arrow
-      if (Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)) {
+      if (Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow))
+      {
         F += 1;
       }
-      if (Input.GetKeyDown(KeyCode.Backspace)) {
+      if (Input.GetKeyDown(KeyCode.Backspace))
+      {
         IF += 1;
       }
-    } else /*if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)*/ {
-      if (Input.GetKeyDown(KeyCode.B)) {
+    }
+    else /*if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)*/
+    {
+      if (Input.GetKeyDown(KeyCode.B))
+      {
         IF += 1;
         F += 1;
       }
     }
     // update the clock
-    if (allowInput) {
+    if (allowInput)
+    {
       float curTime = passedTime + ((startTime == DateTime.MinValue) ? 0f : (float)(DateTime.Now - startTime).TotalSeconds);
-      clock.text = ((int)(curTime/60)).ToString("00") + ":" + (curTime% 60).ToString("00");
-    } else if (!allowInput)
+      clock.text = ((int)(curTime / 60)).ToString("00") + ":" + (curTime % 60).ToString("00");
+    }
+    else if (!allowInput)
       clock.text = "<color=red>" + (finishedSeconds / 60).ToString("00") + ":" + (finishedSeconds % 60).ToString("00");
 
-    if (Input.GetKeyDown(KeyCode.Escape)) {
+    if (Input.GetKeyDown(KeyCode.Escape))
+    {
       saveData();
     }
 
     wpmText.text = "WPM:" + WPM.ToString("F3");
   }
 
-  public void AddWPM(int curWC) {
+  public void AddWPM(int curWC)
+  {
     words += curWC + 1; // including the 'n' key, aka space
   }
 
-  public void StartClock() {
+  public void StartClock()
+  {
     if (startTime == DateTime.MinValue)
       startTime = DateTime.Now;
   }
 
-  public void PauseClock() {
+  public void PauseClock()
+  {
     // pause the clock
     passedTime += (float)(DateTime.Now - startTime).TotalSeconds;
     startTime = DateTime.MinValue;
     RefreshTimeCollectionWhenNextPhrase();
   }
 
-//   public void ResumeClock() {
-//     startTime = DateTime.Now;
-//   }
+  //   public void ResumeClock() {
+  //     startTime = DateTime.Now;
+  //   }
 
-  public void UpdateTestMeasure(string presented, string transribed, bool isGazeCorrect) {
+  public void UpdateTestMeasure(string presented, string transribed, bool isGazeCorrect)
+  {
     // handle presented, from words to inputString
     C = 0;
     bool isCurrentTypingCorrect = true;
-    for (int i = 0; i < Mathf.Min(presented.Length, transribed.Length); i++) {
+    for (int i = 0; i < Mathf.Min(presented.Length, transribed.Length); i++)
+    {
       if (ProfileLoader.configMap.ContainsKey(presented[i].ToString()) && transribed[i] == (ProfileLoader.configMap[presented[i].ToString()][0]))
         C += 1;
       else
         isCurrentTypingCorrect = false;
     }
-    if (isCurrentTypingCorrect) {
+    if (isCurrentTypingCorrect)
+    {
       totalGazeSelection += 1;
       if (isGazeCorrect)
         correctGazeSelection += 1;
@@ -161,26 +184,30 @@ public class Measurement : MonoBehaviour {
     finishedSeconds = startTime == DateTime.MinValue ? passedTime : (float)(endTime - startTime).TotalSeconds + passedTime;
     //print("finishedSeconds:" + finishedSeconds);
     WPM = (words - 1f) / finishedSeconds * 60.0f / 5.0f;
-    if (finishedSeconds > typingSeconds) {
+    if (finishedSeconds > typingSeconds)
+    {
       saveData();
 
-      if (allowInput) {
+      if (allowInput)
+      {
         allowInput = false;
         Debug.Log("<color=blue>time is up</color>");
       }
     }
   }
 
-  private void saveData() {
+  private void saveData()
+  {
     // save to file
     string destination = Application.streamingAssetsPath + "/Participants.csv";
-    if (!File.Exists(destination)) {
+    if (!File.Exists(destination))
+    {
       File.WriteAllText(destination, "Data,Name,C,INF,IF,F,WPM, Correct Gaze, Total Gaze\n");
     }
 
     //Write some text to the file
     // name should include profile (aka user name), mode (regular, or test), layout and session
-    string name = ProfileLoader.profile + "-" + ProfileLoader.typingMode.ToString() + "-" + (candidateHandler.enableWordCompletion ? "WC" : "noWC" )
+    string name = ProfileLoader.profile + "-" + ProfileLoader.typingMode.ToString() + "-" + (ProfileLoader.wcMode == ProfileLoader.WordCompletionMode.WC ? "WC" : "noWC")
       + "-" + ProfileLoader.candidateLayout.ToString() + "-" + ProfileLoader.session_number.ToString();
     File.AppendAllText(destination, DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "," + name + "," + totalC.ToString() + "," + totalINF.ToString() + "," + totalIF.ToString() + "," + totalF.ToString() + "," + WPM.ToString() + ","
         + correctGazeSelection.ToString() + "," + totalGazeSelection.ToString() + "\n");
@@ -188,9 +215,9 @@ public class Measurement : MonoBehaviour {
     // save time data
     string dest2 = Application.streamingAssetsPath + "/time" + name + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + ".csv";
     File.WriteAllText(dest2, "cur finger, prev finger, time in ms\n");
-    for(int i = 0; i < selectionDuration.Count; i++)
+    for (int i = 0; i < selectionDuration.Count; i++)
     {
-      File.AppendAllText(dest2, selectionDuration[i].fingerID + "," + selectionDuration[i].prevFingerID + "," + selectionDuration[i].duration.ToString()+"\n");
+      File.AppendAllText(dest2, selectionDuration[i].fingerID + "," + selectionDuration[i].prevFingerID + "," + selectionDuration[i].duration.ToString() + "\n");
     }
     for (int i = 0; i < tapDuration.Count; i++)
     {
@@ -198,7 +225,8 @@ public class Measurement : MonoBehaviour {
     }
   }
 
-  private void calculateMetric() {
+  private void calculateMetric()
+  {
     // calculate the measurement
     totalC -= 1; // remove the last 'space
     MSD = (totalINF / (totalC + totalINF));
@@ -210,14 +238,17 @@ public class Measurement : MonoBehaviour {
 
   }
 
-  public void OnRegularInput(TMPro.TMP_InputField inputField) {
+  public void OnRegularInput(TMPro.TMP_InputField inputField)
+  {
     StartClock();
     string curText = inputField.text;
     // we should calculate c, inf, if, f based on curText and the correct answer
     string correctString = phraseLoader.GetCurPhrase();
     // we update all the value only when user hits 'enter' and the word count of curText is equal to correctString
-    if (curText.Length > 0 && curText[curText.Length - 1] == ' ') {
-      if (curText.Remove(curText.Length - 1).Split(new char[] { ' ' }).Length == correctString.Split(new char[] { ' ' }).Length) {
+    if (curText.Length > 0 && curText[curText.Length - 1] == ' ')
+    {
+      if (curText.Remove(curText.Length - 1).Split(new char[] { ' ' }).Length == correctString.Split(new char[] { ' ' }).Length)
+      {
         // calculate C and INF
         string transribed = curText;// we need to count space curText.Replace(" ", string.Empty);
         string presented = correctString;// we need to count space correctString.Replace(" ", string.Empty);
@@ -234,7 +265,8 @@ public class Measurement : MonoBehaviour {
         endTime = DateTime.Now;
         finishedSeconds = finishedSeconds = startTime == DateTime.MinValue ? passedTime : (float)(endTime - startTime).TotalSeconds + passedTime;
         WPM = (words - 1.0f) / finishedSeconds * 60.0f / 5.0f;
-        if (finishedSeconds > typingSeconds) {
+        if (finishedSeconds > typingSeconds)
+        {
           Debug.Log("time is up");
           allowInput = false;
           inputField.enabled = false;
@@ -245,12 +277,15 @@ public class Measurement : MonoBehaviour {
     }
   }
 
-  private int editDistance(string presented, string transribed) {
+  private int editDistance(string presented, string transribed)
+  {
     // instead of calculating LCS for C, we should calculate MSD(aka edit distance) for INF, and C = transcribed - INF
     int[,] MSDTable = new int[presented.Length + 1, transribed.Length + 1];
     int result = 0;  // To store length of the longest common substring 
-    for (int i = 0; i <= presented.Length; i++) {
-      for (int j = 0; j <= transribed.Length; j++) {
+    for (int i = 0; i <= presented.Length; i++)
+    {
+      for (int j = 0; j <= transribed.Length; j++)
+      {
         // The first row and first column  
         // entries have no logical meaning,  
         // they are used only for simplicity  
@@ -273,7 +308,8 @@ public class Measurement : MonoBehaviour {
     return MSDTable[presented.Length, transribed.Length];
   }
 
-  private int LCSubStr(string Presented, string Transribed) {
+  private int LCSubStr(string Presented, string Transribed)
+  {
     // Create a table to store lengths of longest 
     // common suffixes of substrings.   Note that 
     // LCSuff[i][j] contains length of longest 
@@ -284,18 +320,22 @@ public class Measurement : MonoBehaviour {
 
     /* Following steps build LCSuff[m+1][n+1] in 
         bottom up fashion. */
-    for (int i = 0; i <= Presented.Length; i++) {
-      for (int j = 0; j <= Transribed.Length; j++) {
+    for (int i = 0; i <= Presented.Length; i++)
+    {
+      for (int j = 0; j <= Transribed.Length; j++)
+      {
         // The first row and first column  
         // entries have no logical meaning,  
         // they are used only for simplicity  
         // of program 
         if (i == 0 || j == 0)
           LCSuff[i, j] = 0;
-        else if (Presented[i - 1] == Transribed[j - 1]) {
+        else if (Presented[i - 1] == Transribed[j - 1])
+        {
           LCSuff[i, j] = LCSuff[i - 1, j - 1] + 1;
           result = Mathf.Max(result, LCSuff[i, j]);
-        } else LCSuff[i, j] = 0;
+        }
+        else LCSuff[i, j] = 0;
       }
     }
     return result;
@@ -314,13 +354,13 @@ public class Measurement : MonoBehaviour {
 
   public void AddSelectionDurationItem()
   {
-    if(lastTapTime == DateTime.MinValue)
+    if (lastTapTime == DateTime.MinValue)
     {
       selectionDuration.Add(new TimeCollection("n", lastFingerID, 0));
     }
     else
     {
-      selectionDuration.Add(new TimeCollection("n", lastFingerID, (DateTime.Now-lastTapTime).TotalMilliseconds));
+      selectionDuration.Add(new TimeCollection("n", lastFingerID, (DateTime.Now - lastTapTime).TotalMilliseconds));
     }
     lastFingerID = "n";
     lastTapTime = DateTime.Now;

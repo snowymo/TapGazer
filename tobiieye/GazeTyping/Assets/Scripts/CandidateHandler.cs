@@ -29,7 +29,7 @@ public class CandidateHandler : MonoBehaviour
   //public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD, DIVISION, DIVISION_END, ONE };
   private ProfileLoader.CandLayout candidateLayout;
 
-  public bool enableWordCompletion;
+  [SerializeField] private bool enableWordCompletion;
   public bool enableDeleteEntire;
   public bool enableChordSelection;// if enable key selection, (which is the other way of gaze selection), user press 'b' to display the number for candidates, then press with u90[ for candidate 1,2,3,4
 
@@ -76,6 +76,7 @@ public class CandidateHandler : MonoBehaviour
 
   // Start is called before the first frame update
   void Start() {
+    enableWordCompletion = ProfileLoader.wcMode == ProfileLoader.WordCompletionMode.WC;
     // only support non VR for now to save gaze efforts. Support VR later
     if (enableChordSelection)
       UnityEngine.XR.XRSettings.enabled = false;
