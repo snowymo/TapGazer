@@ -58,16 +58,16 @@ public class PhraseLoader : MonoBehaviour {
       }
     }
     // TODO: curPhraseIndex is decided by mode, and participant ID
-    curPhraseIndex = 0;
-    if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
-      curPhraseIndex = 0;
-    else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST) {
-      if ((ProfileLoader.candidateLayout == ProfileLoader.CandLayout.ROW) || (ProfileLoader.candidateLayout == ProfileLoader.CandLayout.LEXIC)) {
-        curPhraseIndex = ProfileLoader.session_number * 100; // 100 or 200
-      } else if (ProfileLoader.candidateLayout == ProfileLoader.CandLayout.WORDCLOUD) {
-        curPhraseIndex = 200 + ProfileLoader.session_number * 100; // 300 or 400
-      }
-    }
+    curPhraseIndex = ProfileLoader.profile.Length % 20 * 15;
+    //if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
+    //  curPhraseIndex = 0;
+    //else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST) {
+    //  if ((ProfileLoader.candidateLayout == ProfileLoader.CandLayout.ROW) || (ProfileLoader.candidateLayout == ProfileLoader.CandLayout.LEXIC)) {
+    //    curPhraseIndex = ProfileLoader.session_number * 100; // 100 or 200
+    //  } else if (ProfileLoader.candidateLayout == ProfileLoader.CandLayout.WORDCLOUD) {
+    //    curPhraseIndex = 200 + ProfileLoader.session_number * 100; // 300 or 400
+    //  }
+    //}
     curTypingPhrase = 0;
     UpdatePhrase();
   }
