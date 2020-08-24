@@ -26,6 +26,11 @@ public class CandidateHandler : MonoBehaviour
   Dictionary<int, int> fanHorizontalMap;
   List<List<string>> candidateColumns;
 
+  [SerializeField] int pageIndex;
+  [SerializeField] int pageTotal;
+  public TMPro.TextMeshPro pageTextMesh;
+  public int GetPageTotal() { return pageTotal; }
+
   //public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD, DIVISION, DIVISION_END, ONE };
   private ProfileLoader.CandLayout candidateLayout;
 
@@ -93,6 +98,9 @@ public class CandidateHandler : MonoBehaviour
     curGazedDivision = 1; // gaze at the middle division by default
 
     pentagonArea = transform.Find("pentagonArea");
+
+    pageIndex = 1;
+    pageTotal = 1;
 
     candidateLayout = ProfileLoader.candidateLayout;
     if (candidateLayout == ProfileLoader.CandLayout.ROW)
@@ -633,21 +641,31 @@ public class CandidateHandler : MonoBehaviour
     }
   }
 
+  private string[] cachedFullCandidates;
   private string[] cachedCandidates;
   private int cachedProgress;
   private string[] cachedCompleteCand;
+  private int cacheProgress;
   public void UpdateCandidates(string[] candidates, int progress, string[] completedCand)
   {
+    // updateCandidates should be called only when has regular input
+    pageIndex = 1;
+
+    cachedProgress = progress;
+    cachedCompleteCand = new string[completedCand.Length];
+    completedCand.CopyTo(cachedCompleteCand, 0);
+    cachedFullCandidates = new string[candidates.Length];
+    candidates.CopyTo(cachedFullCandidates, 0);
+
+    pageTotal = (completedCand.Length + 4) / 5;// +4 is for rounding
+
     cachedCandidates = new string[0];
     if (enableWordCompletion)
     {
       cachedCandidates = new string[candidates.Length];
       candidates.CopyTo(cachedCandidates, 0);
+      pageTotal = (candidates.Length + 4) / 5;// +4 is for rounding
     }
-
-    cachedProgress = progress;
-    cachedCompleteCand = new string[completedCand.Length];
-    completedCand.CopyTo(cachedCompleteCand, 0);
 
     if (candidateLayout == ProfileLoader.CandLayout.ROW)
       UpdateRowLayoutCandidate(cachedCandidates, progress);
@@ -682,9 +700,41 @@ public class CandidateHandler : MonoBehaviour
     }
     else if (candidateLayout == ProfileLoader.CandLayout.ONE)
     {
+      cacheProgress = progress;
       string[] newCand = ReorgCandidates(cachedCandidates, 5, cachedCompleteCand, false);
+      // below has pageIndex involved, so we should call below when nextPage
       UpdateOneLayout(newCand, candidates, progress);
     }
+    UpdatePageNumber();
+  }
+
+  private void UpdatePageNumber()
+  {
+    pageTextMesh.SetText("Page " + pageIndex.ToString() + "/" + pageTotal.ToString());
+  }
+
+  public void NextPage()
+  {
+    if (pageTotal == 0)
+      return;
+    // "b" + "["
+    pageIndex = (pageIndex + 1) % pageTotal;
+    if (pageIndex == 0) pageIndex = pageTotal;
+    UpdatePageNumber();
+    string[] newCand = ReorgCandidates(cachedCandidates, 5, cachedCompleteCand, false);
+    UpdateOneLayout(newCand, cachedFullCandidates, cacheProgress);
+  }
+
+  public void PrevPage()
+  {
+    if (pageTotal == 0)
+      return;
+    // "b" + "0"
+    pageIndex = (pageIndex + pageTotal - 1) % pageTotal;
+    if (pageIndex == 0) pageIndex = pageTotal;
+    UpdatePageNumber();
+    string[] newCand = ReorgCandidates(cachedCandidates, 5, cachedCompleteCand, false);
+    UpdateOneLayout(newCand, cachedFullCandidates, cacheProgress);
   }
 
   private void UpdateOneLayout(string[] cachedReorgCand, string[] candidates, int progress)
@@ -762,6 +812,7 @@ public class CandidateHandler : MonoBehaviour
   private string[] newCand = new string[] { };
   private string[] ReorgCandidates(string[] candidates, int totalNumber, string[] completedCand, bool remainFirst = true)
   {
+    int startIndex = (pageIndex - 1) * totalNumber;
     remainFirst = remainFirst && enableWordCompletion;
     // make sure the complete candidates are placed in candidates before totalNumber
     int completeCandNumber = completedCand.Length;
@@ -769,19 +820,21 @@ public class CandidateHandler : MonoBehaviour
     if (completeCandNumber == 0)
     {
       // no completed candidates then we just return candidates directly            
-      if (totalNumber > candidates.Length)
+      if (startIndex >= candidates.Length)
+      {
         return candidates;
-      Array.Copy(candidates, newCand, totalNumber);
+      }        
+      Array.Copy(candidates, startIndex, newCand, 0, Math.Min(startIndex + totalNumber, candidates.Length) - startIndex);
       return newCand;
     }
     // a simple trick: because all the candidates will be sorted via lexcial order later, we just need to put all the completed candidates first, and then the top (n-m) incompleted candidates
-    int copyNumber = Mathf.Min(completedCand.Length, totalNumber);
+    int copyNumber = Mathf.Max(0, Mathf.Min(completedCand.Length, startIndex + totalNumber) - startIndex);
 
     int completeNotFirst = -1;
-    if (remainFirst && candidates.Length > 0)
+    if (remainFirst && candidates.Length > startIndex)
     {
       newCand[0] = candidates[0];
-      copyNumber = Mathf.Min(completedCand.Length, totalNumber - 1);
+      copyNumber -= 1;
       // if candidates[0] is in completedCand, we need to copy the 13th one
       for (int i = 0; i < copyNumber; i++)
       {
@@ -808,22 +861,26 @@ public class CandidateHandler : MonoBehaviour
       //}
       //}            
     }
-    else
+    else 
     {
-      Array.Copy(completedCand, 0, newCand, remainFirst ? 1 : 0, copyNumber);
+      if (copyNumber > 0)
+        Array.Copy(completedCand, startIndex, newCand, remainFirst ? 1 : 0, copyNumber);
       toCopy = remainFirst ? copyNumber : (copyNumber - 1);
     }
 
     for (int i = toCopy + 1, j = (remainFirst ? 1 : 0); i < totalNumber && completedCand.Length > 0; i++)
     {
-      while (j < candidates.Length && candidates[j].Length == completedCand[0].Length)
+      while (j < candidates.Length && candidates[j].Length == completedCand[0].Length && remainFirst)
       {
         // completed cand
         ++j;
       }
       // not completed cand
       if (j < candidates.Length)
-        newCand[i] = candidates[j++];
+      {
+        newCand[i] = candidates[(startIndex + j)];
+        ++j;
+      }
       else
       {
         // j reaches the end of candidates, no more could be assigned to newCand

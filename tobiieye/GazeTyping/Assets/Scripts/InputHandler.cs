@@ -382,6 +382,7 @@ public class InputHandler : MonoBehaviour
 
   bool readyForSecondKey = false;
   int[] keySelectionIndex = new int[] { 5, 2, 7, 3, 6 };
+  int[] keyPageIndex = new int[] { 0,9};
   bool hitDeletionKey = false;
   bool justHitSelectionKey = false;
   bool controlKeyUpHit = false;
@@ -393,14 +394,23 @@ public class InputHandler : MonoBehaviour
     // enter
     currentInputLine += 'n';  // TODO: still use n to represent selection
                               // record selection time
-    string curWord = candidateHandler.candidateObjects[0].GetComponent<Candidate>().pureText; ;
+    string curWord = candidateHandler.candidateObjects[0].GetComponent<Candidate>().pureText;
     if(candIndex == -1)
     {
       // means could be anything on the same page
       // TODO, update once we have page index
       // for WC mode, even the fingerseq is not correct, it is possible that candidates words are there
-      string correctFingerSeq = classifyWord(presented);
-      curWord = (correctFingerSeq.Equals(currentInputString) ? presented : curWord);
+      for(int i = 0; i < candidateHandler.candidateObjects.Count; i++)
+      {
+        string curCand = candidateHandler.candidateObjects[i].GetComponent<Candidate>().pureText;
+        if (curCand.Equals(presented))
+        {
+          curWord = presented;
+          break;
+        }
+      }
+      //string correctFingerSeq = classifyWord(presented);
+      //curWord = (correctFingerSeq.Equals(currentInputString) ? presented : curWord);
     }
     else
     {
@@ -480,13 +490,29 @@ public class InputHandler : MonoBehaviour
           }
         }
         // thinking if hit another key when waiting for second key?
+        for (int i = 0; i < keyPageIndex.Length; i++)
+        {
+          if (Input.GetKeyDown(inputStringTemplate[keyPageIndex[i]]))
+          {
+            // i == 0 => prev page
+            if (i == 0)
+              candidateHandler.PrevPage();
+            else
+              // i == 0 => next page
+              candidateHandler.NextPage();
+            
+            print("[page selection] " + i);
+            measurement.AddTapItem(inputStringTemplate[keyPageIndex[i]], "page");
+            readyForSecondKey = false;
+            break;
+          }
+        }
       }
       return;
     }
 
     if(readyForSecondKey && ProfileLoader.selectionMode != ProfileLoader.SelectionMode.MS)
     {
-      // allow to select with either thumb
       if (Input.GetKeyDown("b") )
       {
         print("LT LT deletion");
@@ -494,7 +520,27 @@ public class InputHandler : MonoBehaviour
         measurement.AddTapItem("b", "deletion");
         readyForSecondKey = false;
         updateDisplayInput();
+      } else {
+        // page operation
+        for (int i = 0; i < keyPageIndex.Length; i++)
+        {
+          if (Input.GetKeyDown(inputStringTemplate[keyPageIndex[i]]))
+          {
+            // i == 0 => prev page
+            if (i == 0)
+              candidateHandler.PrevPage();
+            else
+              // i == 0 => next page
+              candidateHandler.NextPage();
+
+            print("[page selection] " + i);
+            measurement.AddTapItem(inputStringTemplate[keyPageIndex[i]], "page");
+            readyForSecondKey = false;
+            break;
+          }
+        }
       }
+      return;
     }
 
     if (!readyForSecondKey)
@@ -533,12 +579,23 @@ public class InputHandler : MonoBehaviour
             break;
           case ProfileLoader.SelectionMode.GSE:
           case ProfileLoader.SelectionMode.GSR:
-            // deletion
-            print("LT deletion");
-            delete();
-            measurement.AddTapItem("b", "deletion");
-            readyForSecondKey = false;
-            updateDisplayInput();
+            // we still need to support paging in GS so we need b to be control key still
+            if(retrieveInputStringFromLine().Length > 0
+              && candidateHandler.GetPageTotal() > 1)
+            {
+              // enable paging
+              readyForSecondKey = true; // selectionKeys[0] is 'n' aka right thumb.
+              measurement.AddTapItem("b", "page");
+            }
+            else
+            {
+              // deletion
+              print("LT deletion");
+              delete();
+              measurement.AddTapItem("b", "deletion");
+              readyForSecondKey = false;
+              updateDisplayInput();
+            }            
             break;
           default:
             break;
