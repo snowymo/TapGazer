@@ -42,7 +42,8 @@ public class Candidate : MonoBehaviour {
         CandText.fontStyle = TMPro.FontStyles.Normal;
         //candidateHandler.GazedCandidate = 0;
       }
-    } else {
+    } else if (ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar)
+    {
       // shoot a ray vertical to the screen
       // turn gaze into correct x,y space
       Vector2 deltaGaze = candidateHandler.ScreenGaze - candidateHandler.ScreenGazeOffset;
@@ -62,7 +63,7 @@ public class Candidate : MonoBehaviour {
   }
 
   public void Start() {
-    kOriginalZScale = ProfileLoader.outputMode == ProfileLoader.OutputMode.Devkit ? 0.1f : 0.18f;
+    kOriginalZScale = ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar ? 0.18f : 0.1f;
   }
 
   private const float kOriginalSize = 4f;

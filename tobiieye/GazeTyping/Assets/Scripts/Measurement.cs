@@ -40,11 +40,17 @@ public class Measurement : MonoBehaviour
     public string fingerID;
     public string prevFingerID;
     public double duration;
-    public TimeCollection(string f, string p, double d)
+    public string type;
+    public TimeCollection(string f, string p, double d, string t)
     {
       fingerID = f;
       prevFingerID = p;
       duration = d;
+      type = t;
+    }
+    public string toString()
+    {
+      return fingerID + "," + prevFingerID + "," + type + "," + duration.ToString("F4");
     }
   }
   private List<TimeCollection> selectionDuration = new List<TimeCollection>();
@@ -215,13 +221,13 @@ public class Measurement : MonoBehaviour
     // save time data
     string dest2 = Application.streamingAssetsPath + "/time" + name + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + ".csv";
     File.WriteAllText(dest2, "cur finger, prev finger, time in ms\n");
-    for (int i = 0; i < selectionDuration.Count; i++)
-    {
-      File.AppendAllText(dest2, selectionDuration[i].fingerID + "," + selectionDuration[i].prevFingerID + "," + selectionDuration[i].duration.ToString() + "\n");
-    }
+    //for (int i = 0; i < selectionDuration.Count; i++)
+    //{
+    //  File.AppendAllText(dest2, selectionDuration[i].fingerID + "," + selectionDuration[i].prevFingerID + "," + selectionDuration[i].duration.ToString() + "\n");
+    //}
     for (int i = 0; i < tapDuration.Count; i++)
     {
-      File.AppendAllText(dest2, tapDuration[i].fingerID + "," + tapDuration[i].prevFingerID + "," + tapDuration[i].duration.ToString() + "\n");
+      File.AppendAllText(dest2, tapDuration[i].toString() + "\n");
     }
   }
 
@@ -352,15 +358,29 @@ public class Measurement : MonoBehaviour
   //     //     GUILayout.EndArea();
   //   }
 
+    public void AddTapItem(string fingerID, string type)
+  {
+    if (lastTapTime == DateTime.MinValue)
+    {
+      tapDuration.Add(new TimeCollection(fingerID, lastFingerID, 0, type));
+    }
+    else
+    {
+      tapDuration.Add(new TimeCollection(fingerID, lastFingerID, (DateTime.Now - lastTapTime).TotalMilliseconds, type));
+    }
+    lastFingerID = fingerID;
+    lastTapTime = DateTime.Now;
+  }
+
   public void AddSelectionDurationItem()
   {
     if (lastTapTime == DateTime.MinValue)
     {
-      selectionDuration.Add(new TimeCollection("n", lastFingerID, 0));
+      selectionDuration.Add(new TimeCollection("n", lastFingerID, 0, "selection"));
     }
     else
     {
-      selectionDuration.Add(new TimeCollection("n", lastFingerID, (DateTime.Now - lastTapTime).TotalMilliseconds));
+      selectionDuration.Add(new TimeCollection("n", lastFingerID, (DateTime.Now - lastTapTime).TotalMilliseconds, "selection"));
     }
     lastFingerID = "n";
     lastTapTime = DateTime.Now;
@@ -370,11 +390,11 @@ public class Measurement : MonoBehaviour
   {
     if (lastTapTime == DateTime.MinValue)
     {
-      tapDuration.Add(new TimeCollection(fingerID, lastFingerID, 0));
+      tapDuration.Add(new TimeCollection(fingerID, lastFingerID, 0, "tap"));
     }
     else
     {
-      tapDuration.Add(new TimeCollection(fingerID, lastFingerID, (DateTime.Now - lastTapTime).TotalMilliseconds));
+      tapDuration.Add(new TimeCollection(fingerID, lastFingerID, (DateTime.Now - lastTapTime).TotalMilliseconds, "tap"));
     }
     lastFingerID = fingerID;
     lastTapTime = DateTime.Now;

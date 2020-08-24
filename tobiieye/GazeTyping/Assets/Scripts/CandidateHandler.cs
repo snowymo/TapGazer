@@ -85,9 +85,10 @@ public class CandidateHandler : MonoBehaviour
     candidateObjects = new List<GameObject>();
     perWidth = 0.25f;// 0.73f;
     kSizeScale = 1f;
-    CandidateHeight = ProfileLoader.outputMode == ProfileLoader.OutputMode.Devkit ? -0.36f : -2.5f;
-    CandidateStartHeight = ProfileLoader.outputMode == ProfileLoader.OutputMode.Devkit ? -2.1f : -2.5f;
-    screenGazeIndicator.SetActive(ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar);
+    CandidateHeight = ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar ? -2.5f : -0.36f ;
+    CandidateStartHeight = ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar ? -2.5f : -2.1f;
+    if(screenGazeIndicator != null)
+      screenGazeIndicator.SetActive(ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar);
     curGazedDivision = 1; // gaze at the middle division by default
 
     pentagonArea = transform.Find("pentagonArea");
@@ -645,6 +646,7 @@ public class CandidateHandler : MonoBehaviour
       UpdateDivisionLayout(cachedCandidates, progress, 1);
     } else if (candidateLayout == ProfileLoader.CandLayout.ONE)
     {
+      string[] newCand = ReorgCandidates(cachedCandidates, 5, cachedCompleteCand, false);
       UpdateOneLayout(candidates, progress);
     }
   }

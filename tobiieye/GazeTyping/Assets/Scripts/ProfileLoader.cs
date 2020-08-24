@@ -40,7 +40,7 @@ public class ProfileLoader : MonoBehaviour {
   // test is new keyboard + keep typing
   // regular is regular keyboard + keep typing
   public enum TypingMode { TRAINING, TEST, REGULAR, TAPPING };
-  public enum OutputMode { Devkit, Trackerbar };
+  public enum OutputMode { Devkit, Trackerbar, Screen };
   public enum InputMode { KEYBOARD, TOUCH };
   public static InputMode inputMode;
   public InputMode curInputMode;
@@ -51,7 +51,7 @@ public class ProfileLoader : MonoBehaviour {
   /// </summary>
   public enum EnterMode { RIGHT_THUMB, BOTH_THUMB};
   public static EnterMode enterMode;
-  public EnterMode curEnterMode;
+  [SerializeField] private EnterMode curEnterMode;
   /// <summary>
   /// wordCompletion mode
   /// WC: with word completion: show completed word firsts, then from most frequent to not frequent
@@ -60,6 +60,16 @@ public class ProfileLoader : MonoBehaviour {
   public enum WordCompletionMode { WC, NC};
   public static WordCompletionMode wcMode;
   public WordCompletionMode curWcMode;
+  /// <summary>
+  /// selection mode
+  /// MS: manual selection: select the most common word by right thumb; left thumb + extra tap could select any one of 5 candidates
+  /// GS: gaze selection:
+  /// GSE: select the correct word any either thumb
+  /// GSR: select the most common word by right thumb and all other available words by left thumb
+  /// </summary>
+  public enum SelectionMode { MS, GSE, GSR};
+  public static SelectionMode selectionMode;
+  public SelectionMode curSelectionMode;
 
   public enum CandLayout { ROW, FAN, BYCOL, LEXIC, WORDCLOUD, DIVISION, DIVISION_END, ONE };
   public CandLayout curCandidateLayout;
@@ -73,8 +83,10 @@ public class ProfileLoader : MonoBehaviour {
     inputMode = curInputMode;
     session_number = curSessionNumber;
     outputMode = curOutputMode;
+    curEnterMode = EnterMode.BOTH_THUMB;
     enterMode = curEnterMode;
     wcMode = curWcMode;
+    selectionMode = curSelectionMode;
     candidateLayout = curCandidateLayout;
     Debug.Log("typing mode:" + typingMode);
     loadConfigFile();
@@ -108,7 +120,11 @@ public class ProfileLoader : MonoBehaviour {
       // vr mode
       UnityEngine.XR.XRSettings.enabled = true;
     } else if(outputMode == OutputMode.Trackerbar) {
-      // screen mode
+      // Trackerbar mode
+      UnityEngine.XR.XRSettings.enabled = false;
+    }else if(outputMode == OutputMode.Screen)
+    {
+      // Screen mode
       UnityEngine.XR.XRSettings.enabled = false;
     }
   }

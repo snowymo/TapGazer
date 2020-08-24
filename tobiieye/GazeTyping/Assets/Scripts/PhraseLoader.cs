@@ -57,7 +57,7 @@ public class PhraseLoader : MonoBehaviour {
         phrases[t++] = line;
       }
     }
-    // curPhraseIndex is decided by mode, layout, and session
+    // TODO: curPhraseIndex is decided by mode, and participant ID
     curPhraseIndex = 0;
     if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
       curPhraseIndex = 0;
