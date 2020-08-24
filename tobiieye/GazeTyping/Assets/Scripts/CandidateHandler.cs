@@ -716,31 +716,60 @@ public class CandidateHandler : MonoBehaviour
         //}
       }
     }
-    // show one word when there is no complete candidates
-    // pick the shortest one for now
+    
     else
     {
-      int minLengthCand = candidates[0].Length;
-      string oneCand = candidates[0];
-      for (int i = 1; i < candidates.Length; i++)
+      if (enableWordCompletion)
       {
-        if (candidates[i].Length == progress + 1)
+        // show the incomplete candidates
+        if (candidates.Length > 0)
+          defaultWord = candidates[0];
+        else
+          defaultWord = "";
+        int maxLength = Mathf.Max(4, candidates[0].Length);
+        int candNum = Mathf.Min(candidates.Length, CandidateCount);
+        for (int i = 1; i < candNum; i++)
         {
-          oneCand = candidates[i];
-          break;
+          if (candidates[i].Length > maxLength)
+            maxLength = candidates[i].Length;
         }
-        else if (minLengthCand > candidates[i].Length)
+        for (int i = 0; i < Mathf.Min(candidates.Length, CandidateCount); i++)
         {
-          minLengthCand = candidates[i].Length;
-          oneCand = candidates[i];
+          //candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedCompleteCand[i] : "", progress, maxLength - 1);
+          candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, maxLength - 1);
+        }
+        for (int i = Mathf.Min(candidates.Length, CandidateCount); i < Mathf.Max(candidates.Length, CandidateCount); i++)
+        {
+          //candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedCompleteCand[i] : "", progress, maxLength - 1);
+          candidateObjects[i].GetComponent<Candidate>().SetCandidateText("", progress, maxLength - 1);
         }
       }
-      defaultWord = oneCand;
-      candidateObjects[0].GetComponent<Candidate>().SetCandidateText(oneCand, progress, Mathf.Max(4, oneCand.Length));
-      for (int i = 1; i < CandidateCount; i++)
+      else
       {
-        candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
-      }
+        // show one word when there is no complete candidates
+        // pick the shortest one for now
+        int minLengthCand = candidates[0].Length;
+        string oneCand = candidates[0];
+        for (int i = 1; i < candidates.Length; i++)
+        {
+          if (candidates[i].Length == progress + 1)
+          {
+            oneCand = candidates[i];
+            break;
+          }
+          else if (minLengthCand > candidates[i].Length)
+          {
+            minLengthCand = candidates[i].Length;
+            oneCand = candidates[i];
+          }
+        }
+        defaultWord = oneCand;
+        candidateObjects[0].GetComponent<Candidate>().SetCandidateText(oneCand, progress, Mathf.Max(4, oneCand.Length));
+        for (int i = 1; i < CandidateCount; i++)
+        {
+          candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
+        }
+      }      
     }
   }
 
