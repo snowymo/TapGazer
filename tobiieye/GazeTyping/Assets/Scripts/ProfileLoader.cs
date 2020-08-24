@@ -77,7 +77,8 @@ public class ProfileLoader : MonoBehaviour {
 
   // Start is called before the first frame update
   void Awake() {
-    profile = curProfile;
+    //profile = curProfile;
+    curProfile = profile = File.ReadAllText(Application.streamingAssetsPath + "/profile.name");
     wordlistLoader.wordlistPath = "30k-result" + profile + ".json";
     typingMode = curTypingMode;
     inputMode = curInputMode;

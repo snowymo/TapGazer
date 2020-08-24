@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using static ProfileLoader;
+using System.IO;
 
 public class TapProfileLoader : ProfileLoader
 {
   void Awake() {
-    profile = curProfile;
+    //profile = curProfile;
+    curProfile = profile = File.ReadAllText(Application.streamingAssetsPath + "/profile.name");
     wordlistLoader.wordlistPath = "30k-result" + profile + ".json";
     typingMode = curTypingMode;
     inputMode = curInputMode;
