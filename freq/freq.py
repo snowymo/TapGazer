@@ -89,7 +89,7 @@ configKen1 = {"m":"a","n":"a","h":"a",
 
 freq_dict = get_frequency_dict("en", wordlist='best')
 
-dictionaryFileName = "top0.95"
+dictionaryFileName = "top0.9"
 
 tapping_dict = {}
 word_rank = {}
@@ -193,6 +193,12 @@ def generate_tap_map(test_dict, count, config=config):
             if cur_count == count:
                 break
             cur_count = cur_count + 1
+
+    #     check if we have more than 10-homograph
+    for cur_typing in completed_numbers:
+        if len(completed_numbers[cur_typing]) > 10:
+            print("[risk]" + cur_typing + " has more than 10 homographs " + str(len(completed_numbers[cur_typing])))
+
     print("largest_cand_result", largest_cand_number, largest_cand_input_string, completed_numbers[largest_cand_input_string])
     # for item in completed_numbers:
     #     if len(completed_numbers[item]) > 5:
