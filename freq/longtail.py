@@ -17,11 +17,13 @@ with open('top40k.txt', 'w', encoding='utf-8') as filehandle:
 def get_freq_until(prob):
     sum = 0
     count = 0
-    for item in top10k:
-        sum += word_frequency(item, 'en')
-        count = count+1
-        if sum > prob:
-            break
+    with open('top' + str(prob) + '.txt', 'w', encoding='utf-8') as filehandle:
+        for item in top10k:
+            sum += word_frequency(item, 'en')
+            count = count+1
+            filehandle.writelines("%s\n" % item)
+            if sum > prob:
+                break
 
     print (sum, count)
 

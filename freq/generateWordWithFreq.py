@@ -31,3 +31,4 @@ def generateWordFreqForKen(filename):
 if __name__ == '__main__':
     # generateWordFreq("top40k.txt")
     generateWordFreqForKen("top40k.txt")
+    # print (zipf_frequency("participant", "en", "large"))

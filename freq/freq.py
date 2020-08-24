@@ -89,6 +89,8 @@ configKen1 = {"m":"a","n":"a","h":"a",
 
 freq_dict = get_frequency_dict("en", wordlist='best')
 
+dictionaryFileName = "top0.95"
+
 tapping_dict = {}
 word_rank = {}
 completed_numbers = {}
@@ -269,13 +271,13 @@ def process_config(noswear10k, curConfig, configFileName):
     check_with_phrases('phrases2.txt', config)
     print("\ncheck 1k.txt")
     check_with_phrases('1k.txt', config)
-    print("\ncheck 30k.txt")
-    check_with_phrases('30k.txt', config)
+    print("\ncheck " + dictionaryFileName + ".txt")
+    check_with_phrases(dictionaryFileName + '.txt', config)
     # write to file
-    f = open("30k-result" + configFileName + ".txt", "w")
+    f = open(dictionaryFileName + "-result" + configFileName + ".txt", "w")
     f.write(str(tapping_dict))
     f.close()
-    f = open("30k-cand" + configFileName + ".txt", "w")
+    f = open(dictionaryFileName + "-cand" + configFileName + ".txt", "w")
     f.write(str(completed_numbers))
     f.close()
 
@@ -285,10 +287,10 @@ def process_config(noswear10k, curConfig, configFileName):
     inputstring_word_map = {}
     for inputstring in tapping_dict:
         inputstring_word_map[inputstring] = [*tapping_dict[inputstring].keys()]
-    with open('30k-result' + configFileName + '.json', 'w') as fp:
+    with open(dictionaryFileName + '-result' + configFileName + '.json', 'w') as fp:
         json.dump(inputstring_word_map, fp)
 
-    with open('30k-cand' + configFileName + '.json', 'w') as fp:
+    with open(dictionaryFileName + '-cand' + configFileName + '.json', 'w') as fp:
         json.dump(completed_numbers, fp)
 
     # write profile.name
@@ -298,8 +300,8 @@ def process_config(noswear10k, curConfig, configFileName):
 
 
 def feed_vocabulary():
-    print("\n30k.txt")
-    with open('30k.txt', encoding="utf-8") as f:
+    print("\n" + dictionaryFileName + ".txt")
+    with open(dictionaryFileName + '.txt', encoding="utf-8") as f:
         noswear10k = f.read().splitlines()
     # remove spaces
     noswear10k = [line.replace(' ', '') for line in noswear10k]
@@ -307,7 +309,7 @@ def feed_vocabulary():
     for idx, item in enumerate(noswear10k):
         noswear10k[idx] = noswear10k[idx].lower()
     count = len(noswear10k)
-    print("original 30k.txt has " + str(count) + " words")
+    print("original " + dictionaryFileName + ".txt has " + str(count) + " words")
     # add phrase2.txt
     with open('phrases2.txt', encoding="utf-8") as f:
         phrasesDict = f.read().splitlines()
@@ -398,8 +400,8 @@ if __name__ == "__main__":
 
     # 30k.txt
     reset_containers()
-    print("\n30k.txt")
-    with open('30k.txt', encoding="utf-8") as f:
+    print("\n" + dictionaryFileName + ".txt")
+    with open(dictionaryFileName + '.txt', encoding="utf-8") as f:
         noswear10k = f.read().splitlines()
     # remove spaces
     # noswear10k = [line.replace(' ', '') for line in noswear10k]
