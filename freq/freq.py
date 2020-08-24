@@ -92,7 +92,7 @@ freq_dict = get_frequency_dict("en", wordlist='best')
 tapping_dict = {}
 word_rank = {}
 completed_numbers = {}
-configFileName = ""
+configFileName = "classic"
 def change_config():
     # use regular input to change the configuration
     print("Do you want to change the configuration? Default key mapping is: ")
@@ -246,7 +246,7 @@ def check_with_phrases(filename, config=config):
             for idx3, candidate in enumerate(completed_numbers[inputString]):
                 if candidate.lower() == currentWord.lower():
                     # idx3 is the rank
-                    if idx3 > 13:
+                    if idx3 > 5:
                         print("word: " + currentWord + " : " + str(idx3))
                     if len(inputString) == 2:
                         minimumCandNum["2"] = max(minimumCandNum["2"], idx3)
@@ -290,6 +290,12 @@ def process_config(noswear10k, curConfig, configFileName):
 
     with open('30k-cand' + configFileName + '.json', 'w') as fp:
         json.dump(completed_numbers, fp)
+
+    # write profile.name
+    pn = open("profile.name", 'w')
+    pn.write(configFileName)
+    pn.close()
+
 
 def feed_vocabulary():
     print("\n30k.txt")
