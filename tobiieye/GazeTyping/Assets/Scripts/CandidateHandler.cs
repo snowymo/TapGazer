@@ -75,7 +75,8 @@ public class CandidateHandler : MonoBehaviour
   // step 2: thinking about the width of the candidates and put it correctly
 
   // Start is called before the first frame update
-  void Start() {
+  void Start()
+  {
     enableWordCompletion = ProfileLoader.wcMode == ProfileLoader.WordCompletionMode.WC;
     // only support non VR for now to save gaze efforts. Support VR later
     if (enableChordSelection)
@@ -85,9 +86,9 @@ public class CandidateHandler : MonoBehaviour
     candidateObjects = new List<GameObject>();
     perWidth = 0.25f;// 0.73f;
     kSizeScale = 1f;
-    CandidateHeight = ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar ? -2.5f : -0.36f ;
+    CandidateHeight = ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar ? -2.5f : -0.36f;
     CandidateStartHeight = ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar ? -2.5f : -2.1f;
-    if(screenGazeIndicator != null)
+    if (screenGazeIndicator != null)
       screenGazeIndicator.SetActive(ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar);
     curGazedDivision = 1; // gaze at the middle division by default
 
@@ -107,16 +108,20 @@ public class CandidateHandler : MonoBehaviour
       CandidatePerRow = 3;
       CreateRowLayout();
       // order the candidates by lexical order
-    } else if (candidateLayout == ProfileLoader.CandLayout.BYCOL)
+    }
+    else if (candidateLayout == ProfileLoader.CandLayout.BYCOL)
     {
       CreateColumnLayout();
-    } else if (candidateLayout == ProfileLoader.CandLayout.WORDCLOUD)
+    }
+    else if (candidateLayout == ProfileLoader.CandLayout.WORDCLOUD)
     {
       CreateWordCloudLayout();
-    } else if (candidateLayout == ProfileLoader.CandLayout.DIVISION || candidateLayout == ProfileLoader.CandLayout.DIVISION_END)
+    }
+    else if (candidateLayout == ProfileLoader.CandLayout.DIVISION || candidateLayout == ProfileLoader.CandLayout.DIVISION_END)
     {
       CreateDivisionLayout();
-    } else if (candidateLayout == ProfileLoader.CandLayout.ONE)
+    }
+    else if (candidateLayout == ProfileLoader.CandLayout.ONE)
     {
       // for now, and circle later
       CandidateCount = 5;
@@ -126,7 +131,8 @@ public class CandidateHandler : MonoBehaviour
     }
   }
 
-  private void CreateDivisionLayout() {
+  private void CreateDivisionLayout()
+  {
     CandidateCount = 15;
     CandidatePerRow = 3;
     CandidateWidth = perWidth * 8;
@@ -145,7 +151,8 @@ public class CandidateHandler : MonoBehaviour
     }
   }
 
-  public void UpdateDivisionGaze(int divIndex) {
+  public void UpdateDivisionGaze(int divIndex)
+  {
     if (candidateLayout == ProfileLoader.CandLayout.DIVISION || candidateLayout == ProfileLoader.CandLayout.DIVISION_END)
     {
       curGazedDivision = divIndex;
@@ -156,7 +163,8 @@ public class CandidateHandler : MonoBehaviour
 
   private string[] leftDivision = new string[5], middleDivision = new string[5], rightDivision = new string[5];
   private char[] firstLetterDivSep1 = { 'h', 'e' }, firstLetterDivSep2 = { 'q', 'r' };
-  private void UpdateDivisionLayout(string[] candidates, int progress, int divideLatter) {
+  private void UpdateDivisionLayout(string[] candidates, int progress, int divideLatter)
+  {
     int maxLength = 8;// Mathf.Max(4, candidates[0].Length);
     CandidateWidth = perWidth * maxLength;
 
@@ -185,9 +193,11 @@ public class CandidateHandler : MonoBehaviour
           candidateObjects[leftDivIndex * 3].transform.localPosition = new Vector3(
             -CandidateWidth, leftDivIndex * CandidateHeight + CandidateStartHeight, 0);
           ++leftDivIndex;
-        } else
+        }
+        else
           leftDone = true;
-      } else if (!midDone && letter < firstLetterDivSep2[divideLatter] && letter >= firstLetterDivSep1[divideLatter])
+      }
+      else if (!midDone && letter < firstLetterDivSep2[divideLatter] && letter >= firstLetterDivSep1[divideLatter])
       {
         if ((i < 5) || ((curGazedDivision == 1) && (midDivIndex < 5)))
         {
@@ -196,9 +206,11 @@ public class CandidateHandler : MonoBehaviour
           candidateObjects[midDivIndex * 3 + 1].transform.localPosition = new Vector3(
             0, midDivIndex * CandidateHeight + CandidateStartHeight, 0);
           ++midDivIndex;
-        } else
+        }
+        else
           midDone = true;
-      } else if (!rightDone && letter >= firstLetterDivSep2[divideLatter])
+      }
+      else if (!rightDone && letter >= firstLetterDivSep2[divideLatter])
       {
         if ((i < 5) || ((curGazedDivision == 2) && (rightDivIndex < 5)))
         {
@@ -207,7 +219,8 @@ public class CandidateHandler : MonoBehaviour
           candidateObjects[rightDivIndex * 3 + 2].transform.localPosition = new Vector3(
             CandidateWidth, rightDivIndex * CandidateHeight + CandidateStartHeight, 0);
           ++rightDivIndex;
-        } else
+        }
+        else
           rightDone = true;
       }
     }
@@ -234,7 +247,8 @@ public class CandidateHandler : MonoBehaviour
     }
   }
 
-  private void CreateWordCloudLayout() {
+  private void CreateWordCloudLayout()
+  {
     // let's use a 4x4 here
     // first, we can show some candidates with high freq, but let's do it next
     //
@@ -256,7 +270,8 @@ public class CandidateHandler : MonoBehaviour
     }
   }
 
-  private int[] DoCandidateShowPreviously(string[] candidates, ref List<int> availableIndices) {
+  private int[] DoCandidateShowPreviously(string[] candidates, ref List<int> availableIndices)
+  {
     int[] result = new int[candidates.Length];
     for (int i = 0; i < candidateObjects.Count; i++)
       availableIndices.Add(i);
@@ -278,7 +293,8 @@ public class CandidateHandler : MonoBehaviour
     return result;
   }
 
-  float MapIndex2Size(int index) {
+  float MapIndex2Size(int index)
+  {
     // definitely it won't be x -> x
     // let's use 16-x for now?
     index = Mathf.Min(15, index);
@@ -288,7 +304,8 @@ public class CandidateHandler : MonoBehaviour
   }
 
   int[] priorityIndices = new int[] { 5, 10, 9, 6, 0, 15, 12, 3, 1, 14, 8, 7, 2, 13, 4, 11 };
-  private int findAvailableIndex(List<int> availableIndices) {
+  private int findAvailableIndex(List<int> availableIndices)
+  {
 
     // let's try put it in the center and then go to the side
     // a manual order for 0-15: 5,10, 9, 6, 0, 15, 12, 3, 1,14,8,7,2,13,4,11
@@ -302,7 +319,8 @@ public class CandidateHandler : MonoBehaviour
     return -1;
   }
 
-  private void UpdateWordCloudLayout(string[] candidates, string[] allCandidates, int progress) {
+  private void UpdateWordCloudLayout(string[] candidates, string[] allCandidates, int progress)
+  {
     // we need to update the position at the same time
     // instead of calculate=ing the word length for both lines, and finding the longer one, let's predefine a LONG number and apply
     int maxLength = 9;
@@ -323,7 +341,8 @@ public class CandidateHandler : MonoBehaviour
         // shows before, only apply the new progress
         float candSize = MapIndex2Size(Array.IndexOf(allCandidates, candidates[i])) * kSizeScale;
         candidateObjects[showPreviously[i]].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, maxLength - 1, candSize, isEllipsis);
-      } else
+      }
+      else
       {
         // find an available index in candidateObjects, find from availableIndices
         // instead of doing it randomly, we should have a consitent order for the index
@@ -338,7 +357,8 @@ public class CandidateHandler : MonoBehaviour
     defaultWord = candidates[0];
   }
 
-  void CreateRowLayout() {
+  void CreateRowLayout()
+  {
     // the first one is placed in the center
     GameObject go = Instantiate(CandidatePrefab, transform);
     go.name = "Cand0";
@@ -363,10 +383,11 @@ public class CandidateHandler : MonoBehaviour
     }
   }
 
-  void CreateCircleLayout() {
+  void CreateCircleLayout()
+  {
     pentagonArea.gameObject.SetActive(true);
     string prefix = "VSCand";
-    for(int i = 1; i <= 5; i++)
+    for (int i = 1; i <= 5; i++)
     {
       GameObject go = pentagonArea.Find(prefix + i.ToString()).gameObject;
       go.GetComponent<Candidate>().SetCandidateText("");
@@ -376,7 +397,8 @@ public class CandidateHandler : MonoBehaviour
     }
   }
 
-  void CreateColumnLayout() {
+  void CreateColumnLayout()
+  {
     // 8 columns + 1
     CandidatePerRow = 9;
     CandidateCount = CandidatePerRow * candidateNumberPerColumn;
@@ -402,7 +424,8 @@ public class CandidateHandler : MonoBehaviour
     }
   }
 
-  void updateFanLayout() {
+  void updateFanLayout()
+  {
     CandidateCount = 11;
     // the first one is placed in the center
     GameObject fanLayout = Instantiate(FanLayoutCandidatePrefab, transform);
@@ -418,7 +441,8 @@ public class CandidateHandler : MonoBehaviour
     // gun = player.transform.Find("Gun").gameObject;
   }
 
-  void ConfigFanLayout() {
+  void ConfigFanLayout()
+  {
     // well let's make it 11 too
     //candidateObjects.Clear();
     fanHorizontalMap = new Dictionary<int, int>();
@@ -444,7 +468,8 @@ public class CandidateHandler : MonoBehaviour
     }
   }
 
-  void UpdateFanLayoutCandidate(string[] candidates, int progress) {
+  void UpdateFanLayoutCandidate(string[] candidates, int progress)
+  {
     // the candidates are placed like a fan
     int candNum = Mathf.Min(candidates.Length, CandidateCount);
     for (int i = 0; i < candNum; i++)
@@ -456,9 +481,10 @@ public class CandidateHandler : MonoBehaviour
       candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
     }
   }
-  
 
-  void UpdateRowLayoutCandidate(string[] candidates, int progress) {
+
+  void UpdateRowLayoutCandidate(string[] candidates, int progress)
+  {
     // we need to update the position at the same time
     // calculate the word length for both lines, find the longer one
     // or find the longest candidate, use that as the template, and re-calculate the width and place them
@@ -478,7 +504,8 @@ public class CandidateHandler : MonoBehaviour
       if (i == 0)
       {
         candidateObjects[0].GetComponent<Candidate>().SetCandidateText(candidates[0], progress, maxLength - 1);
-      } else
+      }
+      else
       {
         candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, maxLength - 1);
         candidateObjects[i].transform.localPosition = new Vector3(-2f * CandidateWidth + ((i - 1) % CandidatePerRow) * CandidateWidth, (i - 1) / CandidatePerRow * CandidateHeight + CandidateStartHeight, 0);
@@ -492,7 +519,8 @@ public class CandidateHandler : MonoBehaviour
   }
 
   List<string> sortHelp = new List<string>();
-  void UpdateLexicalCandidate(string[] candidates, int progress) {
+  void UpdateLexicalCandidate(string[] candidates, int progress)
+  {
     // we need to update the position at the same time
     // calculate the word length for both lines, find the longer one
     // or find the longest candidate, use that as the template, and re-calculate the width and place them
@@ -524,7 +552,8 @@ public class CandidateHandler : MonoBehaviour
       if (i == 0)
       {
         candidateObjects[0].GetComponent<Candidate>().SetCandidateText(candidates[0], progress, maxLength - 1);
-      } else
+      }
+      else
       {
         candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, maxLength - 1);
         candidateObjects[i].transform.localPosition = new Vector3(
@@ -545,7 +574,8 @@ public class CandidateHandler : MonoBehaviour
   int candidateNumberPerColumn = 6;
   int[] maxLength;
 
-  void UpdateByColumnCandidate(string[] candidates, int progress) {
+  void UpdateByColumnCandidate(string[] candidates, int progress)
+  {
     // we need to update the position at the same time
     // step 1, feed the candidates column by column,
     // step 2, record the maximum length for each column
@@ -606,7 +636,8 @@ public class CandidateHandler : MonoBehaviour
   private string[] cachedCandidates;
   private int cachedProgress;
   private string[] cachedCompleteCand;
-  public void UpdateCandidates(string[] candidates, int progress, string[] completedCand) {
+  public void UpdateCandidates(string[] candidates, int progress, string[] completedCand)
+  {
     cachedCandidates = new string[0];
     if (enableWordCompletion)
     {
@@ -630,28 +661,34 @@ public class CandidateHandler : MonoBehaviour
       //    Debug.Log("newCand[" + i + "]:" + newCand[i]);
       //}
       UpdateLexicalCandidate(newCand, progress);
-    } else if (candidateLayout == ProfileLoader.CandLayout.BYCOL)
+    }
+    else if (candidateLayout == ProfileLoader.CandLayout.BYCOL)
     {
       UpdateByColumnCandidate(cachedCandidates, progress);
-    } else if (candidateLayout == ProfileLoader.CandLayout.WORDCLOUD)
+    }
+    else if (candidateLayout == ProfileLoader.CandLayout.WORDCLOUD)
     {
       int totalNumber = 16;
       string[] newCand = ReorgCandidates(cachedCandidates, totalNumber, cachedCompleteCand, false);
       UpdateWordCloudLayout(newCand, cachedCandidates, progress);
-    } else if (candidateLayout == ProfileLoader.CandLayout.DIVISION)
+    }
+    else if (candidateLayout == ProfileLoader.CandLayout.DIVISION)
     {
       UpdateDivisionLayout(cachedCandidates, progress, 0);
-    } else if (candidateLayout == ProfileLoader.CandLayout.DIVISION_END)
+    }
+    else if (candidateLayout == ProfileLoader.CandLayout.DIVISION_END)
     {
       UpdateDivisionLayout(cachedCandidates, progress, 1);
-    } else if (candidateLayout == ProfileLoader.CandLayout.ONE)
+    }
+    else if (candidateLayout == ProfileLoader.CandLayout.ONE)
     {
       string[] newCand = ReorgCandidates(cachedCandidates, 5, cachedCompleteCand, false);
-      UpdateOneLayout(candidates, progress);
+      UpdateOneLayout(newCand, progress);
     }
   }
 
-  private void UpdateOneLayout(string[] candidates, int progress) {
+  private void UpdateOneLayout(string[] candidates, int progress)
+  {
     // show at most 5 complete candidates; If there are more than 5, show the most frequent ones
     // later we will filter the words that do not meet this requirement if we are using qwerty
     if (cachedCompleteCand.Length > 0)
@@ -669,7 +706,8 @@ public class CandidateHandler : MonoBehaviour
       for (int i = 0; i < CandidateCount; i++)
       {
         //candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedCompleteCand[i] : "", progress, maxLength - 1);
-        candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedCompleteCand[i] : "", progress, maxLength - 1);
+        candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? candidates[i]
+          : (enableWordCompletion && i < candidates.Length ? candidates[i] : ""), progress, maxLength - 1);
         //if (i > 0)
         //{
         //  candidateObjects[i].transform.localPosition = new Vector3(
@@ -684,13 +722,14 @@ public class CandidateHandler : MonoBehaviour
     {
       int minLengthCand = candidates[0].Length;
       string oneCand = candidates[0];
-      for(int i = 1; i < candidates.Length; i++)
+      for (int i = 1; i < candidates.Length; i++)
       {
-        if(candidates[i].Length == progress + 1)
+        if (candidates[i].Length == progress + 1)
         {
           oneCand = candidates[i];
           break;
-        } else if(minLengthCand > candidates[i].Length)
+        }
+        else if (minLengthCand > candidates[i].Length)
         {
           minLengthCand = candidates[i].Length;
           oneCand = candidates[i];
@@ -705,11 +744,13 @@ public class CandidateHandler : MonoBehaviour
     }
   }
 
-  private string[] ReorgCandidates(string[] candidates, int totalNumber, string[] completedCand, bool remainFirst = true) {
+  private string[] newCand = new string[] { };
+  private string[] ReorgCandidates(string[] candidates, int totalNumber, string[] completedCand, bool remainFirst = true)
+  {
     remainFirst = remainFirst && enableWordCompletion;
     // make sure the complete candidates are placed in candidates before totalNumber
     int completeCandNumber = completedCand.Length;
-    string[] newCand = new string[totalNumber];
+    newCand = new string[totalNumber];
     if (completeCandNumber == 0)
     {
       // no completed candidates then we just return candidates directly            
@@ -751,7 +792,8 @@ public class CandidateHandler : MonoBehaviour
       //    Debug.Log(nc);
       //}
       //}            
-    } else
+    }
+    else
     {
       Array.Copy(completedCand, 0, newCand, remainFirst ? 1 : 0, copyNumber);
       toCopy = remainFirst ? copyNumber : (copyNumber - 1);
@@ -781,7 +823,8 @@ public class CandidateHandler : MonoBehaviour
     return newCand;
   }
 
-  public void ResetCandidates() {
+  public void ResetCandidates()
+  {
     for (int i = 0; i < CandidateCount; i++)
     {
       candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
