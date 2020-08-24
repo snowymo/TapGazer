@@ -393,9 +393,20 @@ public class InputHandler : MonoBehaviour
     // enter
     currentInputLine += 'n';  // TODO: still use n to represent selection
                               // record selection time
-    string curWord = "null";
-    curWord = candidateHandler.candidateObjects[candIndex].GetComponent<Candidate>().pureText;
-    //print("[key selection] curword " + curWord);
+    string curWord = candidateHandler.candidateObjects[0].GetComponent<Candidate>().pureText; ;
+    if(candIndex == -1)
+    {
+      // means could be anything on the same page
+      // TODO, update once we have page index
+      // for WC mode, even the fingerseq is not correct, it is possible that candidates words are there
+      string correctFingerSeq = classifyWord(presented);
+      curWord = (correctFingerSeq.Equals(currentInputString) ? presented : curWord);
+    }
+    else
+    {
+      curWord = candidateHandler.candidateObjects[candIndex].GetComponent<Candidate>().pureText;
+      //print("[key selection] curword " + curWord);
+    }
     curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
     //Debug.Log("cur word:" + curWord);
     currentTypedWords.Add(curWord);
@@ -473,24 +484,65 @@ public class InputHandler : MonoBehaviour
       return;
     }
 
+    if(readyForSecondKey && ProfileLoader.selectionMode != ProfileLoader.SelectionMode.MS)
+    {
+      // allow to select with either thumb
+      if (Input.GetKeyDown("b") )
+      {
+        print("LT LT deletion");
+        delete();
+        measurement.AddTapItem("b", "deletion");
+        readyForSecondKey = false;
+        updateDisplayInput();
+      }
+    }
+
     if (!readyForSecondKey)
     {
       // either regular input or control key for the first time press
       if (Input.GetKeyDown("n"))
       {
-        // select default word
-        readyForSecondKey = false; // selectionKeys[0] is 'n' aka right thumb.
-        //print("RT selection");
-        handleSelection(0);
+        switch (ProfileLoader.selectionMode)
+        {
+          case ProfileLoader.SelectionMode.MS:
+            // select default word
+            readyForSecondKey = false; // selectionKeys[0] is 'n' aka right thumb.
+                                       //print("RT selection");
+            handleSelection(0);
+            break;
+          case ProfileLoader.SelectionMode.GSE:
+          case ProfileLoader.SelectionMode.GSR:
+            handleSelection(-1);
+            break;
+          default:
+            break;
+        }
+        
         measurement.AddTapItem("n", "selection");
         helpInfo.SetActive(false);
       }
       else if (Input.GetKeyDown("b"))
       {
-        // waiting for second key in MS mode
-        //print("LT waiting");
-        readyForSecondKey = true; // selectionKeys[0] is 'n' aka right thumb.
-        measurement.AddTapItem("b", "selection");
+        switch (ProfileLoader.selectionMode)
+        {
+          case ProfileLoader.SelectionMode.MS:
+            // waiting for second key in MS mode
+            //print("LT waiting");
+            readyForSecondKey = true; // selectionKeys[0] is 'n' aka right thumb.
+            measurement.AddTapItem("b", "selection");
+            break;
+          case ProfileLoader.SelectionMode.GSE:
+          case ProfileLoader.SelectionMode.GSR:
+            // deletion
+            print("LT deletion");
+            delete();
+            measurement.AddTapItem("b", "deletion");
+            readyForSecondKey = false;
+            updateDisplayInput();
+            break;
+          default:
+            break;
+        }        
         helpInfo.SetActive(false);
       }
       else
