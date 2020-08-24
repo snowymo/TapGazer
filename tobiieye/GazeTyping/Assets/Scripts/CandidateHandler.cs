@@ -683,82 +683,68 @@ public class CandidateHandler : MonoBehaviour
     else if (candidateLayout == ProfileLoader.CandLayout.ONE)
     {
       string[] newCand = ReorgCandidates(cachedCandidates, 5, cachedCompleteCand, false);
-      UpdateOneLayout(newCand, progress);
+      UpdateOneLayout(newCand, candidates, progress);
     }
   }
 
-  private void UpdateOneLayout(string[] candidates, int progress)
+  private void UpdateOneLayout(string[] cachedReorgCand, string[] candidates, int progress)
   {
     // show at most 5 complete candidates; If there are more than 5, show the most frequent ones
-    // later we will filter the words that do not meet this requirement if we are using qwerty
-    if (cachedCompleteCand.Length > 0)
+    // later we will filter the words that do not meet this requirement if we are using qwerty   
+    if (enableWordCompletion)
     {
-      defaultWord = cachedCompleteCand[0];
-      int maxLength = Mathf.Max(4, cachedCompleteCand[0].Length);
-      int candNum = Mathf.Min(cachedCompleteCand.Length, CandidateCount);
-      for (int i = 1; i < candNum; i++)
-      {
-        if (cachedCompleteCand[i].Length > maxLength)
-          maxLength = cachedCompleteCand[i].Length;
-      }
-      CandidateWidth = perWidth * maxLength;
-
-      for (int i = 0; i < CandidateCount; i++)
-      {
-        //candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedCompleteCand[i] : "", progress, maxLength - 1);
-        candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? candidates[i]
-          : (enableWordCompletion && i < candidates.Length ? candidates[i] : ""), progress, maxLength - 1);
-        //if (i > 0)
-        //{
-        //  candidateObjects[i].transform.localPosition = new Vector3(
-        //    -CandidateWidth * (CandidatePerRow - 1) / 2 + ((i - 1) % CandidatePerRow) * CandidateWidth,
-        //    ((i - 1) / CandidatePerRow + 1) * CandidateHeight + CandidateStartHeight, 0);//(i / CandidatePerRow + 1)
-        //}
-      }
-    }
-    
-    else
-    {
-      if (enableWordCompletion)
-      {
-        // show the incomplete candidates
-        if (candidates.Length > 0)
-          defaultWord = candidates[0];
-        else
-          defaultWord = "";
-        int maxLength = Mathf.Max(4, candidates[0].Length);
-        int candNum = Mathf.Min(candidates.Length, CandidateCount);
-        for (int i = 1; i < candNum; i++)
-        {
-          if (candidates[i].Length > maxLength)
-            maxLength = candidates[i].Length;
-        }
-        for (int i = 0; i < Mathf.Min(candidates.Length, CandidateCount); i++)
-        {
-          //candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedCompleteCand[i] : "", progress, maxLength - 1);
-          candidateObjects[i].GetComponent<Candidate>().SetCandidateText(candidates[i], progress, maxLength - 1);
-        }
-        for (int i = Mathf.Min(candidates.Length, CandidateCount); i < Mathf.Max(candidates.Length, CandidateCount); i++)
-        {
-          //candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedCompleteCand[i] : "", progress, maxLength - 1);
-          candidateObjects[i].GetComponent<Candidate>().SetCandidateText("", progress, maxLength - 1);
-        }
-      }
+      // show the incomplete candidates
+      if (cachedReorgCand.Length > 0)
+        defaultWord = cachedReorgCand[0];
       else
       {
+        print("warning: no words in this finger sequence");
+        defaultWord = "";
+        return;
+      }
+          
+      int maxLength = Mathf.Max(4, cachedReorgCand[0].Length);
+      int candNum = Mathf.Min(cachedReorgCand.Length, CandidateCount);
+      for (int i = 1; i < candNum; i++){
+        if (cachedReorgCand[i].Length > maxLength)
+          maxLength = cachedReorgCand[i].Length;
+      }
+      for (int i = 0; i < Mathf.Min(cachedReorgCand.Length, CandidateCount); i++){
+        //candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedCompleteCand[i] : "", progress, maxLength - 1);
+        candidateObjects[i].GetComponent<Candidate>().SetCandidateText(cachedReorgCand[i], progress, maxLength - 1);
+      }
+      for (int i = Mathf.Min(cachedReorgCand.Length, CandidateCount); i < Mathf.Max(cachedReorgCand.Length, CandidateCount); i++)
+      {
+        //candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedCompleteCand[i] : "", progress, maxLength - 1);
+        candidateObjects[i].GetComponent<Candidate>().SetCandidateText("", progress, maxLength - 1);
+      }
+    } else {        
+      if (cachedReorgCand.Length > 0) {
+        defaultWord = cachedReorgCand[0];
+        int maxLength = Mathf.Max(4, cachedReorgCand[0].Length);
+        int candNum = Mathf.Min(cachedReorgCand.Length, CandidateCount);
+        for (int i = 1; i < candNum; i++) {
+          if (cachedReorgCand[i].Length > maxLength)
+            maxLength = cachedReorgCand[i].Length;
+        }
+        CandidateWidth = perWidth * maxLength;
+
+        for (int i = 0; i < CandidateCount; i++) {
+          candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedReorgCand[i] : "", progress, maxLength - 1);
+          //candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedReorgCand[i]
+          //  : (enableWordCompletion && i < cachedReorgCand.Length ? cachedReorgCand[i] : ""), progress, maxLength - 1);
+        }
+      }      else      {
         // show one word when there is no complete candidates
         // pick the shortest one for now
         int minLengthCand = candidates[0].Length;
         string oneCand = candidates[0];
-        for (int i = 1; i < candidates.Length; i++)
-        {
-          if (candidates[i].Length == progress + 1)
-          {
+        for (int i = 1; i < candidates.Length; i++)        {
+          if (candidates[i].Length == progress + 1)          {
             oneCand = candidates[i];
             break;
           }
-          else if (minLengthCand > candidates[i].Length)
-          {
+          else if (minLengthCand > candidates[i].Length)          {
             minLengthCand = candidates[i].Length;
             oneCand = candidates[i];
           }
@@ -769,8 +755,8 @@ public class CandidateHandler : MonoBehaviour
         {
           candidateObjects[i].GetComponent<Candidate>().SetCandidateText("");
         }
-      }      
-    }
+      }  
+    }      
   }
 
   private string[] newCand = new string[] { };

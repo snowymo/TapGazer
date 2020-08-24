@@ -393,11 +393,12 @@ public class InputHandler : MonoBehaviour
     // enter
     currentInputLine += 'n';  // TODO: still use n to represent selection
                               // record selection time
-    string curWord = "null";
+    string curWord = candidateHandler.candidateObjects[0].GetComponent<Candidate>().pureText; ;
     if(candIndex == -1)
     {
       // means could be anything on the same page
       // TODO, update once we have page index
+      // for WC mode, even the fingerseq is not correct, it is possible that candidates words are there
       string correctFingerSeq = classifyWord(presented);
       curWord = (correctFingerSeq.Equals(currentInputString) ? presented : curWord);
     }
