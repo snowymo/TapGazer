@@ -105,9 +105,10 @@ public class ProfileLoader : MonoBehaviour {
       dynamicGridHint.SetFinger(configMap);
     }
 
-    if (typingMode == TypingMode.REGULAR)
-      newKeyboardInput.SetActive(false);
-    else
+    //if (typingMode == TypingMode.REGULAR)
+    //  newKeyboardInput.SetActive(false);
+    //else
+    // use newKeyboardInput all the time I guess
       regularInput.SetActive(false);
 
     if(typingMode == TypingMode.REGULAR || typingMode == TypingMode.TAPPING)

@@ -429,6 +429,62 @@ public class InputHandler : MonoBehaviour
     readyForSecondKey = false;
   }
 
+  private void deleteInRegular()
+  {
+      currentInputLine = currentInputLine.Substring(0, Math.Max(0, currentInputLine.Length-1));
+      inputTextMesh.text = currentInputLine;
+  }
+
+  private void typeInRegularMode()
+  {
+    Event e = Event.current;
+    if (e.isKey && e.type == EventType.KeyDown && e.keyCode != KeyCode.None)
+    {
+      //Debug.Log("Detected a keyboard event!" + e.keyCode + " " + e.type);
+      if(e.keyCode == KeyCode.Backspace)
+      {
+        //delete a letter
+        if (currentInputLine.Length > 1)
+        {
+          currentInputLine = currentInputLine.Substring(0, Math.Max(0, currentInputLine.Length - 1));
+        }
+        measurement.AddTapItem("backspace", "tap");
+      }
+      else if(e.keyCode == KeyCode.Space || e.keyCode == KeyCode.Return)
+      {
+        // space
+        currentInputLine += " ";
+        measurement.AddTapItem("space", "tap");
+      }
+      
+      else if(e.keyCode >= KeyCode.A && e.keyCode <= KeyCode.Z) {
+        // regular input
+        currentInputLine += e.keyCode.ToString().ToLower();
+        measurement.AddTapItem(e.keyCode.ToString(), "tap");
+      }
+
+      measurement.OnRegularInput(currentInputLine);
+      inputTextMesh.text = currentInputLine;
+      bool nextPhraseOrNot = phraseLoader.IsCurrentTypingCorrect(currentInputLine);
+      if (nextPhraseOrNot)
+      {
+        currentInputLine = "";
+        inputTextMesh.text = "";
+      }
+    }
+  }
+
+  private void testInputKeyDown()
+  {
+    for (int i = 0; i < inputStringTemplate.Length; i++)
+    {
+      if (Input.GetKeyDown(inputStringTemplate[i]))
+      {
+        Debug.Log(inputStringTemplate[i]);
+      }
+    }
+  }
+
   private void typeInWordModeNoChord()
   {
     // update all control key status
@@ -457,6 +513,9 @@ public class InputHandler : MonoBehaviour
     {
       return;
     }
+
+    //testInputKeyDown();
+    //return;
 
     // only another key is followed by control key 'b'
     if (readyForSecondKey && ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS)
@@ -1116,6 +1175,15 @@ public class InputHandler : MonoBehaviour
     }
   }
 
+  private void OnGUI()
+  {
+    if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR)
+    {
+      // probably handle some kind of keyboard too
+      typeInRegularMode();
+    }
+  }
+
   // Update is called once per frame
   void Update()
   {
@@ -1123,7 +1191,8 @@ public class InputHandler : MonoBehaviour
     {
       if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR)
       {
-
+        // probably handle some kind of keyboard too
+        //typeInRegularMode();
       }
       else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TRAINING)
       {

@@ -35,9 +35,10 @@ public class TapProfileLoader : ProfileLoader
       dynamicGridHint.SetFinger(configMap);
     }
 
-    if (typingMode == TypingMode.REGULAR)
-      newKeyboardInput.SetActive(false);
-    else
+    //if (typingMode == TypingMode.REGULAR)
+    //  newKeyboardInput.SetActive(false);
+    //else
+    // use new keyboard all the time
       regularInput.SetActive(false);
 
     // screen mode
