@@ -570,37 +570,37 @@ public class InputHandler : MonoBehaviour
       return;
     }
 
-    if(readyForSecondKey && ProfileLoader.selectionMode != ProfileLoader.SelectionMode.MS)
-    {
-      if (Input.GetKeyDown("b") )
-      {
-        print("LT LT deletion");
-        delete();
-        measurement.AddTapItem("b", "deletion");
-        readyForSecondKey = false;
-        updateDisplayInput();
-      } else {
-        // page operation
-        for (int i = 0; i < keyPageIndex.Length; i++)
-        {
-          if (Input.GetKeyDown(inputStringTemplate[keyPageIndex[i]]))
-          {
-            // i == 0 => prev page
-            if (i == 0)
-              candidateHandler.PrevPage();
-            else
-              // i == 0 => next page
-              candidateHandler.NextPage();
+    //if(readyForSecondKey && ProfileLoader.selectionMode != ProfileLoader.SelectionMode.MS)
+    //{
+    //  if (Input.GetKeyDown("b") )
+    //  {
+    //    print("LT LT deletion");
+    //    delete();
+    //    measurement.AddTapItem("b", "deletion");
+    //    readyForSecondKey = false;
+    //    updateDisplayInput();
+    //  } else {
+    //    // page operation
+    //    for (int i = 0; i < keyPageIndex.Length; i++)
+    //    {
+    //      if (Input.GetKeyDown(inputStringTemplate[keyPageIndex[i]]))
+    //      {
+    //        // i == 0 => prev page
+    //        if (i == 0)
+    //          candidateHandler.PrevPage();
+    //        else
+    //          // i == 0 => next page
+    //          candidateHandler.NextPage();
 
-            print("[page selection] " + i);
-            measurement.AddTapItem(inputStringTemplate[keyPageIndex[i]], "page");
-            readyForSecondKey = false;
-            break;
-          }
-        }
-      }
-      return;
-    }
+    //        print("[page selection] " + i);
+    //        measurement.AddTapItem(inputStringTemplate[keyPageIndex[i]], "page");
+    //        readyForSecondKey = false;
+    //        break;
+    //      }
+    //    }
+    //  }
+    //  return;
+    //}
 
     if (!readyForSecondKey)
     {
@@ -639,22 +639,22 @@ public class InputHandler : MonoBehaviour
           case ProfileLoader.SelectionMode.GSE:
           case ProfileLoader.SelectionMode.GSR:
             // we still need to support paging in GS so we need b to be control key still
-            if(retrieveInputStringFromLine().Length > 0
-              && candidateHandler.GetPageTotal() > 1)
-            {
-              // enable paging
-              readyForSecondKey = true; // selectionKeys[0] is 'n' aka right thumb.
-              measurement.AddTapItem("b", "page");
-            }
-            else
-            {
+            //if(retrieveInputStringFromLine().Length > 0
+            //  && candidateHandler.GetPageTotal() > 1)
+            //{
+            //  // enable paging
+            //  readyForSecondKey = true; // selectionKeys[0] is 'n' aka right thumb.
+            //  measurement.AddTapItem("b", "page");
+            //}
+            //else
+            //{
               // deletion
               print("LT deletion");
               delete();
               measurement.AddTapItem("b", "deletion");
               readyForSecondKey = false;
               updateDisplayInput();
-            }            
+            //}            
             break;
           default:
             break;

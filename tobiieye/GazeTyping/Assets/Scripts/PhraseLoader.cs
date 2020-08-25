@@ -188,7 +188,8 @@ public class PhraseLoader : MonoBehaviour {
         // just wrong
         return false;
       }
-    } else if (typingMode == ProfileLoader.TypingMode.TEST || typingMode == ProfileLoader.TypingMode.TAPPING) {
+    } else if (typingMode == ProfileLoader.TypingMode.TEST || typingMode == ProfileLoader.TypingMode.TAPPING
+      || typingMode == ProfileLoader.TypingMode.REGULAR) {
       bool result = candidate.Equals(curPhrases[curTypingPhrase], System.StringComparison.InvariantCultureIgnoreCase);
       if (curTypingPhrase < (curPhrases.Length - 1)) {
         measurement.AddWPM(curPhrases[curTypingPhrase].Length);
@@ -203,23 +204,27 @@ public class PhraseLoader : MonoBehaviour {
       }
       ColorCurrentTypingPhrase(typingMode);
       return result;
-    } else if (typingMode == ProfileLoader.TypingMode.REGULAR) {
-      // should not go to here
-      return true;
-    } else {
+    }
+    //else if (typingMode == ProfileLoader.TypingMode.REGULAR) {
+    //  // should not go to here
+    //  // TODO: we need that now
+
+    //  return true;
+    //}
+    else {
       return false;
     }
   }
 
   private void Update() {
     // DEBUG test NextPhrases
-    if (ProfileLoader.typingMode != ProfileLoader.TypingMode.REGULAR) {
-      if (Input.GetKeyDown(KeyCode.Space)) {
-        Debug.Log("next phrase by pressing space");
-        NextPhrases();
-      } else if (Input.GetKeyDown(KeyCode.Backspace)) {
-        PrevPhrases();
-      }
-    }
+    //if (ProfileLoader.typingMode != ProfileLoader.TypingMode.REGULAR) {
+    //  if (Input.GetKeyDown(KeyCode.Space)) {
+    //    Debug.Log("next phrase by pressing space");
+    //    NextPhrases();
+    //  } else if (Input.GetKeyDown(KeyCode.Backspace)) {
+    //    PrevPhrases();
+    //  }
+    //}
   }
 }

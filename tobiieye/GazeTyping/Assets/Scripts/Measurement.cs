@@ -213,14 +213,15 @@ public class Measurement : MonoBehaviour
 
     //Write some text to the file
     // name should include profile (aka user name), mode (regular, or test), layout and session
-    string name = ProfileLoader.profile + "-" + ProfileLoader.typingMode.ToString() + "-" + (ProfileLoader.wcMode == ProfileLoader.WordCompletionMode.WC ? "WC" : "noWC")
+    string name = ProfileLoader.profile + "-" + ProfileLoader.typingMode.ToString() + "-" + (ProfileLoader.wcMode == ProfileLoader.WordCompletionMode.WC ? "WC" : "NC")
+       + "-" + (ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS ? "MS" : "GS")
       + "-" + ProfileLoader.candidateLayout.ToString() + "-" + ProfileLoader.session_number.ToString();
     File.AppendAllText(destination, DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "," + name + "," + totalC.ToString() + "," + totalINF.ToString() + "," + totalIF.ToString() + "," + totalF.ToString() + "," + WPM.ToString() + ","
         + correctGazeSelection.ToString() + "," + totalGazeSelection.ToString() + "\n");
 
     // save time data
     string dest2 = Application.streamingAssetsPath + "/time" + name + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + ".csv";
-    File.WriteAllText(dest2, "cur finger, prev finger, time in ms\n");
+    File.WriteAllText(dest2, "cur finger, prev finger, type, time in ms\n");
     //for (int i = 0; i < selectionDuration.Count; i++)
     //{
     //  File.AppendAllText(dest2, selectionDuration[i].fingerID + "," + selectionDuration[i].prevFingerID + "," + selectionDuration[i].duration.ToString() + "\n");
@@ -276,6 +277,44 @@ public class Measurement : MonoBehaviour
           Debug.Log("time is up");
           allowInput = false;
           inputField.enabled = false;
+
+          saveData();
+        }
+      }
+    }
+  }
+
+  public void OnRegularInput(string curInput)
+  {
+    StartClock();
+    string curText = curInput;
+    // we should calculate c, inf, if, f based on curText and the correct answer
+    string correctString = phraseLoader.GetCurPhrase();
+    // we update all the value only when user hits 'enter' and the word count of curText is equal to correctString
+    if (curText.Length > 0 && curText[curText.Length - 1] == ' ')
+    {
+      if (curText.Remove(curText.Length - 1).Split(new char[] { ' ' }).Length == correctString.Split(new char[] { ' ' }).Length)
+      {
+        // calculate C and INF
+        string transribed = curText;// we need to count space curText.Replace(" ", string.Empty);
+        string presented = correctString;// we need to count space correctString.Replace(" ", string.Empty);
+        INF = editDistance(presented, transribed);
+        totalINF += INF;
+        C = transribed.Length - INF;
+        totalC += C;
+        totalIF += IF;
+        IF = 0;
+        totalF += F;
+        F = 0;
+        calculateMetric();
+        words += transribed.Length;
+        endTime = DateTime.Now;
+        finishedSeconds = finishedSeconds = startTime == DateTime.MinValue ? passedTime : (float)(endTime - startTime).TotalSeconds + passedTime;
+        WPM = (words - 1.0f) / finishedSeconds * 60.0f / 5.0f;
+        if (finishedSeconds > typingSeconds)
+        {
+          Debug.Log("time is up");
+          allowInput = false;
 
           saveData();
         }

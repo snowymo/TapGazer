@@ -511,8 +511,7 @@ public class CandidateHandler : MonoBehaviour
     }
   }
 
-
-  void UpdateRowLayoutCandidate(string[] candidates, int progress)
+    void UpdateRowLayoutCandidate(string[] candidates, int progress)
   {
     // we need to update the position at the same time
     // calculate the word length for both lines, find the longer one
@@ -732,11 +731,11 @@ public class CandidateHandler : MonoBehaviour
       //string[] newCand;
       if (enableWordCompletion)
       {
-        ReorgCandidates(candidates, 5, completedCand, false);
+        ReorgCandidates(candidates, CandidateCount, completedCand, false);
       }      
       else
       {
-        ReorgCandidates(new string[0], 5, completedCand, false);
+        ReorgCandidates(new string[0], CandidateCount, completedCand, false);
       }
       // below has pageIndex involved, so we should call below when nextPage
       UpdateOneLayout(newCand, candidates, progress);
@@ -784,13 +783,13 @@ public class CandidateHandler : MonoBehaviour
 
       int maxLength = Mathf.Max(4, defaultWord.Length);
       int candNum = Mathf.Min(cachedReorgCand.Length, CandidateCount);
-      for (int i = 1; i < Math.Min(5, cachedReorgCand.Length - startIndex); i++) {
+      for (int i = 1; i < Math.Min(CandidateCount, cachedReorgCand.Length - startIndex); i++) {
         if (cachedReorgCand[i + startIndex].Length > maxLength)
           maxLength = cachedReorgCand[i + startIndex].Length;
       }
       CandidateWidth = perWidth * maxLength;
 
-      for (int i = 0; i < 5; i++) {
+      for (int i = 0; i < CandidateCount; i++) {
         candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < (cachedReorgCand.Length - startIndex) ? cachedReorgCand[i+ startIndex] : "", progress, maxLength - 1);
         //candidateObjects[i].GetComponent<Candidate>().SetCandidateText(i < candNum ? cachedReorgCand[i]
         //  : (enableWordCompletion && i < cachedReorgCand.Length ? cachedReorgCand[i] : ""), progress, maxLength - 1);
