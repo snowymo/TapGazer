@@ -410,7 +410,7 @@ public class CandidateHandler : MonoBehaviour
       go.GetComponent<Candidate>().candidateHandler = this;
       candidateObjects.Add(go);
     }
-    if(ProfileLoader.selectionMode != ProfileLoader.SelectionMode.MS)
+    if(ProfileLoader.selectionMode != ProfileLoader.SelectionMode.MS || ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR)
     {
       // load 10 candidates
       for (int i = 6; i <= 10; i++)
