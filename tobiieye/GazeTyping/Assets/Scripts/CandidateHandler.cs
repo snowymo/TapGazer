@@ -85,7 +85,7 @@ public class CandidateHandler : MonoBehaviour
   // Start is called before the first frame update
   void Start()
   {
-    pageTextMesh.enabled = ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS;
+    pageTextMesh.enabled = ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST && ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS;
 
     wordListLoader = GetComponent<WordlistLoader>();
     inputHandler = GameObject.Find("InputSection").GetComponent<InputHandler>();
@@ -822,27 +822,30 @@ public class CandidateHandler : MonoBehaviour
   private string[] ReorgCandidates(string[] candidates, int totalNumber, string[] completedCand, bool remainFirst = true)
   {
     // instead of getting only totalNumber candidates ready for current page, we should get all of them ready for next/prev page to access
-    int newCandLen = Math.Max(totalNumber, completedCand.Length);
+    int newCandLen = completedCand.Length;
+    if (newCandLen > totalNumber)
+      newCandLen = totalNumber;
+    //Math.Max(totalNumber, completedCand.Length);
 
     //int startIndex = (pageIndex - 1) * totalNumber;
     remainFirst = remainFirst && enableWordCompletion;
     // make sure the complete candidates are placed in candidates before totalNumber
     int completeCandNumber = completedCand.Length;
     
-    if (completeCandNumber == 0)
-    {
-      // no completed candidates then we just return candidates directly            
-      return candidates;      
-    }
-
     newCand = new string[newCandLen];
     for (int i = 0; i < newCandLen; i++)
       newCand[i] = "";
+
+    if (completeCandNumber == 0)
+    {
+      // no completed candidates then we just return candidates directly            
+      return newCand;
+    }
     // put complete cand first, then following with incomplete candidates
     // there still exists completed candidates in candidates array so we need to skip them
     //// a simple trick: because all the candidates will be sorted via lexcial order later, we just need to put all the completed candidates first, and then the top (n-m) incompleted candidates
     ///
-    
+
     if (remainFirst)
     {      
       newCand[0] = candidates[0];
@@ -873,8 +876,8 @@ public class CandidateHandler : MonoBehaviour
     else
     {
       // copy completed cand first and then copy incompleted cand
-      Array.Copy(completedCand, 0, newCand, 0, completedCand.Length);
-      int curIndex = completedCand.Length;
+      Array.Copy(completedCand, 0, newCand, 0, Math.Min(newCandLen, completedCand.Length));
+      int curIndex = Math.Min(newCandLen, completedCand.Length);
       for (int j = 0; curIndex < newCandLen && j < candidates.Length; curIndex++, j++)
       {
         while (candidates[j].Length == inputHandler.currentInputString.Length)

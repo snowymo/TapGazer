@@ -126,7 +126,7 @@ public class Measurement : MonoBehaviour
       saveData();
     }
 
-    wpmText.text = "WPM:" + WPM.ToString("F3");
+    wpmText.text = "WPM:" + WPM.ToString("F2");
   }
 
   public void AddWPM(int curWC)
