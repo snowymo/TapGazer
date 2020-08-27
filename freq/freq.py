@@ -4,7 +4,7 @@ import functools
 import json
 from wordfreq import *
 from collections import OrderedDict
-
+from termcolor import colored
 
 
 config = {'q': 'a', 'a': 'a', 'z': 's',
@@ -195,11 +195,19 @@ def generate_tap_map(test_dict, count, config=config):
             cur_count = cur_count + 1
 
     #     check if we have more than 10-homograph
+    # with open("phrases2.txt", encoding="utf-8") as f:
+    #     phrasesDict = f.read().splitlines()
     for cur_typing in completed_numbers:
         if len(completed_numbers[cur_typing]) > 10:
             print("[risk]" + cur_typing + " has more than 10 homographs " + str(len(completed_numbers[cur_typing])))
+            print(*completed_numbers[cur_typing], sep = ", ")
+    #         check phrase2.txt
+    #         for index in range(10, len(completed_numbers[cur_typing])):
+    #             if completed_numbers[cur_typing][index] in phrasesDict:
+    #                 print("{bcolors.WARNING}[very risk]" + completed_numbers[cur_typing][index] + "{bcolors.ENDC}")
 
-    print("largest_cand_result", largest_cand_number, largest_cand_input_string, completed_numbers[largest_cand_input_string])
+
+    # print("largest_cand_result", largest_cand_number, largest_cand_input_string, completed_numbers[largest_cand_input_string])
     # for item in completed_numbers:
     #     if len(completed_numbers[item]) > 5:
     #         print(item + "\t" + str(len(completed_numbers[item])) + "\t" + str(completed_numbers[item]))
@@ -238,7 +246,7 @@ def check_with_phrases(filename, config=config):
                 # find the corresponding finger based on the char
                 cur_finger = find_finger(char, config)
                 if cur_finger is None:
-                    print("word not supported: " + currentWord)
+                    print("\t\tword not supported: " + currentWord)
                     break
                 cur_typing += cur_finger
             if len(cur_typing) != len(currentWord):
@@ -254,8 +262,8 @@ def check_with_phrases(filename, config=config):
             for idx3, candidate in enumerate(completed_numbers[inputString]):
                 if candidate.lower() == currentWord.lower():
                     # idx3 is the rank
-                    if idx3 > 5:
-                        print("word: " + currentWord + " : " + str(idx3))
+                    if idx3 > 10:
+                        print(colored("word: " + currentWord + " : " + str(idx3), 'red'))
                     if len(inputString) == 2:
                         minimumCandNum["2"] = max(minimumCandNum["2"], idx3)
                     elif len(inputString) == 3:
