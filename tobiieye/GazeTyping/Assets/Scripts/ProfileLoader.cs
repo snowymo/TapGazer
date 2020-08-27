@@ -1,4 +1,5 @@
 ﻿using Codeplex.Data;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -75,10 +76,19 @@ public class ProfileLoader : MonoBehaviour {
   public CandLayout curCandidateLayout;
   public static CandLayout candidateLayout;
 
+  public int typingSeconds = 60;
+  public int typingPhraseCount = 5;
+
   // Start is called before the first frame update
   void Awake() {
     //profile = curProfile;
-    curProfile = profile = File.ReadAllText(Application.streamingAssetsPath + "/profile.name");
+    string fileConfig = File.ReadAllText(Application.streamingAssetsPath + "/profile.name");
+    string[] fileConfigDetails = fileConfig.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+    curProfile = profile = fileConfigDetails[0];
+    typingSeconds = int.Parse(fileConfigDetails[1]);
+    typingPhraseCount = int.Parse(fileConfigDetails[2]);
+
+
     wordlistLoader.wordlistPath = "top0.9-result" + profile + ".json";
     typingMode = curTypingMode;
     inputMode = curInputMode;
@@ -135,7 +145,13 @@ public class ProfileLoader : MonoBehaviour {
     configMap = new Dictionary<string, string>();
     letterMap = new Dictionary<string, List<char>>();
     string configPath = Application.streamingAssetsPath + "/config" + profile + ".json";
-    string configContent = File.ReadAllText(configPath);
+    string configContent = "";
+    if (File.Exists(configPath))
+      configContent = File.ReadAllText(configPath);
+    else
+    {
+      Debug.LogError("File " + configPath + " not exists");
+    }
 
     dynamic configJson = DynamicJson.Parse(configContent);
     foreach (KeyValuePair<string, dynamic> item in configJson) {

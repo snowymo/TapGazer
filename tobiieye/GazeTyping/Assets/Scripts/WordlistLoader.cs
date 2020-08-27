@@ -44,6 +44,11 @@ public class WordlistLoader : MonoBehaviour {
         else
             wordlistPath = Application.streamingAssetsPath + "/" + wordlistPath;
         completeCandPath = wordlistPath.Replace("result", "cand");
+        Debug.Log("Loading " + wordlistPath);
+        if (!File.Exists(wordlistPath))
+        {
+          Debug.LogError("File " + wordlistPath + " not exist");
+        }
         wordlistContent = File.ReadAllText(wordlistPath);
         completeCandContent = File.ReadAllText(completeCandPath);
         //candText0.SetCandidateText("");
