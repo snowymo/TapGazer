@@ -281,12 +281,15 @@ def process_config(noswear10k, curConfig, configFileName):
     generate_tap_map(noswear10k, count, config)
     #
     print("\n\n====config:" + configFileName + "====")
-    print("\ncheck phrases2.txt")
-    check_with_phrases('phrases2.txt', config)
-    print("\ncheck 1k.txt")
-    check_with_phrases('1k.txt', config)
+
     print("\ncheck " + dictionaryFileName + ".txt")
     check_with_phrases(dictionaryFileName + '.txt', config)
+
+    print("\ncheck 1k.txt")
+    check_with_phrases('1k.txt', config)
+
+    print("\ncheck phrases2.txt")
+    check_with_phrases('phrases2.txt', config)
     # write to file
     f = open(dictionaryFileName + "-result" + configFileName + ".txt", "w")
     f.write(str(tapping_dict))
