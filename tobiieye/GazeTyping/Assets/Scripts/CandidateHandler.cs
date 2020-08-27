@@ -731,11 +731,11 @@ public class CandidateHandler : MonoBehaviour
       //string[] newCand;
       if (enableWordCompletion)
       {
-        ReorgCandidates(candidates, CandidateCount, completedCand, false);
+        PrepareCandidates(candidates, CandidateCount, completedCand);
       }      
       else
       {
-        ReorgCandidates(new string[0], CandidateCount, completedCand, false);
+        PrepareCandidates(new string[0], CandidateCount, completedCand);
       }
       // below has pageIndex involved, so we should call below when nextPage
       UpdateOneLayout(newCand, candidates, progress);
@@ -818,13 +818,44 @@ public class CandidateHandler : MonoBehaviour
     }  
   }
 
+  // if no completion, return all complete cand, even 0
+  // if with completion, return all complete cand + incomplete as many as we can
   private string[] newCand = new string[] { };
+  private string[] PrepareCandidates(string[] candidates, int totalNumber, string[] completedCand)
+  {
+    // instead of getting only totalNumber candidates ready for current page, we should get all of them ready for next/prev page to access
+    int newCandLen = completedCand.Length;
+    if (enableWordCompletion)
+      newCandLen = candidates.Length;
+
+    newCand = new string[newCandLen];
+    for (int i = 0; i < newCandLen; i++)
+      newCand[i] = "";
+
+    // put complete cand first, then following with incomplete candidates
+    // there still exists completed candidates in candidates array so we need to skip them
+    //// a simple trick: because all the candidates will be sorted via lexcial order later, we just need to put all the completed candidates first, and then the top (n-m) incompleted candidates
+
+    // copy completed cand first and then copy incompleted cand
+    if(completedCand.Length > 0)
+      Array.Copy(completedCand, 0, newCand, 0, completedCand.Length);
+    int curIndex = completedCand.Length;
+    for (int j = 0; curIndex < newCandLen && j < candidates.Length; curIndex++, j++)
+    {
+      while (candidates[j].Length == inputHandler.currentInputString.Length)
+      {
+        ++j;
+      }
+      newCand[curIndex] = candidates[j];
+    }
+    
+    return newCand;
+  }
   private string[] ReorgCandidates(string[] candidates, int totalNumber, string[] completedCand, bool remainFirst = true)
   {
     // instead of getting only totalNumber candidates ready for current page, we should get all of them ready for next/prev page to access
     int newCandLen = completedCand.Length;
-    if (newCandLen > totalNumber)
-      newCandLen = totalNumber;
+    //if (newCandLen > totalNumber)      newCandLen = totalNumber;
     //Math.Max(totalNumber, completedCand.Length);
 
     //int startIndex = (pageIndex - 1) * totalNumber;
