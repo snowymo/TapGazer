@@ -9,7 +9,7 @@ public class TapProfileLoader : ProfileLoader
   void Awake() {
     //profile = curProfile;
     curProfile = profile = File.ReadAllText(Application.streamingAssetsPath + "/profile.name");
-    wordlistLoader.wordlistPath = "30k-result" + profile + ".json";
+    wordlistLoader.wordlistPath = "top0.9-result" + profile + ".json";
     typingMode = curTypingMode;
     inputMode = curInputMode;
     session_number = curSessionNumber;
