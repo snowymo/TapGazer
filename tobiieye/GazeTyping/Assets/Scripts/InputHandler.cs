@@ -382,7 +382,7 @@ public class InputHandler : MonoBehaviour
   }
 
   bool readyForSecondKey = false;
-  string[] keySelectionIndex = new string[] { "space", "d", "k", "f", "j" };//  new int[] { 5, 2, 7, 3, 6 };
+  string[] keySelectionIndex = new string[] { "n", "d", "k", "f", "j" };//  new int[] { 5, 2, 7, 3, 6 };
   string[] keyPageIndex = new string[] { "a", ";" };// int[] { 0,9};
   bool hitDeletionKey = false;
   bool justHitSelectionKey = false;
@@ -487,6 +487,102 @@ public class InputHandler : MonoBehaviour
     }
   }
 
+  private void typeInWordModeNoChord_RT()
+  {
+    // don't do anything if inputString is empty
+    if (currentInputString.Length == 0)
+    {
+      Debug.Log("no input string");
+      return;
+    }
+    switch (ProfileLoader.selectionMode)
+    {
+      case ProfileLoader.SelectionMode.MS:
+        // select default word
+        readyForSecondKey = false; // selectionKeys[0] is 'n' aka right thumb.
+                                   //print("RT selection");
+        handleSelection(0);
+        break;
+      case ProfileLoader.SelectionMode.GSE:
+      case ProfileLoader.SelectionMode.GSR:
+        handleSelection(-1);
+        break;
+      default:
+        break;
+    }
+
+    measurement.AddTapItem(ProfileLoader.mapInputString2Letter["n"][0], "selection");
+    helpInfo.SetActive(false);
+  }
+
+  private void typeInWordModeNoChord_LT()
+  {
+    switch (ProfileLoader.selectionMode)
+    {
+      case ProfileLoader.SelectionMode.MS:
+        // waiting for second key in MS mode
+        //print("LT waiting");
+        readyForSecondKey = true; // selectionKeys[0] is 'n' aka right thumb.
+        measurement.AddTapItem(mapInput2InputString["g"], "selection");
+        break;
+      case ProfileLoader.SelectionMode.GSE:
+      case ProfileLoader.SelectionMode.GSR:
+        // we still need to support paging in GS so we need b to be control key still
+        // deletion
+        print("LT deletion");
+        delete();
+        measurement.AddTapItem(mapInput2InputString["g"], "deletion");
+        readyForSecondKey = false;
+        updateDisplayInput();
+        //}            
+        break;
+      default:
+        break;
+    }
+    helpInfo.SetActive(false);
+  }
+
+  private void typeInWordModeNoChord_otherT()
+  {
+    // regular input
+    foreach (string letter in ProfileLoader.mapInput2InputString.Keys)
+    {
+      if (Input.GetKeyDown(letter))
+      {
+        // process the key down
+        //selectedFingers[i].SetActive(true);
+        // hand animation
+        //if (i < 5)
+        //  handModel.PressLeftFingers(i);
+        //else
+        //  handModel.PressRightFingers(i - 5);
+        helpInfo.SetActive(false);
+        // reset candidates            //candidateHandler.ResetCandidates();    
+        if (mapInput2InputString.ContainsKey(letter))
+        {
+          measurement.StartClock();
+          currentInputLine += mapInput2InputString[letter];
+          measurement.AddTapItem(letter, "tap");
+          retrieveInputStringFromLine();
+          //Debug.Log("input string:" + currentInputString);
+          wordListLoader.UpdateCandidates(currentInputString);
+        }
+        break;
+      }
+      //if (Input.GetKeyUp(inputStringTemplate[i]))
+      //{
+      //  // process the key up
+      //  selectedFingers[i].SetActive(false);
+      //  // move the finger back but keep the color changes
+      //  if (i < 5)
+      //    handModel.ReleaseLeftFingers(i);
+      //  else
+      //    handModel.ReleaseRightFingers(i - 5);
+      //  break;
+      //}
+    }
+  }
+
   private void typeInWordModeNoChord()
   {
     if (!Input.anyKeyDown)
@@ -502,158 +598,109 @@ public class InputHandler : MonoBehaviour
     {
       // could selection could be deletion
       // we support deletion only when LT and RT are different
-      if (ProfileLoader.enableDeletion && Input.GetKeyDown(ProfileLoader.mapInputString2Letter["g"][0]))
+      if (ProfileLoader.enableDeletion && Input.GetKeyDown(ProfileLoader.mapInputString2Letter["b"][0]))
       {
         print("LT LT deletion");
         delete();
         measurement.AddTapItem(ProfileLoader.mapInputString2Letter["g"][0], "deletion");
         readyForSecondKey = false;
         updateDisplayInput();
+        return;
       }
       else
       {
         // assign candIndex          
         int candIndex = 0;
-        for (int i = 0; i < keySelectionIndex.Length; i++)
+        for (int selectOptionIndex = 0; selectOptionIndex < keySelectionIndex.Length; selectOptionIndex++)
         {
-          if (Input.GetKeyDown(ProfileLoader.mapInputString2Letter[keySelectionIndex[i]][0]))
+          for(int i = 0; i < ProfileLoader.mapInputString2Letter[keySelectionIndex[selectOptionIndex]].Count; i++)
           {
-            //if (Input.GetKeyDown(inputStringTemplate[keySelectionIndex[i]]))
-            // update candIndex
-            candIndex = i;
-            print("[key selection] via LH " + candIndex.ToString());
-            // handle word selection
-            handleSelection(candIndex);
-            updateDisplayInput();
-            measurement.AddTapItem(ProfileLoader.mapInputString2Letter[keySelectionIndex[i]][0], "selection");
-            readyForSecondKey = false;
-            break;
-          }
-          // thinking if hit another key when waiting for second key?
-          for (int pageOptionIndex = 0; pageOptionIndex < keyPageIndex.Length; pageOptionIndex++)
-          {
-            for (int j = 0; j < ProfileLoader.mapInputString2Letter[keyPageIndex[i]].Count; j++)
+            if (Input.GetKeyDown(ProfileLoader.mapInputString2Letter[keySelectionIndex[selectOptionIndex]][i]))
             {
-              if (Input.GetKeyDown(ProfileLoader.mapInputString2Letter[keyPageIndex[pageOptionIndex]][j]))
-              {
-                // i == 0 => prev page
-                if (pageOptionIndex == 0)
-                  candidateHandler.PrevPage();
-                else
-                  // i == 0 => next page
-                  candidateHandler.NextPage();
+              //if (Input.GetKeyDown(inputStringTemplate[keySelectionIndex[i]]))
+              // update candIndex
+              candIndex = selectOptionIndex;
+              print("[key selection] via LH " + candIndex.ToString());
+              // handle word selection
+              handleSelection(candIndex);
+              updateDisplayInput();
+              measurement.AddTapItem(ProfileLoader.mapInputString2Letter[keySelectionIndex[selectOptionIndex]][i], "selection");
+              readyForSecondKey = false;
+              return;
+            }
+          }
+          
+        }
+        // thinking if hit another key when waiting for second key?
+        for (int pageOptionIndex = 0; pageOptionIndex < keyPageIndex.Length; pageOptionIndex++)
+        {
+          for (int j = 0; j < ProfileLoader.mapInputString2Letter[keyPageIndex[pageOptionIndex]].Count; j++)
+          {
+            if (Input.GetKeyDown(ProfileLoader.mapInputString2Letter[keyPageIndex[pageOptionIndex]][j]))
+            {
+              // i == 0 => prev page
+              if (pageOptionIndex == 0)
+                candidateHandler.PrevPage();
+              else
+                // i == 0 => next page
+                candidateHandler.NextPage();
 
-                print("[page selection] " + (pageOptionIndex > 0 ? "next" : "prev"));
-                measurement.AddTapItem(ProfileLoader.mapInputString2Letter[keyPageIndex[pageOptionIndex]][j], "page");
-                readyForSecondKey = false;
-                break;
-              }
+              print("[page selection] " + (pageOptionIndex > 0 ? "next" : "prev"));
+              measurement.AddTapItem(ProfileLoader.mapInputString2Letter[keyPageIndex[pageOptionIndex]][j], "page");
+              readyForSecondKey = false;
+              return;
             }
           }
         }
-        return;
       }
     }
 
     if (!readyForSecondKey)
     {
-      // either regular input or control key for the first time press
-      if (Input.GetKeyDown(ProfileLoader.mapInputString2Letter["n"][0]))
+      // enableDeletion then the same
+      // otherwise, check RT for GS and check LT for MS
+      if (!ProfileLoader.enableDeletion && ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS)
       {
-        // don't do anything if inputString is empty
-        if(currentInputString.Length == 0)
+        // LT then otherT
+        if (Input.GetKeyDown(ProfileLoader.mapInputString2Letter["b"][0]))
         {
-          Debug.Log("no input string");
-          return;
-        }
-        switch (ProfileLoader.selectionMode)
-        {
-          case ProfileLoader.SelectionMode.MS:
-            // select default word
-            readyForSecondKey = false; // selectionKeys[0] is 'n' aka right thumb.
-                                       //print("RT selection");
-            handleSelection(0);
-            break;
-          case ProfileLoader.SelectionMode.GSE:
-          case ProfileLoader.SelectionMode.GSR:
-            handleSelection(-1);
-            break;
-          default:
-            break;
-        }
+          typeInWordModeNoChord_LT();
 
-        measurement.AddTapItem(ProfileLoader.mapInputString2Letter["n"][0], "selection");
-        helpInfo.SetActive(false);
-      }
-      else if (Input.GetKeyDown(ProfileLoader.mapInputString2Letter["b"][0]))
-      {
-        switch (ProfileLoader.selectionMode)
-        {
-          case ProfileLoader.SelectionMode.MS:
-            // waiting for second key in MS mode
-            //print("LT waiting");
-            readyForSecondKey = true; // selectionKeys[0] is 'n' aka right thumb.
-            measurement.AddTapItem(mapInput2InputString["g"], "selection");
-            break;
-          case ProfileLoader.SelectionMode.GSE:
-          case ProfileLoader.SelectionMode.GSR:
-            // we still need to support paging in GS so we need b to be control key still
-            // deletion
-            print("LT deletion");
-            delete();
-            measurement.AddTapItem(mapInput2InputString["g"], "deletion");
-            readyForSecondKey = false;
-            updateDisplayInput();
-            //}            
-            break;
-          default:
-            break;
         }
-        helpInfo.SetActive(false);
-      }
-      else
-      {
-        // regular input
-        foreach (string letter in ProfileLoader.mapInput2InputString.Keys)
+        else
         {
-          if (Input.GetKeyDown(letter))
-          {
-            // process the key down
-            //selectedFingers[i].SetActive(true);
-            // hand animation
-            //if (i < 5)
-            //  handModel.PressLeftFingers(i);
-            //else
-            //  handModel.PressRightFingers(i - 5);
-            helpInfo.SetActive(false);
-            // reset candidates            //candidateHandler.ResetCandidates();    
-            if (mapInput2InputString.ContainsKey(letter))
-            {
-              measurement.StartClock();
-              currentInputLine += mapInput2InputString[letter];
-              measurement.AddTapItem(letter, "tap");
-              retrieveInputStringFromLine();
-              //Debug.Log("input string:" + currentInputString);
-              wordListLoader.UpdateCandidates(currentInputString);
-            }
-            break;
-          }
-          //if (Input.GetKeyUp(inputStringTemplate[i]))
-          //{
-          //  // process the key up
-          //  selectedFingers[i].SetActive(false);
-          //  // move the finger back but keep the color changes
-          //  if (i < 5)
-          //    handModel.ReleaseLeftFingers(i);
-          //  else
-          //    handModel.ReleaseRightFingers(i - 5);
-          //  break;
-          //}
+          typeInWordModeNoChord_otherT();
         }
-      }
+      } else if (!ProfileLoader.enableDeletion && ProfileLoader.selectionMode != ProfileLoader.SelectionMode.MS)
+      {
+        // either regular input or control key for the first time press
+        if (Input.GetKeyDown(ProfileLoader.mapInputString2Letter["n"][0]))
+        {
+          typeInWordModeNoChord_RT();
+        }
+        else
+        {
+          typeInWordModeNoChord_otherT();
+        }
+      }else if (ProfileLoader.enableDeletion)
+      {
+        // either regular input or control key for the first time press
+        if (Input.GetKeyDown(ProfileLoader.mapInputString2Letter["n"][0]))
+        {
+          typeInWordModeNoChord_RT();
+        }
+        else if (Input.GetKeyDown(ProfileLoader.mapInputString2Letter["b"][0]))
+        {
+          typeInWordModeNoChord_LT();
+
+        }
+        else
+        {
+          typeInWordModeNoChord_otherT();
+        }
+      }      
       updateDisplayInput();
     }
-
   }
 
   // deprecated

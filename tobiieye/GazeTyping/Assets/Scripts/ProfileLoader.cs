@@ -112,12 +112,7 @@ public class ProfileLoader : MonoBehaviour {
       string[] curLetters = fileConfigDetails[i].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
       for(int letterIdx = 0; letterIdx < curLetters.Length; letterIdx++)
       {
-        if (mapInput2InputString.ContainsKey(curLetters[letterIdx]))
-        {
-          // probably because of two space
-          Debug.Log("");
-        }
-        else
+        if (!mapInput2InputString.ContainsKey(curLetters[letterIdx]))
         {
           mapInput2InputString.Add(curLetters[letterIdx], fingerIDs[i - 3]);
         }        
