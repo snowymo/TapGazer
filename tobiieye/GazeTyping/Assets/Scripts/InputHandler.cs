@@ -516,7 +516,7 @@ public class InputHandler : MonoBehaviour
     helpInfo.SetActive(false);
   }
 
-  private void typeInWordModeNoChord_LT()
+  private void typeInWordModeNoChord_LT(string str)
   {
     switch (ProfileLoader.selectionMode)
     {
@@ -524,7 +524,7 @@ public class InputHandler : MonoBehaviour
         // waiting for second key in MS mode
         //print("LT waiting");
         readyForSecondKey = true; // selectionKeys[0] is 'n' aka right thumb.
-        measurement.AddTapItem(mapInput2InputString["g"], "selection");
+        measurement.AddTapItem(str, "selection");
         break;
       case ProfileLoader.SelectionMode.GSE:
       case ProfileLoader.SelectionMode.GSR:
@@ -532,7 +532,7 @@ public class InputHandler : MonoBehaviour
         // deletion
         print("LT deletion");
         delete();
-        measurement.AddTapItem(mapInput2InputString["g"], "deletion");
+        measurement.AddTapItem(str, "deletion");
         readyForSecondKey = false;
         updateDisplayInput();
         //}            
@@ -581,6 +581,20 @@ public class InputHandler : MonoBehaviour
       //    handModel.ReleaseRightFingers(i - 5);
       //  break;
       //}
+    }
+  }
+
+  private void typeInWordModeNoChord_otherT_GUI(string str)
+  {
+    if (ProfileLoader.mapInput2InputString.ContainsKey(str))
+    {
+      helpInfo.SetActive(false);      
+      measurement.StartClock();
+      currentInputLine += mapInput2InputString[str];
+      measurement.AddTapItem(str, "tap");
+      retrieveInputStringFromLine();
+      //Debug.Log("input string:" + currentInputString);
+      wordListLoader.UpdateCandidates(currentInputString);
     }
   }
 
@@ -665,7 +679,7 @@ public class InputHandler : MonoBehaviour
         // LT then otherT
         if (Input.GetKeyDown(ProfileLoader.mapInputString2Letter["b"][0]))
         {
-          typeInWordModeNoChord_LT();
+          typeInWordModeNoChord_LT(ProfileLoader.mapInputString2Letter["b"][0]);
 
         }
         else
@@ -692,7 +706,7 @@ public class InputHandler : MonoBehaviour
         }
         else if (Input.GetKeyDown(ProfileLoader.mapInputString2Letter["b"][0]))
         {
-          typeInWordModeNoChord_LT();
+          typeInWordModeNoChord_LT(ProfileLoader.mapInputString2Letter["b"][0]);
 
         }
         else
@@ -1126,7 +1140,8 @@ public class InputHandler : MonoBehaviour
     }
     else
     {
-      typeInWordModeNoChord();
+      // put to GUI
+      //typeInWordModeNoChord();
       //typeInWordMode();
     }
 
@@ -1184,6 +1199,147 @@ public class InputHandler : MonoBehaviour
     {
       // probably handle some kind of keyboard too
       typeInRegularMode();
+    }
+    else
+    {
+      typeInTestModeGUI();
+    }
+  }
+
+  string normalizeKeyCode(KeyCode e)
+  {
+    if(e == KeyCode.Space)
+    {
+      return "space";
+    }else if(e == KeyCode.LeftAlt)
+    {
+      return "left alt";
+    }else if(e == KeyCode.RightAlt)
+    {
+      return "right alt";
+    }else if(e == KeyCode.LeftShift)
+    {
+      return "left shift";
+    }else if(e == KeyCode.RightShift)
+    {
+      return "right shift";
+    }else if(e == KeyCode.Tab)
+    {
+      return "tab";
+    }
+    return e.ToString().ToLower();
+  }
+
+  void typeInTestModeGUI()
+  {
+    Event e = Event.current;
+    if (e.isKey && e.type == EventType.KeyDown && e.keyCode != KeyCode.None)
+    {
+      string keyCode = normalizeKeyCode(e.keyCode);
+      int deletionIndex = ProfileLoader.mapInputString2Letter["b"].IndexOf(keyCode);
+      // only another key is followed by control key 'b'
+      if (readyForSecondKey && ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS)
+      {
+        int selectOptionIndex = Array.IndexOf(keySelectionIndex, ProfileLoader.mapInput2InputString[keyCode]);
+        if (keyCode == "space")
+        {
+          // TODO: the only possibility that LT and RT share the same letter is space,
+          // so mapInput2InputSTring would assign space to b, aka deletion
+          // we will manually treat that as n, aka selection, here
+          selectOptionIndex = 0;
+        }
+        int pageOptionIndex = Array.IndexOf(keyPageIndex, ProfileLoader.mapInput2InputString[keyCode]);
+        if (ProfileLoader.enableDeletion && deletionIndex >= 0)
+        {
+          print("LT LT deletion");
+          delete();
+          measurement.AddTapItem(ProfileLoader.mapInputString2Letter["g"][0], "deletion");
+          readyForSecondKey = false;
+          updateDisplayInput();
+          return;
+        }
+        else
+        {
+          // assign candIndex
+          int candIndex = 0;
+          
+          if (selectOptionIndex >= 0)
+          {
+            // update candIndex
+            candIndex = selectOptionIndex;
+            print("[key selection] via LH " + candIndex.ToString());
+            // handle word selection
+            handleSelection(candIndex);
+            updateDisplayInput();
+            measurement.AddTapItem(e.keyCode.ToString(), "selection");
+            readyForSecondKey = false;
+            return;
+          }else if(pageOptionIndex >= 0)
+          {
+            // i == 0 => prev page
+            if (pageOptionIndex == 0)
+              candidateHandler.PrevPage();
+            else
+              // i == 0 => next page
+              candidateHandler.NextPage();
+
+            print("[page selection] " + (pageOptionIndex > 0 ? "next" : "prev"));
+            measurement.AddTapItem(e.keyCode.ToString(), "page");
+            readyForSecondKey = false;
+            return;
+          }
+        }
+      }
+
+      if (!readyForSecondKey)
+      {
+        int selectionIndex = ProfileLoader.mapInputString2Letter["n"].IndexOf(keyCode);
+        if (keyCode == "space")
+        {
+          // TODO: the only possibility that LT and RT share the same letter is space,
+          // so mapInput2InputSTring would assign space to b, aka deletion
+          // we will manually treat that as n, aka selection, here
+          selectionIndex = 0;
+        }
+        if (!ProfileLoader.enableDeletion && ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS)
+        {
+          // LT then otherT          
+          if (deletionIndex >= 0)
+          {
+            typeInWordModeNoChord_LT(keyCode);
+          }
+          else
+          {
+            typeInWordModeNoChord_otherT_GUI(keyCode);
+          }
+        } else if (!ProfileLoader.enableDeletion && ProfileLoader.selectionMode != ProfileLoader.SelectionMode.MS)
+        {          
+          if(selectionIndex >= 0)
+          {
+            typeInWordModeNoChord_RT();
+          }
+          else
+          {
+            typeInWordModeNoChord_otherT_GUI(keyCode);
+          }
+        }else if (ProfileLoader.enableDeletion)
+        {
+          // either regular input or control key for the first time press
+          if (selectionIndex >= 0)
+          {
+            typeInWordModeNoChord_RT();
+          }
+          else if (deletionIndex >= 0)
+          {
+            typeInWordModeNoChord_LT(keyCode);
+          }
+          else
+          {
+            typeInWordModeNoChord_otherT_GUI(keyCode);
+          }
+        }
+        updateDisplayInput();
+      }
     }
   }
 
