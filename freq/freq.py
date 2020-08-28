@@ -309,7 +309,7 @@ def process_config(noswear10k, curConfig, configFileName):
     with open(dictionaryFileName + '-cand' + configFileName + '.json', 'w') as fp:
         json.dump(completed_numbers, fp)
 
-    print("Type y if you prefer in-place typing")
+    print("Type y if you prefer in-place typing. (It is fine to change inplace assignment later in profile.name. Use left shift, right shift, left alt, right alt for these special keys)")
     inplace = input()
 
     key2fingerMapping = {"a": [], "s": [], "d": [], "f": [], "g": [], "h": [], "j": [],
