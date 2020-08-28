@@ -7,7 +7,7 @@ from collections import OrderedDict
 from termcolor import colored
 
 
-config = {'q': 'a', 'a': 'a', 'z': 's',
+config = {'q': 'a', 'a': 'a', 'z': 'a',
     'w': 's', 's': 's', 'x': 's',
     'e': 'd', 'd': 'd', 'c': 'd',
     'r': 'f', 'f': 'f', 'v': 'f',
@@ -125,7 +125,6 @@ def change_config():
     print(json.dumps(config, indent = 4))
     f = open("config" + configFileName + ".json", "w")
     json.dump(config, f)
-
 
 def find_rank(word, dict):
     for idx, item in enumerate(dict):
@@ -310,9 +309,32 @@ def process_config(noswear10k, curConfig, configFileName):
     with open(dictionaryFileName + '-cand' + configFileName + '.json', 'w') as fp:
         json.dump(completed_numbers, fp)
 
+    print("Type y if you prefer in-place typing")
+    inplace = input()
+
+    key2fingerMapping = {"a": [], "s": [], "d": [], "f": [], "g": [], "h": [], "j": [],
+                             "k": [], "l": [], ";": []}
+    if inplace == 'y':
+        #     inplace typing then we have 10 letters for 10 fingers
+        key2fingerMapping = {"a": ["q"], "s": ["3"], "d": ["4"], "f": ["t"], "g": ["b"], "h": [","], "j": ["o"],
+                             "k": ["-"], "l": ["="], ";": ["\\"]}
+    else:
+    #     not inplace typing then we have 26 letters + space for 10 fingers
+        for letter in config:
+            key2fingerMapping[config[letter]].append(letter)
+        key2fingerMapping["g"] = ["space"]
+        key2fingerMapping["h"] = ["space"]
+
     # write profile.name
     pn = open("profile.name", 'w')
-    pn.write(configFileName)
+    pn.writelines(configFileName+"\n")
+    pn.writelines("60"+"\n")# 60 seconds
+    pn.writelines("5"+"\n")# number of phrase repetition
+    # write letter to finger mapping here
+    for finger, letter in key2fingerMapping.items():
+        pn.writelines("%s," % eachLetter for eachLetter in letter)
+        pn.writelines("\n")
+        # pn.write(*letter,sep = ", ")
     pn.close()
 
 

@@ -78,16 +78,67 @@ public class ProfileLoader : MonoBehaviour {
 
   public static int typingSeconds = 60;
   public static int typingPhraseCount = 5;
+  public static Dictionary<string, string> mapInput2InputString;
+  public static Dictionary<string, List<string>> mapInputString2Letter;
+  public static bool enableDeletion = true;
 
-  // Start is called before the first frame update
-  void Awake() {
+  // profile.name includes
+  // name
+  // typing seconds
+  // number of phrase in this session
+  // next 10 lines show the letters that could be considered as from LPinky to RPinky
+  private void loadFromProfileName()
+  {
     //profile = curProfile;
     string fileConfig = File.ReadAllText(Application.streamingAssetsPath + "/profile.name");
     string[] fileConfigDetails = fileConfig.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+    if(fileConfigDetails.Length != 13)
+    {
+      Debug.LogError("Failed to find 13 lines in profile.name");
+    }
     curProfile = profile = fileConfigDetails[0];
     typingSeconds = int.Parse(fileConfigDetails[1]);
     typingPhraseCount = int.Parse(fileConfigDetails[2]);
+    mapInput2InputString = new Dictionary<string, string>();
+    mapInputString2Letter = new Dictionary<string, List<string>>();
+    string[] fingerIDs = new string[] { "a", "s", "d", "f", "b", "n", "j", "k", "l", ";" }; // "b" should be never used and n means space
+    if (fileConfigDetails[7] == fileConfigDetails[8])
+    {
+      enableDeletion = false;
+    }
+    for (int i = 3; i < 13; i++)
+    {
+      // seperate by ","
+      string[] curLetters = fileConfigDetails[i].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+      for(int letterIdx = 0; letterIdx < curLetters.Length; letterIdx++)
+      {
+        if (mapInput2InputString.ContainsKey(curLetters[letterIdx]))
+        {
+          // probably because of two space
+          Debug.Log("");
+        }
+        else
+        {
+          mapInput2InputString.Add(curLetters[letterIdx], fingerIDs[i - 3]);
+        }        
+        List<string> temp;
+        if(mapInputString2Letter.TryGetValue(fingerIDs[i - 3], out temp))
+        {
+          // add to list
+          mapInputString2Letter[fingerIDs[i - 3]].Add(curLetters[letterIdx]);
+        }
+        else
+        {
+          mapInputString2Letter.Add(fingerIDs[i - 3], new List<string>() { curLetters[letterIdx] });
+        }
+      }
+    }
+    
+  }
 
+  // Start is called before the first frame update
+  void Awake() {
+    loadFromProfileName();
 
     wordlistLoader.wordlistPath = "top0.9-result" + profile + ".json";
     typingMode = curTypingMode;

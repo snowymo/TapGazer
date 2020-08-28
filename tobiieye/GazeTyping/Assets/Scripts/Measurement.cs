@@ -73,12 +73,13 @@ public class Measurement : MonoBehaviour
     }
     else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
     {
-      typingSeconds = 60;// 300;
+      typingSeconds = 600;// 300;
     }
     else
     {
       typingSeconds = 600;
     }
+    typingSeconds = ProfileLoader.typingSeconds;
     totalGazeSelection = 0;
     correctGazeSelection = 0;
     passedTime = 0;
