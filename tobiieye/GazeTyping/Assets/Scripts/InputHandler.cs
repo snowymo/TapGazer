@@ -559,8 +559,8 @@ public class InputHandler : MonoBehaviour
             else
               // i == 0 => next page
               candidateHandler.NextPage();
-            
-            print("[page selection] " + i);
+
+            print("[page selection] " + (i > 0 ? "next" : "prev"));
             measurement.AddTapItem(inputStringTemplate[keyPageIndex[i]], "page");
             readyForSecondKey = false;
             break;

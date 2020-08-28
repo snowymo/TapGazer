@@ -9,6 +9,7 @@ public class PhraseLoader : MonoBehaviour {
   public TMPro.TextMeshPro textMesh;
 
   private int curPhraseIndex;
+  private int startPhraseIndex;
   [SerializeField]
   private string[] curPhrases;
   private int curTypingPhrase;
@@ -20,7 +21,7 @@ public class PhraseLoader : MonoBehaviour {
   public CandidateHandler candidateHandler;
 
   public string GetCurPhrase() {
-    return phrases[curPhraseIndex];
+    return phrases[GetCurPhraseIndex()];
   }
 
   public string GetCurWord() {
@@ -36,6 +37,11 @@ public class PhraseLoader : MonoBehaviour {
   public void PreviousWord() {
     --curTypingPhrase;
     ColorCurrentTypingPhrase(ProfileLoader.TypingMode.TEST);
+  }
+
+  public int GetCurPhraseIndex()
+  {
+    return curPhraseIndex % ProfileLoader.typingPhraseCount + startPhraseIndex;
   }
 
 
@@ -58,7 +64,10 @@ public class PhraseLoader : MonoBehaviour {
       }
     }
     // TODO: curPhraseIndex is decided by mode, and participant ID
-    curPhraseIndex = ProfileLoader.profile.Length % 20 * 15;
+    startPhraseIndex = ProfileLoader.profile.Length % 20 * 15;
+    curPhraseIndex = 0;
+    // we should read typingPhraseCount phrases from phrases2.txt and loop there
+
     //if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
     //  curPhraseIndex = 0;
     //else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST) {
@@ -108,7 +117,7 @@ public class PhraseLoader : MonoBehaviour {
     curTypingPhrase = currentTypedWords.Length;
     //Debug.Log("curTypingPhrase:" + curTypingPhrase);
 
-    string curText = phrases[curPhraseIndex];
+    string curText = phrases[GetCurPhraseIndex()];
     curPhrases = curText.Split(new char[] { ' ' });
 
     string newText = "", arrowText = "";
@@ -141,7 +150,7 @@ public class PhraseLoader : MonoBehaviour {
   }
 
   private void ColorCurrentTypingPhrase(ProfileLoader.TypingMode typingMode = ProfileLoader.TypingMode.TRAINING) {
-    string curText = phrases[curPhraseIndex];
+    string curText = phrases[GetCurPhraseIndex()];
     curPhrases = curText.Split(new char[] { ' ' });
     string arrowText = "";
     string newText = "";

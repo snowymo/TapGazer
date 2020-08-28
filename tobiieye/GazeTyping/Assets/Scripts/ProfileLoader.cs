@@ -76,8 +76,8 @@ public class ProfileLoader : MonoBehaviour {
   public CandLayout curCandidateLayout;
   public static CandLayout candidateLayout;
 
-  public int typingSeconds = 60;
-  public int typingPhraseCount = 5;
+  public static int typingSeconds = 60;
+  public static int typingPhraseCount = 5;
 
   // Start is called before the first frame update
   void Awake() {
