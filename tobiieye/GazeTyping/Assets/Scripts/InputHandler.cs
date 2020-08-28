@@ -1227,6 +1227,27 @@ public class InputHandler : MonoBehaviour
     {
       return "tab";
     }
+    else if (e == KeyCode.Equals)
+    {
+      return "=";
+    }
+    else if (e == KeyCode.Minus)
+    {
+      return "-";
+    }else if (e == KeyCode.Backslash)
+    {
+      return "\\";
+    }
+    else if (e == KeyCode.Slash)
+    {
+      return "/";
+    }else if (e == KeyCode.Comma)
+    {
+      return ",";
+    }else if (e >= KeyCode.Alpha0 && e <= KeyCode.Alpha9)
+    {
+      return (e-KeyCode.Alpha0).ToString();
+    }
     return e.ToString().ToLower();
   }
 

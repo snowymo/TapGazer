@@ -332,7 +332,7 @@ def process_config(noswear10k, curConfig, configFileName):
     pn.writelines("5"+"\n")# number of phrase repetition
     # write letter to finger mapping here
     for finger, letter in key2fingerMapping.items():
-        pn.writelines("%s," % eachLetter for eachLetter in letter)
+        pn.writelines("%s;" % eachLetter for eachLetter in letter)
         pn.writelines("\n")
         # pn.write(*letter,sep = ", ")
     pn.close()
