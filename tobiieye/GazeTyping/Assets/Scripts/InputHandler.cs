@@ -428,6 +428,7 @@ public class InputHandler : MonoBehaviour
     wordListLoader.ResetCandidates();
     candidateHandler.defaultWord = "";
     readyForSecondKey = false;
+    candidateHandler.ResetPage();
   }
 
   private void deleteInRegular()
@@ -445,7 +446,7 @@ public class InputHandler : MonoBehaviour
       if (e.keyCode == KeyCode.Backspace)
       {
         //delete a letter
-        if (currentInputLine.Length > 1)
+        if (currentInputLine.Length >= 1)
         {
           currentInputLine = currentInputLine.Substring(0, Math.Max(0, currentInputLine.Length - 1));
         }

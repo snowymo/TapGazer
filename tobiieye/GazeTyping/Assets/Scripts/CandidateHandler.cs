@@ -748,6 +748,11 @@ public class CandidateHandler : MonoBehaviour
     pageTextMesh.SetText("Page " + pageIndex.ToString() + "/" + pageTotal.ToString());
   }
 
+  public void ResetPage()
+  {
+    pageTextMesh.SetText("");
+  }
+
   public void NextPage()
   {
     if (pageTotal == 0)
