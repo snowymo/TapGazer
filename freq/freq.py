@@ -329,9 +329,10 @@ def process_config(noswear10k, curConfig, configFileName):
     pn = open("profile.name", 'w')
     pn.writelines(configFileName+"\n")
     pn.writelines("60"+"\n")# 60 seconds
-    pn.writelines("5"+"\n")# number of phrase repetition
+    pn.writelines("15"+"\n")# number of phrase repetition
     # write letter to finger mapping here
     for finger, letter in key2fingerMapping.items():
+        pn.writelines(";")
         pn.writelines("%s;" % eachLetter for eachLetter in letter)
         pn.writelines("\n")
         # pn.write(*letter,sep = ", ")
