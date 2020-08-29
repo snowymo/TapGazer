@@ -1971,7 +1971,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2.45, y: -0.85}
+  m_AnchoredPosition: {x: -7.44, y: -0.85}
   m_SizeDelta: {x: 11.24, y: 3.17}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &405634157
@@ -2027,7 +2027,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 258
+  m_textAlignment: 260
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -2917,7 +2917,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3, y: -1.11}
+  m_AnchoredPosition: {x: 8.19, y: -1.11}
   m_SizeDelta: {x: 11.24, y: 3.17}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &548676183
@@ -2973,7 +2973,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 258
+  m_textAlignment: 257
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -7359,8 +7359,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2.82, y: -0.38}
-  m_SizeDelta: {x: 11.24, y: 3.17}
+  m_AnchoredPosition: {x: -3.49, y: -0.38}
+  m_SizeDelta: {x: 2.1, y: 3.17}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1310492896
 MonoBehaviour:
@@ -7415,7 +7415,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 258
+  m_textAlignment: 260
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -9789,7 +9789,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.49, y: -0.53}
+  m_AnchoredPosition: {x: 8.42, y: -0.53}
   m_SizeDelta: {x: 11.24, y: 3.17}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1878416631
@@ -9845,7 +9845,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 258
+  m_textAlignment: 257
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
