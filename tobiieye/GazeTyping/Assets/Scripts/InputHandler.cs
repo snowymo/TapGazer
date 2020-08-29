@@ -1204,7 +1204,8 @@ public class InputHandler : MonoBehaviour
     if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR)
     {
       // probably handle some kind of keyboard too
-      typeInRegularMode();
+      if(measurement.allowInput)
+        typeInRegularMode();
     }
     else
     {

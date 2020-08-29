@@ -193,10 +193,9 @@ public class Measurement : MonoBehaviour
     WPM = (words - 1f) / finishedSeconds * 60.0f / 5.0f;
     if (finishedSeconds > typingSeconds)
     {
-      saveData();
-
       if (allowInput)
       {
+        saveData();
         allowInput = false;
         Debug.Log("<color=blue>time is up</color>");
       }
@@ -275,11 +274,13 @@ public class Measurement : MonoBehaviour
         WPM = (words - 1.0f) / finishedSeconds * 60.0f / 5.0f;
         if (finishedSeconds > typingSeconds)
         {
-          Debug.Log("time is up");
-          allowInput = false;
+          Debug.Log("time is up");          
           inputField.enabled = false;
-
-          saveData();
+          if (allowInput)
+          {
+            allowInput = false;
+            saveData();
+          }          
         }
       }
     }
