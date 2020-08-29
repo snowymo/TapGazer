@@ -47,6 +47,8 @@ public class CandidateHandler : MonoBehaviour
   [SerializeField]
   private float kSizeScale;
 
+  public TMPro.TextMeshPro[] secondFingerAss;
+
   public bool isEllipsis;
   public GameObject screenGazeIndicator;
 
@@ -85,6 +87,12 @@ public class CandidateHandler : MonoBehaviour
   // Start is called before the first frame update
   void Start()
   {
+    //
+    secondFingerAss[1].text = ProfileLoader.mapInputString2Letter["d"][0];
+    secondFingerAss[2].text = ProfileLoader.mapInputString2Letter["k"][0];
+    secondFingerAss[3].text = ProfileLoader.mapInputString2Letter["f"][0];
+    secondFingerAss[4].text = ProfileLoader.mapInputString2Letter["j"][0];
+
     pageTextMesh.enabled = ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST && ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS;
 
     wordListLoader = GetComponent<WordlistLoader>();
