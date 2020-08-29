@@ -1195,6 +1195,12 @@ public class InputHandler : MonoBehaviour
 
   private void OnGUI()
   {
+    //Event e = Event.current;
+    //if (e.isKey && e.keyCode != KeyCode.None)
+    //{
+    //  print(Time.frameCount + e.keyCode.ToString() + e.type.ToString());
+    //}
+    //print("break");
     if (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR)
     {
       // probably handle some kind of keyboard too
@@ -1244,17 +1250,56 @@ public class InputHandler : MonoBehaviour
     }else if (e == KeyCode.Comma)
     {
       return ",";
-    }else if (e >= KeyCode.Alpha0 && e <= KeyCode.Alpha9)
+    }
+    else if (e == KeyCode.LeftBracket)
+    {
+      return "[";
+    }
+    else if (e >= KeyCode.Alpha0 && e <= KeyCode.Alpha9)
     {
       return (e-KeyCode.Alpha0).ToString();
     }
     return e.ToString().ToLower();
   }
 
+  bool readyForFourDeletion = true;
   void typeInTestModeGUI()
   {
     Event e = Event.current;
-    if (e.isKey && e.type == EventType.KeyDown && e.keyCode != KeyCode.None)
+    if (!ProfileLoader.enableDeletion)
+    {
+      // press caps
+      if(e.isKey && e.type == EventType.KeyDown && e.keyCode == KeyCode.CapsLock)
+      {
+        print("caps deletion");
+        delete();
+        measurement.AddTapItem("caps", "deletion");
+        readyForSecondKey = false;
+        updateDisplayInput();
+        readyForFourDeletion = false;
+        return;
+      }
+      // we have to press more than three left handed fingers to issue deletion now
+      //if(Convert.ToInt32(Input.GetKeyUp("a")) + Convert.ToInt32(Input.GetKeyUp("s"))
+      //  + Convert.ToInt32(Input.GetKeyUp("d")) + Convert.ToInt32(Input.GetKeyUp("f")) >= 3)
+      //{
+      //  if (readyForFourDeletion)
+      //  {
+      //    print("ASDF deletion");
+      //    delete();
+      //    measurement.AddTapItem("asdf", "deletion");
+      //    readyForSecondKey = false;
+      //    updateDisplayInput();
+      //    readyForFourDeletion = false;
+      //    return;
+      //  }        
+      //}
+      //else
+      //{
+      //  readyForFourDeletion = true;
+      //}
+    }
+    if (readyForFourDeletion && e.isKey && e.type == EventType.KeyDown && e.keyCode != KeyCode.None)
     {
       string keyCode = normalizeKeyCode(e.keyCode);
       int deletionIndex = ProfileLoader.mapInputString2Letter["b"].IndexOf(keyCode);

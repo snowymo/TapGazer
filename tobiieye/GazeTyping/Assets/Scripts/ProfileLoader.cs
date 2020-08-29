@@ -92,7 +92,7 @@ public class ProfileLoader : MonoBehaviour {
     //profile = curProfile;
     string fileConfig = File.ReadAllText(Application.streamingAssetsPath + "/profile.name");
     string[] fileConfigDetails = fileConfig.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-    if(fileConfigDetails.Length != 13)
+    if(fileConfigDetails.Length < 13)
     {
       Debug.LogError("Failed to find 13 lines in profile.name");
     }
