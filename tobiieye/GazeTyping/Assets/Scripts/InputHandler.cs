@@ -594,7 +594,7 @@ public class InputHandler : MonoBehaviour
       measurement.AddTapItem(str, "tap");
       retrieveInputStringFromLine();
       //Debug.Log("input string:" + currentInputString);
-      wordListLoader.UpdateCandidates(currentInputString);
+      currentInputString = wordListLoader.UpdateCandidates(currentInputString);
     }
   }
 
@@ -1276,7 +1276,6 @@ public class InputHandler : MonoBehaviour
         measurement.AddTapItem("caps", "deletion");
         readyForSecondKey = false;
         updateDisplayInput();
-        readyForFourDeletion = false;
         return;
       }
       // we have to press more than three left handed fingers to issue deletion now
@@ -1299,7 +1298,7 @@ public class InputHandler : MonoBehaviour
       //  readyForFourDeletion = true;
       //}
     }
-    if (readyForFourDeletion && e.isKey && e.type == EventType.KeyDown && e.keyCode != KeyCode.None)
+    if (e.isKey && e.type == EventType.KeyDown && e.keyCode != KeyCode.None)
     {
       string keyCode = normalizeKeyCode(e.keyCode);
       int deletionIndex = ProfileLoader.mapInputString2Letter["b"].IndexOf(keyCode);

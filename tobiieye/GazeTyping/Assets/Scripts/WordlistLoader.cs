@@ -150,7 +150,7 @@ public class WordlistLoader : MonoBehaviour {
         candidateHandler.ResetCandidates();
     }
 
-    public void UpdateCandidates(string inputString)
+    public string UpdateCandidates(string inputString)
     {
         currentProgress = inputString.Length;
         // turn ";" to "p"
@@ -159,12 +159,14 @@ public class WordlistLoader : MonoBehaviour {
         //}
         inputString = inputString.Replace(";", "p");
         if (!wordDict.ContainsKey(inputString)) {
-            //Debug.LogWarning("no candidates for " + inputString);
-            // tell the users there are no candidates in the dictionary
-            //currentCandidates = new string[preloadedCandidates];
-            candidateHandler.ResetCandidates();
-            helpInfo.SetActive(true);
-            return;
+      //Debug.LogWarning("no candidates for " + inputString);
+      // tell the users there are no candidates in the dictionary
+      //currentCandidates = new string[preloadedCandidates];
+      // remove the last input if no words exists
+            inputString = inputString.Substring(0, inputString.Length - 1);
+            //candidateHandler.ResetCandidates();
+            //helpInfo.SetActive(true);
+            return inputString;
         }
         //candText0.SetCandidateText(wordDict[inputString][0], currentProgress); // for now
         // make sure currentCandidates loaded all the complete candidates
@@ -185,8 +187,8 @@ public class WordlistLoader : MonoBehaviour {
         {
             candidateHandler.UpdateCandidates(currentCandidates, currentProgress, new string[0]);
         }
-        
-    }
+    return inputString;
+  }
 
     // Update is called once per frame
     void Update()
