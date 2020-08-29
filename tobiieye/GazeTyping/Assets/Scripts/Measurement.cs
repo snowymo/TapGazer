@@ -205,7 +205,7 @@ public class Measurement : MonoBehaviour
   private void saveData()
   {
     // save to file
-    string destination = Application.streamingAssetsPath + "/Participants.csv";
+    string destination = "../Participants.csv";
     if (!File.Exists(destination))
     {
       File.WriteAllText(destination, "Data,Name,C,INF,IF,F,WPM, Correct Gaze, Total Gaze\n");
@@ -220,7 +220,7 @@ public class Measurement : MonoBehaviour
         + correctGazeSelection.ToString() + "," + totalGazeSelection.ToString() + "\n");
 
     // save time data
-    string dest2 = Application.streamingAssetsPath + "/time" + name + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + ".csv";
+    string dest2 = "../time" + name + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + ".csv";
     File.WriteAllText(dest2, "cur finger, prev finger, type, time in ms\n");
     //for (int i = 0; i < selectionDuration.Count; i++)
     //{
