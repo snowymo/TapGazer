@@ -163,8 +163,6 @@ def generate_tap_map(test_dict, count, config=config):
             continue
 
         not_supported = False
-        # print("processing", word)
-        cur_typing = ""
         for _, char in enumerate(word):
             # find the corresponding finger based on the char
             cur_finger = find_finger(char, config)
@@ -172,26 +170,32 @@ def generate_tap_map(test_dict, count, config=config):
                 not_supported = True
                 break
 
+        if not_supported:
+            continue
+        # print("processing", word)
+        cur_typing = ""
+        for _, char in enumerate(word):
+            # find the corresponding finger based on the char
+            cur_finger = find_finger(char, config)
             cur_typing += cur_finger
             add_to_map(cur_typing, word)
 
-        if not_supported is False:
-            # sorted(tapping_dict[cur_typing], reverse=True)
-            word_rank[word] = len(tapping_dict[cur_typing])
-            if len(word) == len(cur_typing):
-                if cur_typing in completed_numbers:
-                    completed_numbers[cur_typing].append(word)
-                    # record the largest list number in this dictionary
-                    if len(completed_numbers[cur_typing]) > largest_cand_number:
-                        largest_cand_number = len(completed_numbers[cur_typing])
-                        largest_cand_input_string = cur_typing
-                else:
-                    completed_numbers[cur_typing] = [word]
-            # if len(word) == len(cur_typing) and word_rank[word] > 9 and len(word) > 1:
-            #     print("dangerous word\t" + cur_typing +"\t"+ word +"\t"+ str(word_rank[word]))
-            if cur_count == count:
-                break
-            cur_count = cur_count + 1
+        # sorted(tapping_dict[cur_typing], reverse=True)
+        word_rank[word] = len(tapping_dict[cur_typing])
+        if len(word) == len(cur_typing):
+            if cur_typing in completed_numbers:
+                completed_numbers[cur_typing].append(word)
+                # record the largest list number in this dictionary
+                if len(completed_numbers[cur_typing]) > largest_cand_number:
+                    largest_cand_number = len(completed_numbers[cur_typing])
+                    largest_cand_input_string = cur_typing
+            else:
+                completed_numbers[cur_typing] = [word]
+        # if len(word) == len(cur_typing) and word_rank[word] > 9 and len(word) > 1:
+        #     print("dangerous word\t" + cur_typing +"\t"+ word +"\t"+ str(word_rank[word]))
+        if cur_count == count:
+            break
+        cur_count = cur_count + 1
 
     #     check if we have more than 10-homograph
     # with open("phrases2.txt", encoding="utf-8") as f:
