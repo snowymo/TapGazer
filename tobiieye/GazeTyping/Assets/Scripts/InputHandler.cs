@@ -590,11 +590,16 @@ public class InputHandler : MonoBehaviour
     {
       helpInfo.SetActive(false);      
       measurement.StartClock();
+      string oldInputLine = currentInputLine;
       currentInputLine += mapInput2InputString[str];
       measurement.AddTapItem(str, "tap");
       retrieveInputStringFromLine();
       //Debug.Log("input string:" + currentInputString);
-      currentInputString = wordListLoader.UpdateCandidates(currentInputString);
+      if (!wordListLoader.UpdateCandidates(currentInputString))
+      {
+        currentInputLine = oldInputLine;
+        retrieveInputStringFromLine();
+      }
     }
   }
 
@@ -1351,7 +1356,6 @@ public class InputHandler : MonoBehaviour
 
             print("[page selection] " + (pageOptionIndex > 0 ? "next" : "prev"));
             measurement.AddTapItem(e.keyCode.ToString(), "page");
-            readyForSecondKey = false;
             return;
           }
         }

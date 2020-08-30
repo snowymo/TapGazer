@@ -150,7 +150,7 @@ public class WordlistLoader : MonoBehaviour {
         candidateHandler.ResetCandidates();
     }
 
-    public string UpdateCandidates(string inputString)
+    public bool UpdateCandidates(string inputString)
     {
         currentProgress = inputString.Length;
         // turn ";" to "p"
@@ -163,10 +163,10 @@ public class WordlistLoader : MonoBehaviour {
       // tell the users there are no candidates in the dictionary
       //currentCandidates = new string[preloadedCandidates];
       // remove the last input if no words exists
-            inputString = inputString.Substring(0, inputString.Length - 1);
+            //inputString = inputString.Substring(0, inputString.Length - 1);
             //candidateHandler.ResetCandidates();
             //helpInfo.SetActive(true);
-            return inputString;
+            return false;
         }
         //candText0.SetCandidateText(wordDict[inputString][0], currentProgress); // for now
         // make sure currentCandidates loaded all the complete candidates
@@ -187,7 +187,7 @@ public class WordlistLoader : MonoBehaviour {
         {
             candidateHandler.UpdateCandidates(currentCandidates, currentProgress, new string[0]);
         }
-    return inputString;
+    return true;
   }
 
     // Update is called once per frame
