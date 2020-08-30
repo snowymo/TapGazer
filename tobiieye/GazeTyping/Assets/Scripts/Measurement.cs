@@ -107,7 +107,7 @@ public class Measurement : MonoBehaviour
     }
     else /*if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)*/
     {
-      if (Input.GetKeyDown(KeyCode.B))
+      if (Input.GetKeyDown(KeyCode.CapsLock))
       {
         IF += 1;
         F += 1;
