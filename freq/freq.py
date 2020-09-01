@@ -313,7 +313,7 @@ def process_config(noswear10k, curConfig, configFileName):
     with open(dictionaryFileName + '-cand' + configFileName + '.json', 'w') as fp:
         json.dump(completed_numbers, fp)
 
-    print("Type y if you prefer in-place typing. (It is fine to change inplace assignment later in profile.name. Use left shift, right shift, left alt, right alt for these special keys)")
+    print("Type y if you prefer in-place typing. (It is fine to change inplace assignment later in profile.name. Use tab, left shift, right shift, left alt, right alt for these special keys)")
     inplace = input()
 
     key2fingerMapping = {"a": [], "s": [], "d": [], "f": [], "g": [], "h": [], "j": [],
@@ -336,8 +336,12 @@ def process_config(noswear10k, curConfig, configFileName):
     pn.writelines("15"+"\n")# number of phrase repetition
     # write letter to finger mapping here
     for finger, letter in key2fingerMapping.items():
-        pn.writelines(";")
-        pn.writelines("%s;" % eachLetter for eachLetter in letter)
+        pn.writelines("+")
+        if len(letter) == 0 and finger == "a":
+            pn.writelines("tab")
+        elif len(letter) == 0 and finger == ";":
+            pn.writelines(";")
+        pn.writelines("%s+" % eachLetter for eachLetter in letter)
         pn.writelines("\n")
         # pn.write(*letter,sep = ", ")
     pn.close()

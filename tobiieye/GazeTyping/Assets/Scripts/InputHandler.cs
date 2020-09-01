@@ -1261,6 +1261,10 @@ public class InputHandler : MonoBehaviour
     {
       return "[";
     }
+    else if (e == KeyCode.Semicolon)
+    {
+      return ";";
+    }
     else if (e >= KeyCode.Alpha0 && e <= KeyCode.Alpha9)
     {
       return (e-KeyCode.Alpha0).ToString();
@@ -1311,7 +1315,17 @@ public class InputHandler : MonoBehaviour
       // only another key is followed by control key 'b'
       if (readyForSecondKey && ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS)
       {
-        int selectOptionIndex = Array.IndexOf(keySelectionIndex, ProfileLoader.mapInput2InputString[keyCode]);
+        string outputString = "";
+        int selectOptionIndex = -1;
+        if (ProfileLoader.mapInput2InputString.TryGetValue(keyCode, out outputString))
+        {
+          selectOptionIndex = Array.IndexOf(keySelectionIndex, outputString);
+        }
+        else
+        {
+          Debug.LogWarning("failed to find " + keyCode + " in mapInput2InputString");
+        }
+        
         if (keyCode == "space")
         {
           // TODO: the only possibility that LT and RT share the same letter is space,
@@ -1319,7 +1333,8 @@ public class InputHandler : MonoBehaviour
           // we will manually treat that as n, aka selection, here
           selectOptionIndex = 0;
         }
-        int pageOptionIndex = Array.IndexOf(keyPageIndex, ProfileLoader.mapInput2InputString[keyCode]);
+        int pageOptionIndex = Array.IndexOf(keyPageIndex, outputString);
+        //int pageOptionIndex = Array.IndexOf(keyPageIndex, ProfileLoader.mapInput2InputString[keyCode]);
         if (ProfileLoader.enableDeletion && deletionIndex >= 0)
         {
           print("LT LT deletion");
