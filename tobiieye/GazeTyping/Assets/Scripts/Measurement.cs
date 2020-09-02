@@ -128,7 +128,8 @@ public class Measurement : MonoBehaviour
 
     if (Input.GetKeyDown(KeyCode.Escape))
     {
-      saveData();
+      if(allowInput)
+        saveData();
       Application.Quit();
     }
 

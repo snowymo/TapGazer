@@ -4643,7 +4643,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52a82dbc4a2dc4b44ab15abbc3c81ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curTypingMode: 1
+  curTypingMode: 2
   curProfile: zhenyi
   curSessionNumber: 1
   wordlistLoader: {fileID: 132433878}
@@ -4661,8 +4661,8 @@ MonoBehaviour:
   curOutputMode: 2
   curInputMode: 0
   curEnterMode: 1
-  curWcMode: 0
-  curSelectionMode: 1
+  curWcMode: 1
+  curSelectionMode: 0
   curCandidateLayout: 7
 --- !u!4 &840372617
 Transform:
