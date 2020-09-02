@@ -57,11 +57,14 @@ public class InputHandler : MonoBehaviour
   }
   private Dictionary<string, KeyEventTime> controlKeyStatus;
 
-  public TMPro.TextMeshPro spellingModeText;
+  public TMPro.TextMeshPro spellingModeText, condition;
 
   // Start is called before the first frame update
   void Start()
   {
+    condition.text = ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR ? "B" :
+      (ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS ? "M" : "G"
+      + (ProfileLoader.wcMode == ProfileLoader.WordCompletionMode.NC ? "N" : "C"));
     inputTextMesh.text = "";
     currentInputString = "";
     currentInputLine = "";
@@ -298,6 +301,7 @@ public class InputHandler : MonoBehaviour
     }
   }
 
+  // unused
   private void selectUnchord()
   {
     string presented = phraseLoader.GetCurWord();
@@ -388,7 +392,7 @@ public class InputHandler : MonoBehaviour
   bool justHitSelectionKey = false;
   bool controlKeyUpHit = false;
 
-  private void handleSelection(int candIndex)
+  private int handleSelection(int candIndex)
   {
     // using key selection
     string presented = phraseLoader.GetCurWord();
@@ -407,6 +411,7 @@ public class InputHandler : MonoBehaviour
         if (curCand.Equals(presented))
         {
           curWord = presented;
+          candIndex = i;
           break;
         }
       }
@@ -429,6 +434,7 @@ public class InputHandler : MonoBehaviour
     candidateHandler.defaultWord = "";
     readyForSecondKey = false;
     candidateHandler.ResetPage();
+    return candIndex;
   }
 
   private void deleteInRegular()
@@ -496,23 +502,25 @@ public class InputHandler : MonoBehaviour
       Debug.Log("no input string");
       return;
     }
+    int candIndex = 0;
     switch (ProfileLoader.selectionMode)
     {
       case ProfileLoader.SelectionMode.MS:
         // select default word
         readyForSecondKey = false; // selectionKeys[0] is 'n' aka right thumb.
                                    //print("RT selection");
-        handleSelection(0);
+        candIndex = handleSelection(0);
         break;
       case ProfileLoader.SelectionMode.GSE:
       case ProfileLoader.SelectionMode.GSR:
-        handleSelection(-1);
+        candIndex = handleSelection(-1);
         break;
       default:
         break;
     }
 
-    measurement.AddTapItem(ProfileLoader.mapInputString2Letter["n"][0], "selection");
+    measurement.AddTapItem(ProfileLoader.mapInputString2Letter["n"][0], "selection",
+      candidateHandler.GetCandCount(), candIndex);
     helpInfo.SetActive(false);
   }
 
@@ -642,9 +650,10 @@ public class InputHandler : MonoBehaviour
               candIndex = selectOptionIndex;
               print("[key selection] via LH " + candIndex.ToString());
               // handle word selection
-              handleSelection(candIndex);
+              candIndex = handleSelection(candIndex);
               updateDisplayInput();
-              measurement.AddTapItem(ProfileLoader.mapInputString2Letter[keySelectionIndex[selectOptionIndex]][i], "selection");
+              measurement.AddTapItem(ProfileLoader.mapInputString2Letter[keySelectionIndex[selectOptionIndex]][i], 
+                "selection", candidateHandler.GetCandCount(), candIndex);
               readyForSecondKey = false;
               return;
             }
@@ -1355,9 +1364,9 @@ public class InputHandler : MonoBehaviour
             candIndex = selectOptionIndex;
             print("[key selection] via LH " + candIndex.ToString());
             // handle word selection
-            handleSelection(candIndex);
+            candIndex = handleSelection(candIndex);
             updateDisplayInput();
-            measurement.AddTapItem(e.keyCode.ToString(), "selection");
+            measurement.AddTapItem(e.keyCode.ToString(), "selection", candidateHandler.GetCandCount(), candIndex);
             readyForSecondKey = false;
             return;
           }else if(pageOptionIndex >= 0)

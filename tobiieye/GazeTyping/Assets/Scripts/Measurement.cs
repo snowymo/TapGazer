@@ -41,16 +41,20 @@ public class Measurement : MonoBehaviour
     public string prevFingerID;
     public double duration;
     public string type;
-    public TimeCollection(string f, string p, double d, string t)
+    public int candCount;
+    public int candIndex;
+    public TimeCollection(string f, string p, double d, string t, int cc, int ci)
     {
       fingerID = f;
       prevFingerID = p;
       duration = d;
       type = t;
+      candCount = cc;
+      candIndex = ci;
     }
     public string toString()
     {
-      return fingerID + "," + prevFingerID + "," + type + "," + duration.ToString("F4");
+      return fingerID + "," + prevFingerID + "," + type + "," + duration.ToString("F4") + "," + candCount + "," + candIndex;
     }
   }
   private List<TimeCollection> selectionDuration = new List<TimeCollection>();
@@ -125,6 +129,7 @@ public class Measurement : MonoBehaviour
     if (Input.GetKeyDown(KeyCode.Escape))
     {
       saveData();
+      Application.Quit();
     }
 
     wpmText.text = "WPM:" + WPM.ToString("F2");
@@ -208,7 +213,7 @@ public class Measurement : MonoBehaviour
     string destination = "../Participants.csv";
     if (!File.Exists(destination))
     {
-      File.WriteAllText(destination, "Data,Name,C,INF,IF,F,WPM, Correct Gaze, Total Gaze\n");
+      File.WriteAllText(destination, "Data,Name,C,INF,IF,F,WPM, Correct Gaze, Total Gaze, Method, Gaze, Completion\n");
     }
 
     //Write some text to the file
@@ -217,11 +222,15 @@ public class Measurement : MonoBehaviour
        + "-" + (ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS ? "MS" : "GS")
       + "-" + ProfileLoader.candidateLayout.ToString() + "-" + ProfileLoader.session_number.ToString();
     File.AppendAllText(destination, DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "," + name + "," + totalC.ToString() + "," + totalINF.ToString() + "," + totalIF.ToString() + "," + totalF.ToString() + "," + WPM.ToString() + ","
-        + correctGazeSelection.ToString() + "," + totalGazeSelection.ToString() + "\n");
+        + correctGazeSelection.ToString() + "," + totalGazeSelection.ToString() + ","
+        + (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR ? "QWERTY,,"
+        : ("TapGazer,"
+          + (ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS ? "MS" : "GS") + ","
+          + (ProfileLoader.wcMode == ProfileLoader.WordCompletionMode.WC ? "WC" : "NC"))) + "\n");
 
     // save time data
     string dest2 = "../time" + name + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + ".csv";
-    File.WriteAllText(dest2, "cur finger, prev finger, type, time in ms\n");
+    File.WriteAllText(dest2, "cur_finger, prev_finger, type, time_ms, cand_total, cand_index\n");
     //for (int i = 0; i < selectionDuration.Count; i++)
     //{
     //  File.AppendAllText(dest2, selectionDuration[i].fingerID + "," + selectionDuration[i].prevFingerID + "," + selectionDuration[i].duration.ToString() + "\n");
@@ -399,47 +408,47 @@ public class Measurement : MonoBehaviour
   //     //     GUILayout.EndArea();
   //   }
 
-    public void AddTapItem(string fingerID, string type)
+    public void AddTapItem(string fingerID, string type, int candCount = 0, int candIndex = 0)
   {
     if (lastTapTime == DateTime.MinValue)
     {
-      tapDuration.Add(new TimeCollection(fingerID, lastFingerID, 0, type));
+      tapDuration.Add(new TimeCollection(fingerID, lastFingerID, 0, type, candCount, candIndex));
     }
     else
     {
-      tapDuration.Add(new TimeCollection(fingerID, lastFingerID, (DateTime.Now - lastTapTime).TotalMilliseconds, type));
+      tapDuration.Add(new TimeCollection(fingerID, lastFingerID, (DateTime.Now - lastTapTime).TotalMilliseconds, type, candCount, candIndex));
     }
     lastFingerID = fingerID;
     lastTapTime = DateTime.Now;
   }
 
-  public void AddSelectionDurationItem()
-  {
-    if (lastTapTime == DateTime.MinValue)
-    {
-      selectionDuration.Add(new TimeCollection("n", lastFingerID, 0, "selection"));
-    }
-    else
-    {
-      selectionDuration.Add(new TimeCollection("n", lastFingerID, (DateTime.Now - lastTapTime).TotalMilliseconds, "selection"));
-    }
-    lastFingerID = "n";
-    lastTapTime = DateTime.Now;
-  }
+  //public void AddSelectionDurationItem()
+  //{
+  //  if (lastTapTime == DateTime.MinValue)
+  //  {
+  //    selectionDuration.Add(new TimeCollection("n", lastFingerID, 0, "selection"));
+  //  }
+  //  else
+  //  {
+  //    selectionDuration.Add(new TimeCollection("n", lastFingerID, (DateTime.Now - lastTapTime).TotalMilliseconds, "selection"));
+  //  }
+  //  lastFingerID = "n";
+  //  lastTapTime = DateTime.Now;
+  //}
 
-  public void AddTapDurationItem(string fingerID)
-  {
-    if (lastTapTime == DateTime.MinValue)
-    {
-      tapDuration.Add(new TimeCollection(fingerID, lastFingerID, 0, "tap"));
-    }
-    else
-    {
-      tapDuration.Add(new TimeCollection(fingerID, lastFingerID, (DateTime.Now - lastTapTime).TotalMilliseconds, "tap"));
-    }
-    lastFingerID = fingerID;
-    lastTapTime = DateTime.Now;
-  }
+  //public void AddTapDurationItem(string fingerID)
+  //{
+  //  if (lastTapTime == DateTime.MinValue)
+  //  {
+  //    tapDuration.Add(new TimeCollection(fingerID, lastFingerID, 0, "tap"));
+  //  }
+  //  else
+  //  {
+  //    tapDuration.Add(new TimeCollection(fingerID, lastFingerID, (DateTime.Now - lastTapTime).TotalMilliseconds, "tap"));
+  //  }
+  //  lastFingerID = fingerID;
+  //  lastTapTime = DateTime.Now;
+  //}
 
   public void RefreshTimeCollectionWhenNextPhrase()
   {

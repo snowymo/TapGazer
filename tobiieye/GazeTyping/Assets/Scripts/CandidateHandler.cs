@@ -833,6 +833,14 @@ public class CandidateHandler : MonoBehaviour
 
   // if no completion, return all complete cand, even 0
   // if with completion, return all complete cand + incomplete as many as we can
+  public int GetCandCount() {
+    if (ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS)
+      return Math.Min(5, Math.Max(1, newCand.Length));
+    else
+    {
+      return Math.Min(10, Math.Max(1, newCand.Length));
+    }
+  }
   private string[] newCand = new string[] { };
   private string[] PrepareCandidates(string[] candidates, int totalNumber, string[] completedCand)
   {
