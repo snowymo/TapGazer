@@ -63,7 +63,7 @@ public class InputHandler : MonoBehaviour
   void Start()
   {
     condition.text = ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR ? "B" :
-      (ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS ? "M" : "G"
+      ((ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS ? "M" : "G")
       + (ProfileLoader.wcMode == ProfileLoader.WordCompletionMode.NC ? "N" : "C"));
     inputTextMesh.text = "";
     currentInputString = "";
