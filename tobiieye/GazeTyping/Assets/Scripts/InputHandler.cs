@@ -31,6 +31,8 @@ public class InputHandler : MonoBehaviour
 
 	private string[] selectionKeys; // ||
 	private string[] deletionKeys; // &&
+	private bool isCaplocksOn = false; // caps lock
+	private bool lastCaplocksOn = false;
 	public class KeyEventTime
 	{
 		public int down;
@@ -119,6 +121,7 @@ public class InputHandler : MonoBehaviour
 		deletionKeys = new string[] { "b", "n" };
 		spellingKeyStatus["t"] = new KeyEventTime();
 		spellingKeyStatus["u"] = new KeyEventTime();
+
 	}
 
 	private void updateDisplayInput()
@@ -1225,8 +1228,29 @@ public class InputHandler : MonoBehaviour
 		}
 		else
 		{
+			Event e = Event.current;
+
+			lastCaplocksOn = isCaplocksOn;
+			if (e.modifiers > 0)
+			{
+				if (e.modifiers == EventModifiers.CapsLock)
+				{
+					//print("modifiers work");
+					isCaplocksOn = true;
+				}
+				//print(e.capsLock);
+			}
+			else
+			{
+				isCaplocksOn = false;
+			}
 			typeInTestModeGUI();
 		}
+		//Event e = Event.current;
+		//if (e.isKey && e.type == EventType.KeyDown && e.keyCode != KeyCode.None)
+		//	print(e.keyCode);
+
+
 	}
 
 	string normalizeKeyCode(KeyCode e)
@@ -1297,9 +1321,20 @@ public class InputHandler : MonoBehaviour
 		if (!ProfileLoader.enableDeletion)
 		{
 			// press caps
-			if (e.isKey && e.type == EventType.KeyDown && e.keyCode == KeyCode.CapsLock)
+			if ((Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer)
+				&& e.isKey && e.type == EventType.KeyDown && e.keyCode == KeyCode.CapsLock)
 			{
 				print("caps deletion");
+				delete();
+				measurement.AddTapItem("caps", "deletion");
+				readyForSecondKey = false;
+				updateDisplayInput();
+				return;
+			}
+			else if ((Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer)
+					 && isCaplocksOn != lastCaplocksOn)
+			{
+				print("caps deletion in mac");
 				delete();
 				measurement.AddTapItem("caps", "deletion");
 				readyForSecondKey = false;
