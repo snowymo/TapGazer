@@ -245,6 +245,10 @@ public class Measurement : MonoBehaviour
     {
       File.WriteAllText(destination3, "participant, method, gaze, completion, cur_finger, prev_finger, type, duration_ms, cand_total, cand_index, time_since_1970_ms\n");
     }
+    else
+    {
+      File.AppendAllText(destination3, "new session\n");
+    }
 
     for (int i = 0; i < tapDuration.Count; i++)
     {
