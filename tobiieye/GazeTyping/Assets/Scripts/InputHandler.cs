@@ -33,6 +33,7 @@ public class InputHandler : MonoBehaviour
 	private string[] deletionKeys; // &&
 	private bool isCaplocksOn = false; // caps lock
 	private bool lastCaplocksOn = false;
+	private TMPro.TextMeshPro capslockTextMesh;
 	public class KeyEventTime
 	{
 		public int down;
@@ -121,7 +122,7 @@ public class InputHandler : MonoBehaviour
 		deletionKeys = new string[] { "b", "n" };
 		spellingKeyStatus["t"] = new KeyEventTime();
 		spellingKeyStatus["u"] = new KeyEventTime();
-
+		capslockTextMesh = GameObject.Find("capslock").GetComponent<TMPro.TextMeshPro>();
 	}
 
 	private void updateDisplayInput()
@@ -1244,6 +1245,7 @@ public class InputHandler : MonoBehaviour
 			{
 				isCaplocksOn = false;
 			}
+			capslockTextMesh.text = isCaplocksOn.ToString();
 			typeInTestModeGUI();
 		}
 		//Event e = Event.current;
@@ -1331,7 +1333,7 @@ public class InputHandler : MonoBehaviour
 				updateDisplayInput();
 				return;
 			}
-			else if ((Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer)
+			else if ((Application.platform != RuntimePlatform.WindowsEditor && Application.platform != RuntimePlatform.WindowsPlayer)
 					 && isCaplocksOn != lastCaplocksOn)
 			{
 				print("caps deletion in mac");
