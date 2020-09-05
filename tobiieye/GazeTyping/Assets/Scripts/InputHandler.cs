@@ -530,7 +530,12 @@ public class InputHandler : MonoBehaviour
 
 	private void typeInWordModeNoChord_LT(string str)
 	{
-		switch (ProfileLoader.selectionMode)
+    if (currentInputString.Length == 0)
+    {
+      Debug.Log("no input string");
+      return;
+    }
+    switch (ProfileLoader.selectionMode)
 		{
 			case ProfileLoader.SelectionMode.MS:
 				// waiting for second key in MS mode
