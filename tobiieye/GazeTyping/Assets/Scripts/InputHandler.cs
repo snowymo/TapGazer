@@ -1232,20 +1232,22 @@ public class InputHandler : MonoBehaviour
 			Event e = Event.current;
 
 			lastCaplocksOn = isCaplocksOn;
-			if (e.modifiers > 0)
+			if (e.type == EventType.Repaint)
 			{
-				if (e.modifiers == EventModifiers.CapsLock)
-				{
-					//print("modifiers work");
-					isCaplocksOn = true;
-				}
-				//print(e.capsLock);
+				isCaplocksOn = e.capsLock;
+				//if (e.modifiers > 0 && e.modifiers == EventModifiers.CapsLock)
+				//{
+				//	//print("modifiers work");
+				//	isCaplocksOn = e.capsLock;
+				//	//print(e.capsLock);
+				//}
+				//else
+				//{
+				//	isCaplocksOn = e.capsLock;
+				//}
 			}
-			else
-			{
-				isCaplocksOn = false;
-			}
-			capslockTextMesh.text = isCaplocksOn.ToString();
+            //print(isCaplocksOn);
+			//capslockTextMesh.text = isCaplocksOn.ToString() + " LAST:" + lastCaplocksOn.ToString();
 			typeInTestModeGUI();
 		}
 		//Event e = Event.current;
@@ -1336,7 +1338,7 @@ public class InputHandler : MonoBehaviour
 			else if ((Application.platform != RuntimePlatform.WindowsEditor && Application.platform != RuntimePlatform.WindowsPlayer)
 					 && isCaplocksOn != lastCaplocksOn)
 			{
-				print("caps deletion in mac");
+				print("caps deletion in mac " + isCaplocksOn.ToString() + " " + lastCaplocksOn.ToString());
 				delete();
 				measurement.AddTapItem("caps", "deletion");
 				readyForSecondKey = false;
