@@ -238,9 +238,23 @@ public class Measurement : MonoBehaviour
     //{
     //  File.AppendAllText(dest2, selectionDuration[i].fingerID + "," + selectionDuration[i].prevFingerID + "," + selectionDuration[i].duration.ToString() + "\n");
     //}
+
+    // save tap collection to one file per user
+    string destination3 = "../TapCollection_" + ProfileLoader.profile + ".csv";
+    if (!File.Exists(destination3))
+    {
+      File.WriteAllText(destination3, "participant, method, gaze, completion, cur_finger, prev_finger, type, duration_ms, cand_total, cand_index, time_since_1970_ms\n");
+    }
+
     for (int i = 0; i < tapDuration.Count; i++)
     {
       File.AppendAllText(dest2, ProfileLoader.profile + "," 
+        + (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR ? "QWERTY,,"
+        : ("TapGazer,"
+          + (ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS ? "MS" : "GS") + ","
+          + (ProfileLoader.wcMode == ProfileLoader.WordCompletionMode.WC ? "WC" : "NC"))) + ","
+          + tapDuration[i].toString() + "\n");
+      File.AppendAllText(destination3, ProfileLoader.profile + ","
         + (ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR ? "QWERTY,,"
         : ("TapGazer,"
           + (ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS ? "MS" : "GS") + ","
