@@ -27,6 +27,23 @@ def get_freq_until(prob):
 
     print (sum, count)
 
+def generate_top_n(n):
+    topWords = top_n_list('en', n, wordlist="large")
+    with open('top' + str(n) + '.txt', 'w', encoding='utf-8') as filehandle:
+        for word in topWords:
+            filehandle.writelines("%s\n" % word)
+
+    print ('top' + str(n) + '.txt')
+
+def get_sum_freq(count):
+    sum = 0
+    topWords = top_n_list('en', count, wordlist="large")
+    for word in topWords:
+        sum += word_frequency(word, 'en')
+
+    print(sum, count)
+
+
 get_freq_until(0.9)
 
 get_freq_until(0.95)
@@ -34,3 +51,11 @@ get_freq_until(0.95)
 get_freq_until(0.97)
 
 get_freq_until(0.99)
+
+get_sum_freq(100)
+
+get_sum_freq(1000)
+
+generate_top_n(100)
+
+generate_top_n(1000)

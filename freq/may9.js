@@ -3,15 +3,28 @@ var SortedMap = require("collections/sorted-map");
 const yargs = require('yargs');
 
 // prepare large vocabulary
-var text = fs.readFileSync("./top40k.txt").toString('utf-8');
-let wordList = text.split("\n")
-for (var i = 0; i < wordList.length; i++) {
-   wordList[i] = wordList[i].replace(/\s+/g, '');
+var text = fs.readFileSync("./top0.9.txt").toString('utf-8');
+let wordList1 = text.split("\n")
+for (var i = 0; i < wordList1.length; i++) {
+   wordList1[i] = wordList1[i].replace(/\s+/g, '');
 }
 let vocabulary56k = require("./vocabulary56k.js");
 
+var text2 = fs.readFileSync("./top100.txt").toString('utf-8');
+let wordList2 = text2.split("\n")
+for (var i = 0; i < wordList2.length; i++) {
+   wordList2[i] = wordList2[i].replace(/\s+/g, '');
+}
+
+var text3 = fs.readFileSync("./top1000.txt").toString('utf-8');
+let wordList3 = text3.split("\n")
+for (var i = 0; i < wordList3.length; i++) {
+   wordList3[i] = wordList3[i].replace(/\s+/g, '');
+}
+
+
 // load frequencies
-let wordnfreq = JSON.parse(fs.readFileSync('top40k-freq.json'));
+let wordnfreq = JSON.parse(fs.readFileSync('top0.9-freq.json'));
 // load finger skill
 // fingerSKill["diff"][0-7]
 // fingerSkill["same"][prevFinger][curFinger]
@@ -264,18 +277,24 @@ let classifyWord = word => {
    return s;
 }
 
+let MSCandCount = 5;
+let GSCandCount = 10;
+let supportGS = false;
 let addIncompleteWord = (curWord, curFingerSeq) => {
    // calculate the min freq in wordComplete[curFingerSeq]
    if (wordComplete[curFingerSeq] === undefined) {
       wordComplete[curFingerSeq] = new SortedMap();
    }
    wordComplete[curFingerSeq].add(curWord, wordnfreq[curWord]);
-   if (wordComplete[curFingerSeq].length > 5) {
+   // using 5 here, we need to use 10 if for GS
+   if (wordComplete[curFingerSeq].length > (supportGS ? GSCandCount : MSCandCount)) {
       wordComplete[curFingerSeq].delete(Array.from(wordComplete[curFingerSeq].entries())[0][0]);
    }
 }
 
-let classifyWords = n => {
+let classifyWords = (wordList, n) => {
+   if(wordList === undefined)
+      wordList = wordList1;
    wordCount = {}; wordComplete = {}; minInputString = {}, wordCountFirst = {}, wordCountLast = {};
    for (let i = 0; i < wordList.length; i++) {
       let word = wordList[i];
@@ -289,7 +308,7 @@ let classifyWords = n => {
       wordCount[c]++;
       // for word completion
       if (enableWordComplete) {
-         for (let ci = 1; ci < c.length - 1; ci++) {
+         for (let ci = 1; ci <= c.length-1; ci++) {
             addIncompleteWord(word, c.substr(0, ci));
          }
       }
@@ -300,9 +319,9 @@ let classifyWords = n => {
       for (var curFingerSeq in wordComplete) {
          var curWordComplete = wordComplete[curFingerSeq];
          let curEntry = Array.from(curWordComplete.entries());
-         for (let iwi = wordCount[curFingerSeq]; iwi < 5; iwi++) {
+         for (let iwi = wordCount[curFingerSeq]; iwi < (supportGS ? GSCandCount : MSCandCount); iwi++) {
             // fill with incomplete words
-            let startIndex = Math.max(0, curEntry.length - (5 - iwi));
+            let startIndex = Math.max(0, curEntry.length - ((supportGS ? GSCandCount : MSCandCount) - iwi));
             // if curFingerSeq is smaller than the one in dict, update it
             if (minInputString[curEntry[startIndex][1]].length > curFingerSeq.length) {
                minInputString[curEntry[startIndex][1]] = curFingerSeq;
@@ -422,11 +441,14 @@ let computeMT = w => {
 
 let tapSpeedAvg = 0.07;
 
-let computeExpertScore = w => {
+let computeExpertScore = (wordList, w) => {
    // tap the entire words and then apply visual search once
    // moveTime = (tapSpeedAvg * w.length + computeVisualSearch(count) + tapSpeedAvg) * wordnfreq[word]
    // = (tapSpeedAvg * (w.length+1) + computeVisualSearch(count)) * wordnfreq[word]
    // add different numbers for different fingers later
+   if(wordList === undefined)
+      wordList = wordList1;
+
    let score = 0; // typing time for the 100 common words
    let sumFreq = 0, entireFreq = 0;
    let lenWord = 0;
@@ -451,7 +473,9 @@ let computeExpertScore = w => {
    console.log(mapping.toString(), tapSpeedAvg, ",", score, "seconds per word,", (60 / score * lenWord + 60 / score - 1) / 5, "wpm", sumFreq, entireFreq);
 }
 
-let computeNoviceScore = w => {
+let computeNoviceScore = (wordList, w) => {
+   if(wordList === undefined)
+      wordList = wordList1;
    // tap one letter and do visual search one time
    // moveTime = ((tapSpeedAvg + computeVisualSearch(count)) * minInputString[word].length + tapSpeedAvg) * wordnfreq[word]
    let score = 0; // typing time for the 100 common words
@@ -477,7 +501,9 @@ let computeNoviceScore = w => {
    console.log(mapping.toString(), tapSpeedAvg, ",", score, "seconds per word,", (60 / score * lenWord + 60 / score - 1) / 5, "wpm", sumFreq, entireFreq);
 }
 
-let computeScore = (i, strict = true) => {
+let computeScore = (wordList, i, strict = true) => {
+   if(wordList === undefined)
+      wordList = wordList1;
    let score = 0; // typing time for the 100 common words
    let bHomograph = true;
    for (let n = 0; n < wordList.length; n++) {
@@ -687,23 +713,65 @@ let FindOptimalLayout = (startingLevel) => {
    }
 }
 
+let sumMinInputString = (wordList) => {
+   if(wordList === undefined)
+      wordList = wordList1;
+
+   let sumFreq = 0;
+   let score = 0;
+   for (let n = 0; n < wordList.length; n++) {
+      let word = wordList[n];
+      if (word.length == 0)
+         continue;
+      
+      score += (minInputString[word].length) * wordnfreq[word];
+      sumFreq += wordnfreq[word];
+   }
+   score /= sumFreq;
+   console.log("weighted sum for " + (supportGS ? "GS" : "MS") + " and " + wordList.length.toString() + ":" + score);
+}
+
+let evalChristofMinInputString = () => {
+   enableWordComplete = true;
+
+   supportGS = true;
+   classifyWords(wordList1);
+   sumMinInputString(wordList1);
+   // classifyWords(wordList2);
+   sumMinInputString(wordList2);
+   // classifyWords(wordList3);
+   sumMinInputString(wordList3);
+
+   supportGS = false;
+   classifyWords(wordList1);
+   sumMinInputString(wordList1);
+   // classifyWords(wordList2);
+   sumMinInputString(wordList2);
+   // classifyWords(wordList3);
+   sumMinInputString(wordList3);
+}
+
 let evalModels = (curMapping) => {
    let originalMapping = mapping.slice();
    mapping = curMapping;
 
+   // for christof, calculate the weighted sum of minInputString
+   evalChristofMinInputString();
+
    enableWordComplete = true;
-   classifyWords();
+   supportGS = false;
+   classifyWords(wordList1);
    // score
    for (var i = 0; i < 20; i++) {
-      computeNoviceScore(0, false);
+      computeNoviceScore(wordList1, 0, false);
       tapSpeedAvg += 0.005;
    }
 
    tapSpeedAvg = 0.07;
    enableWordComplete = false;
-   classifyWords();
+   classifyWords(wordList1);
    for (var i = 0; i < 20; i++) {
-      computeExpertScore(0, false);
+      computeExpertScore(wordList1,0, false);
       tapSpeedAvg += 0.005;
    }
 
@@ -728,7 +796,7 @@ const argv = yargs
       alias: 'div',
       description: 'Enable word completion or not',
       type: 'int',
-      default: 1,
+      default: 0,
    })
    .help()
    .alias('help', 'h')
@@ -768,17 +836,17 @@ evalModels(mapping);
 
 // eval the results
 //load stage3result from stage3.json
-let stage3Result = JSON.parse(fs.readFileSync('stage3.json'));
-Object.keys(stage3Result).forEach(function (key) {
-   bestMappings.add(key.split(","), stage3Result[key]);
-});
-let entryArray = Array.from(bestMappings.entries());
-for (let i = 0; i < entryArray.length; i++) {
-   let curEntry = entryArray[i];
-   mapping = curEntry[1];
-   // evaluateMapping(mapping);
-   evalModels(mapping);
-}
+// let stage3Result = JSON.parse(fs.readFileSync('stage3.json'));
+// Object.keys(stage3Result).forEach(function (key) {
+//    bestMappings.add(key.split(","), stage3Result[key]);
+// });
+// let entryArray = Array.from(bestMappings.entries());
+// for (let i = 0; i < entryArray.length; i++) {
+//    let curEntry = entryArray[i];
+//    mapping = curEntry[1];
+//    // evaluateMapping(mapping);
+//    evalModels(mapping);
+// }
 
 // eval KEN's mappings
 // evaluateMapping(['os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt']);
