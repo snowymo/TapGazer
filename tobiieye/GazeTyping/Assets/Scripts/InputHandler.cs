@@ -396,7 +396,7 @@ public class InputHandler : MonoBehaviour
 	bool justHitSelectionKey = false;
 	bool controlKeyUpHit = false;
 
-	private int handleSelection(int candIndex)
+	private int handleSelection(int candIndex, string keycode)
 	{
 		// using key selection
 		string presented = phraseLoader.GetCurWord();
@@ -427,7 +427,9 @@ public class InputHandler : MonoBehaviour
 			curWord = candidateHandler.candidateObjects[candIndex].GetComponent<Candidate>().pureText;
 			//print("[key selection] curword " + curWord);
 		}
-		curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
+    measurement.AddTapItem(keycode, "selection",
+      candidateHandler.GetCandCount(), candIndex);
+    curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
 		//Debug.Log("cur word:" + curWord);
 		currentTypedWords.Add(curWord);
 		measurement.UpdateTestMeasure(presented, currentInputString, curWord.Contains("=green"));
@@ -513,18 +515,17 @@ public class InputHandler : MonoBehaviour
 				// select default word
 				readyForSecondKey = false; // selectionKeys[0] is 'n' aka right thumb.
 										   //print("RT selection");
-				candIndex = handleSelection(0);
+				candIndex = handleSelection(0, ProfileLoader.mapInputString2Letter["n"][0]);
 				break;
 			case ProfileLoader.SelectionMode.GSE:
 			case ProfileLoader.SelectionMode.GSR:
-				candIndex = handleSelection(-1);
+				candIndex = handleSelection(-1, ProfileLoader.mapInputString2Letter["n"][0]);
 				break;
 			default:
 				break;
 		}
 
-		measurement.AddTapItem(ProfileLoader.mapInputString2Letter["n"][0], "selection",
-		  candidateHandler.GetCandCount(), candIndex);
+		
 		helpInfo.SetActive(false);
 	}
 
@@ -659,10 +660,8 @@ public class InputHandler : MonoBehaviour
 							candIndex = selectOptionIndex;
 							print("[key selection] via LH " + candIndex.ToString());
 							// handle word selection
-							candIndex = handleSelection(candIndex);
+							candIndex = handleSelection(candIndex, ProfileLoader.mapInputString2Letter[keySelectionIndex[selectOptionIndex]][i]);
 							updateDisplayInput();
-							measurement.AddTapItem(ProfileLoader.mapInputString2Letter[keySelectionIndex[selectOptionIndex]][i],
-							  "selection", candidateHandler.GetCandCount(), candIndex);
 							readyForSecondKey = false;
 							return;
 						}
@@ -868,7 +867,7 @@ public class InputHandler : MonoBehaviour
 			{
 				print("RT selection");
 				// handle word selection
-				handleSelection(candIndex);
+				handleSelection(candIndex, "");
 			}
 			updateDisplayInput();
 			return;
@@ -1417,9 +1416,9 @@ public class InputHandler : MonoBehaviour
 						candIndex = selectOptionIndex;
 						print("[key selection] via LH " + candIndex.ToString());
 						// handle word selection
-						candIndex = handleSelection(candIndex);
+						candIndex = handleSelection(candIndex, e.keyCode.ToString());
 						updateDisplayInput();
-						measurement.AddTapItem(e.keyCode.ToString(), "selection", candidateHandler.GetCandCount(), candIndex);
+						//measurement.AddTapItem(e.keyCode.ToString(), "selection", candidateHandler.GetCandCount(), candIndex);
 						readyForSecondKey = false;
 						return;
 					}
