@@ -11,7 +11,6 @@ for
 you
 it
 on
-00
 with
 was
 be
@@ -25,7 +24,6 @@ he
 by
 from
 but
-0000
 my
 an
 or
@@ -60,15 +58,11 @@ there
 been
 her
 time
-000
 would
 get
-it's
 new
-i'm
 she
 people
-don't
 its
 also
 how
@@ -98,7 +92,6 @@ any
 well
 back
 want
-1
 should
 because
 may
@@ -109,7 +102,6 @@ much
 way
 even
 very
-2
 did
 need
 right
@@ -138,9 +130,7 @@ life
 say
 such
 through
-3
 down
-you're
 great
 last
 man
@@ -150,10 +140,8 @@ between
 used
 long
 same
-that's
 three
 both
-can't
 part
 something
 am
@@ -163,7 +151,6 @@ love
 under
 look
 since
-4
 does
 every
 must
@@ -177,7 +164,6 @@ find
 high
 home
 place
-5
 around
 own
 state
@@ -190,7 +176,6 @@ again
 against
 found
 game
-i've
 school
 without
 end
@@ -210,14 +195,11 @@ name
 number
 second
 show
-0.0
 left
 big
-didn't
 keep
 night
 sure
-6
 set
 team
 until
@@ -253,7 +235,6 @@ point
 times
 women
 yet
-7
 anything
 care
 d
@@ -305,8 +286,6 @@ hard
 men
 war
 yes
-8
-i'll
 read
 side
 stop
@@ -317,8 +296,6 @@ line
 oh
 open
 area
-doesn't
-he's
 important
 run
 using
@@ -335,7 +312,6 @@ job
 means
 says
 social
-there's
 together
 united
 within
@@ -353,7 +329,6 @@ per
 service
 shit
 trying
-9
 able
 become
 car
@@ -409,8 +384,6 @@ nice
 t
 taking
 wrong
-00.0
-00th
 act
 ago
 c
@@ -425,19 +398,15 @@ room
 single
 taken
 wait
-0,000
 along
 although
 cause
 late
 remember
 saw
-they're
-00,000
 ask
 example
 form
-isn't
 john
 pay
 post
@@ -483,7 +452,6 @@ child
 e
 father
 gonna
-i'd
 low
 move
 police
@@ -504,7 +472,6 @@ sometimes
 son
 stay
 watch
-we're
 bit
 education
 fucking
@@ -512,7 +479,6 @@ land
 looks
 myself
 works
-0.00
 asked
 deal
 experience
@@ -536,7 +502,6 @@ mother
 near
 period
 process
-won't
 april
 art
 former
@@ -548,7 +513,6 @@ series
 site
 talking
 west
-0
 behind
 bring
 clear
@@ -614,7 +578,6 @@ program
 rest
 result
 view
-wasn't
 al
 board
 certain
@@ -639,7 +602,6 @@ seems
 sense
 street
 summer
-u.s
 wife
 became
 boy
@@ -727,7 +689,6 @@ needed
 takes
 usually
 various
-what's
 won
 worked
 x
@@ -745,7 +706,6 @@ share
 training
 union
 weeks
-you'll
 amount
 blood
 cases
@@ -787,14 +747,11 @@ player
 send
 september
 serious
-she's
 size
 st
 terms
 tried
 whatever
-wouldn't
-00.00
 blue
 cannot
 century
@@ -816,7 +773,6 @@ feeling
 felt
 financial
 giving
-haven't
 internet
 july
 lives
@@ -911,7 +867,6 @@ f
 football
 hi
 january
-let's
 nature
 note
 practice
@@ -944,7 +899,6 @@ waiting
 walk
 writing
 wrote
-you've
 access
 allowed
 bed
@@ -1020,7 +974,6 @@ tomorrow
 western
 africa
 allow
-couldn't
 cross
 except
 gives
@@ -1047,7 +1000,6 @@ treatment
 u
 wanna
 weight
-000,000
 association
 australia
 charge
@@ -1085,7 +1037,6 @@ student
 throughout
 via
 washington
-0000s
 addition
 box
 build
@@ -1109,7 +1060,6 @@ sun
 train
 ahead
 album
-aren't
 ass
 beat
 beyond
@@ -1300,7 +1250,6 @@ parliament
 prime
 sales
 stories
-we've
 absolutely
 activities
 agree
@@ -1448,7 +1397,6 @@ theory
 types
 wear
 worse
-ain't
 aircraft
 authorities
 broke
@@ -1498,7 +1446,6 @@ forced
 gay
 hall
 heat
-here's
 highest
 holding
 indeed
@@ -1569,7 +1516,6 @@ square
 stars
 stopped
 william
-00000
 actions
 animal
 bottom
@@ -1646,7 +1592,6 @@ throw
 tom
 un
 units
-who's
 arrived
 aware
 becoming
@@ -1677,7 +1622,6 @@ smaller
 thomas
 van
 views
-we'll
 web
 wild
 advantage
@@ -1715,7 +1659,6 @@ starts
 stated
 strength
 trouble
-you'd
 yours
 application
 bet
@@ -1773,7 +1716,6 @@ proposed
 pull
 relations
 richard
-shouldn't
 useful
 values
 volume
@@ -1896,9 +1838,6 @@ somewhere
 toward
 unique
 winner
-°
-00s
-1st
 accepted
 accident
 accounts
@@ -2157,7 +2096,6 @@ temperature
 tired
 update
 watched
-women's
 ya
 bird
 bringing
@@ -2178,7 +2116,6 @@ joke
 manner
 markets
 ocean
-people's
 pool
 providing
 scott
@@ -2188,7 +2125,6 @@ supreme
 videos
 weak
 younger
-2nd
 apartment
 argument
 armed
@@ -2260,7 +2196,6 @@ extent
 facts
 granted
 guns
-hasn't
 holiday
 honestly
 laugh
@@ -2297,14 +2232,12 @@ comfortable
 debate
 destroyed
 drunk
-e.g
 emotional
 entry
 estimated
 experienced
 explained
 false
-i.e
 injury
 km
 ladies
@@ -2328,7 +2261,6 @@ storm
 suppose
 surprised
 teach
-they've
 adding
 angeles
 app
@@ -2461,7 +2393,6 @@ statistics
 suit
 taxes
 taylor
-they'll
 tony
 tuesday
 victim
@@ -2569,7 +2500,6 @@ unfortunately
 universe
 warning
 wave
-weren't
 achieve
 actor
 alex
@@ -2615,7 +2545,6 @@ updated
 usual
 wars
 wing
-000.0
 adam
 admit
 adults
@@ -2669,9 +2598,7 @@ tend
 trained
 typically
 upset
-world's
 youtube
-3rd
 agents
 anybody
 cable
@@ -2734,7 +2661,6 @@ hat
 height
 incident
 introduction
-it'll
 jean
 joy
 latin
@@ -3128,7 +3054,6 @@ solutions
 somehow
 sydney
 threw
-today's
 uncle
 weekly
 worker
@@ -3192,7 +3117,6 @@ trick
 unusual
 whereas
 wondering
-4th
 aged
 alliance
 amounts
@@ -3268,7 +3192,6 @@ berlin
 bound
 celebrate
 challenges
-children's
 circuit
 comedy
 commissioner
@@ -3354,7 +3277,6 @@ ford
 fort
 forth
 gods
-he'll
 illness
 input
 jan
@@ -3424,7 +3346,6 @@ frequency
 gear
 guests
 handed
-he'd
 hollywood
 hunting
 injured
@@ -3524,7 +3445,6 @@ wage
 wanting
 whoever
 wings
-3d
 actors
 alexander
 aspect
@@ -3583,7 +3503,6 @@ swiss
 tape
 texts
 visiting
-_
 amendment
 arguments
 arrive
@@ -3650,7 +3569,6 @@ tracks
 universities
 vital
 wishes
-00st
 adventure
 alan
 alongside
@@ -3716,7 +3634,6 @@ valid
 vol
 wash
 wire
-000.00
 amazon
 angle
 anthony
@@ -3804,7 +3721,6 @@ federation
 feedback
 figured
 gathered
-god's
 horror
 howard
 indonesia
@@ -3816,9 +3732,7 @@ managing
 math
 moreover
 nowhere
-one's
 ongoing
-p.m
 pa
 pan
 peoples
@@ -3895,7 +3809,6 @@ literary
 log
 mechanism
 medal
-men's
 mothers
 nevertheless
 nurse
@@ -3974,7 +3887,6 @@ unions
 walter
 winners
 wolf
-000000
 acceptable
 adds
 alert
@@ -4020,7 +3932,6 @@ invite
 involve
 kit
 memorial
-mother's
 municipal
 pace
 pen
@@ -4038,8 +3949,6 @@ ward
 wayne
 whilst
 writes
-0.0.0
-5th
 addressed
 allen
 bones
@@ -4099,7 +4008,6 @@ tennis
 trials
 ups
 vegas
-we'd
 ate
 automatic
 banking
@@ -4128,7 +4036,6 @@ gates
 generations
 glasses
 guards
-hadn't
 heroes
 ian
 jeff
@@ -4229,7 +4136,6 @@ subsequently
 surveillance
 tear
 technologies
-they'd
 tiger
 toilet
 tourism
@@ -4237,7 +4143,6 @@ treasury
 visits
 wisdom
 witnesses
-year's
 aggressive
 alleged
 allies
@@ -4275,7 +4180,6 @@ innovation
 iphone
 kate
 legacy
-man's
 mars
 modified
 monitoring
@@ -4390,7 +4294,6 @@ walks
 weed
 winds
 wooden
-a.m
 ads
 argentina
 arsenal
@@ -4408,7 +4311,6 @@ celebration
 civilian
 clay
 commonwealth
-company's
 continuous
 counts
 cure
@@ -4478,7 +4380,6 @@ wages
 wildlife
 wisconsin
 worship
-00k
 accounting
 anderson
 ann
@@ -4611,7 +4512,6 @@ restricted
 rick
 rounds
 shield
-someone's
 spaces
 succeeded
 surprising
@@ -4621,8 +4521,6 @@ um
 usage
 waited
 wider
-à
-0,000,000
 actively
 adapted
 adequate
@@ -4658,7 +4556,6 @@ imperial
 indigenous
 integration
 investments
-it'd
 jurisdiction
 kennedy
 lakes
@@ -4698,7 +4595,6 @@ vancouver
 venture
 virtually
 worthy
-0.000
 aaron
 airlines
 albert
@@ -4727,7 +4623,6 @@ diego
 employer
 excess
 exclusively
-father's
 featuring
 focusing
 fraud
@@ -4813,7 +4708,6 @@ drives
 duck
 elementary
 er
-government's
 guardian
 hmm
 ho
@@ -4866,7 +4760,6 @@ utility
 websites
 wireless
 wound
-6th
 abc
 allah
 batman
@@ -4880,7 +4773,6 @@ coastal
 communicate
 complain
 cooper
-d.c
 danny
 declined
 demonstrate
@@ -4888,7 +4780,6 @@ displayed
 districts
 dominant
 escaped
-everyone's
 explosion
 fa
 fever
@@ -4953,7 +4844,6 @@ collapse
 conviction
 corps
 counsel
-country's
 cuba
 differently
 dominated
@@ -5014,7 +4904,6 @@ trigger
 trips
 tropical
 weakness
-7th
 abilities
 advised
 appeals
@@ -5092,7 +4981,6 @@ transit
 ukrainian
 unexpected
 vertical
-©
 abortion
 accidentally
 approached
@@ -5183,7 +5071,6 @@ traditions
 ugh
 variable
 wealthy
-would've
 ac
 accomplished
 accordingly
@@ -5292,7 +5179,6 @@ warned
 wells
 woke
 yield
-00pm
 accepting
 accessible
 activists
@@ -5310,7 +5196,6 @@ chaos
 cheers
 chips
 christopher
-city's
 clinic
 collecting
 commentary
@@ -5396,8 +5281,6 @@ twist
 urgent
 va
 wasted
-00m
-8th
 aboard
 acknowledged
 affects
@@ -5488,7 +5371,6 @@ violation
 warren
 warrior
 worries
-000th
 acknowledge
 anonymous
 antonio
@@ -5565,7 +5447,6 @@ til
 ultra
 vegetables
 wtf
-0,0
 accidents
 achievements
 amy
@@ -5652,7 +5533,6 @@ urge
 venue
 voluntary
 wright
-00.000
 acquire
 addresses
 advisory
@@ -5950,7 +5830,6 @@ viewing
 workshop
 wrapped
 xi
-00am
 additionally
 albums
 anytime
@@ -6130,7 +6009,6 @@ rhythm
 riot
 safer
 sectors
-she'll
 sophisticated
 specialized
 statue
@@ -6152,10 +6030,8 @@ tricks
 turner
 und
 unlimited
-where's
 withdrawal
 yup
-000m
 agrees
 altogether
 arise
@@ -6248,9 +6124,7 @@ vocal
 warner
 wasting
 wives
-woman's
 wounds
-000k
 acres
 affordable
 amsterdam
@@ -6306,7 +6180,6 @@ mississippi
 missouri
 monsters
 myth
-o'clock
 oklahoma
 organs
 pale
@@ -6343,7 +6216,6 @@ towers
 treatments
 wallet
 withdraw
-9th
 abandon
 abraham
 addressing
@@ -6505,7 +6377,6 @@ insist
 interviewed
 invention
 jesse
-king's
 leak
 lighter
 linda
@@ -6607,7 +6478,6 @@ optical
 ordering
 pal
 pathetic
-person's
 pills
 poker
 pr
@@ -6640,7 +6510,6 @@ achieving
 adjustment
 aging
 airports
-america's
 anxious
 appendix
 athletic
@@ -6746,7 +6615,6 @@ variables
 ve
 widow
 width
-®
 accurately
 adventures
 ahh
@@ -6843,7 +6711,6 @@ sells
 shade
 shadows
 shallow
-should've
 southwest
 speculation
 succession
@@ -6853,7 +6720,6 @@ suspicion
 ta
 tab
 taiwan
-team's
 toe
 traveled
 travels
@@ -6868,7 +6734,6 @@ vitamin
 warn
 wished
 yang
-™
 accommodate
 activated
 apartments
@@ -7068,7 +6933,6 @@ runway
 salmon
 secular
 sentiment
-she'd
 simpson
 slim
 smallest
@@ -7364,7 +7228,6 @@ headache
 highlighted
 historian
 honesty
-how's
 imprisonment
 inclusion
 inherited
@@ -7432,7 +7295,6 @@ whale
 wishing
 xd
 yay
-00nd
 absorbed
 adorable
 affiliate
@@ -7545,8 +7407,6 @@ violations
 virtue
 wi
 withdrawn
-00a
-00mm
 abused
 accounted
 advisor
@@ -7571,7 +7431,6 @@ catholics
 certainty
 champagne
 chi
-child's
 clash
 closes
 colleague

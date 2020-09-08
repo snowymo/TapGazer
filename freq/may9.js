@@ -207,7 +207,8 @@ let mostFrequentWords = getMostFrequentWords();
 let randomInt = n => Math.floor(n * random());
 let randomMathInt = n => Math.floor(Math.random() * n);
 
-let wordCount = {}, mapping = [], wordComplete = {}, minInputString = {}, wordCountFirst = {}, wordCountLast = {};
+let wordCount = {}, mapping = [], wordComplete = {}, minInputString = {}, wordCountFirst = {}, wordCountLast = {}, 
+firstInputString = {}, firstWordComplete = {}, firstWordCount = {};
 // wordComplete saves incomplete words for each input string, at most 5, according to the word freq
 
 // suggestedMappings = [[ 'os', 'zjkxqap', 'efw', 'mnh', 'vicg', 'ld', 'yur', 'bt' ],
@@ -292,14 +293,41 @@ let addIncompleteWord = (curWord, curFingerSeq) => {
    }
 }
 
+let addFirstCandWord = (curWord, curFingerSeq) => {
+   if (!(curFingerSeq in firstWordComplete)) {
+      firstWordComplete[curFingerSeq] = curWord;
+   }else{
+      if(curWord.length == curFingerSeq.length){
+         // complete word
+         if(firstWordComplete[curFingerSeq].length == curFingerSeq.length){
+            if(wordnfreq[firstWordComplete[curFingerSeq]] < wordnfreq[curWord]){
+               firstWordComplete[curFingerSeq] = curWord;
+            }else{
+               console.log("[warning]" + curWord + " has same inputString with " + firstWordComplete[curFingerSeq]);
+            }  
+         }else{
+            firstWordComplete[curFingerSeq] = curWord;
+         }
+      }else{
+         if(wordnfreq[firstWordComplete[curFingerSeq]] < wordnfreq[curWord]){
+            firstWordComplete[curFingerSeq] = curWord;
+         }
+      }      
+   }
+}
+
 let classifyWords = (wordList, n) => {
    if(wordList === undefined)
       wordList = wordList1;
-   wordCount = {}; wordComplete = {}; minInputString = {}, wordCountFirst = {}, wordCountLast = {};
+   wordCount = {}; wordComplete = {}; minInputString = {}, wordCountFirst = {}, wordCountLast = {},
+      firstInputString = {}, firstWordComplete = {};
+
    for (let i = 0; i < wordList.length; i++) {
       let word = wordList[i];
       let c = classifyWord(word);
       minInputString[word] = c;
+      firstInputString[word] = c;
+      
       if (c == "")
          continue;
       if (wordCount[c] === undefined) {
@@ -308,11 +336,21 @@ let classifyWords = (wordList, n) => {
       wordCount[c]++;
       // for word completion
       if (enableWordComplete) {
-         for (let ci = 1; ci <= c.length-1; ci++) {
+         for (let ci = 1; ci <= c.length; ci++) {
             addIncompleteWord(word, c.substr(0, ci));
          }
       }
    }
+   // christof
+   // if(wordList == wordList2){
+      for (let i = 0; i < wordList2.length; i++) {
+         let word = wordList2[i];
+         let c = classifyWord(word);
+         for (let ci = 1; ci <= c.length; ci++) {
+            addFirstCandWord(word, c.substr(0, ci));
+         }
+      }
+   // }   
    // go through all the words again, assign a minimum input string to each word
    // when we compute the score, we will inquiry the minimum input string for cost calculation
    if (enableWordComplete) {
@@ -329,6 +367,18 @@ let classifyWords = (wordList, n) => {
                wordCount[curFingerSeq]++;
             }
          }
+      }
+   }
+   // Christof
+   for (var curFingerSeq in firstWordComplete) {
+      var curWordComplete = firstWordComplete[curFingerSeq];
+      if(curWordComplete in firstInputString){
+         if(firstInputString[curWordComplete].length >= curFingerSeq.length){
+            firstInputString[curWordComplete] = curFingerSeq;
+         }
+      }
+      else{
+         firstInputString[curWordComplete] = curFingerSeq;
       }
    }
    // for division layout
@@ -731,16 +781,41 @@ let sumMinInputString = (wordList) => {
    console.log("weighted sum for " + (supportGS ? "GS" : "MS") + " and " + wordList.length.toString() + ":" + score);
 }
 
+let sumFirstCand = (wordList) => {
+   if(wordList == undefined)
+      wordList = wordList2;
+
+   let sumFreq = 0;
+   let score = 0;
+   for (let n = 0; n < wordList.length; n++) {
+      let word = wordList[n];
+      if (word.length == 0)
+         continue;
+      
+      if(Object.values(firstWordComplete).indexOf(word) == -1){
+         console.log("[warning] word " + word + " won't be shown at the first candidate all the time");
+      }else{
+         score += (firstInputString[word].length) * wordnfreq[word];
+         sumFreq += wordnfreq[word];
+         console.log("\t" + word + "," + firstInputString[word]);
+      }      
+   }
+   score /= sumFreq;
+   console.log("weighted sum for being the first candidate for dictionary " + wordList.length.toString() + " : " + score);
+}
+
 let evalChristofMinInputString = () => {
    enableWordComplete = true;
 
    supportGS = true;
    classifyWords(wordList1);
+   sumFirstCand(wordList2);
+
    sumMinInputString(wordList1);
    // classifyWords(wordList2);
    sumMinInputString(wordList2);
    // classifyWords(wordList3);
-   sumMinInputString(wordList3);
+   sumMinInputString(wordList3);   
 
    supportGS = false;
    classifyWords(wordList1);
@@ -748,7 +823,7 @@ let evalChristofMinInputString = () => {
    // classifyWords(wordList2);
    sumMinInputString(wordList2);
    // classifyWords(wordList3);
-   sumMinInputString(wordList3);
+   sumMinInputString(wordList3);   
 }
 
 let evalModels = (curMapping) => {
@@ -831,7 +906,7 @@ else if (stageStartLevel == 3) {
 // FindOptimalLayout(stageStartLevel);
 
 // eval the models
-mapping = ['qaz', 'wsx', 'edc', 'rfvtgb', 'yhnujm', 'ik', 'ol', 'p'];
+mapping = ['qaz', 'wsx', 'edc', 'rfvtgb', 'yhnuj', 'mik', 'ol', 'p'];
 evalModels(mapping);
 
 // eval the results

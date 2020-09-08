@@ -19,19 +19,28 @@ def get_freq_until(prob):
     count = 0
     with open('top' + str(prob) + '.txt', 'w', encoding='utf-8') as filehandle:
         for item in top10k:
+            item = item.lower()
+            # no matter it is a-z, we add the freq
             sum += word_frequency(item, 'en')
-            count = count+1
-            filehandle.writelines("%s\n" % item)
-            if sum > prob:
-                break
+            if re.match('^[a-z]+$', item):
+                count = count+1
+                filehandle.writelines("%s\n" % item)
+                if sum > prob:
+                    break
 
     print (sum, count)
 
 def generate_top_n(n):
-    topWords = top_n_list('en', n, wordlist="large")
+    topWords = top_n_list('en', n*2, wordlist="large")
+    count = 0
     with open('top' + str(n) + '.txt', 'w', encoding='utf-8') as filehandle:
         for word in topWords:
-            filehandle.writelines("%s\n" % word)
+            word = word.lower()
+            if re.match('^[a-z]+$', word):
+                filehandle.writelines("%s\n" % word)
+                count = count + 1
+                if count == n:
+                    break
 
     print ('top' + str(n) + '.txt')
 
@@ -50,7 +59,7 @@ get_freq_until(0.95)
 
 get_freq_until(0.97)
 
-get_freq_until(0.99)
+# get_freq_until(0.99)
 
 get_sum_freq(100)
 
