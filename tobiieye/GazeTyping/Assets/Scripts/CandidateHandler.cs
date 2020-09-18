@@ -117,7 +117,7 @@ public class CandidateHandler : MonoBehaviour
     } else if (candidateLayout == ProfileLoader.CandLayout.ONE)
     {
       // for now, and circle later
-      CandidateCount = 5;
+      CandidateCount = 10;
       CandidatePerRow = 2;
       //CreateRowLayout();
       CreateCircleLayout();
@@ -364,7 +364,7 @@ public class CandidateHandler : MonoBehaviour
   void CreateCircleLayout() {
     pentagonArea.gameObject.SetActive(true);
     string prefix = "VSCand";
-    for(int i = 1; i <= 5; i++)
+    for(int i = 1; i <= CandidateCount; i++)
     {
       GameObject go = pentagonArea.Find(prefix + i.ToString()).gameObject;
       go.GetComponent<Candidate>().SetCandidateText("");

@@ -108,6 +108,7 @@ public class InputHandler : MonoBehaviour
     spellingKeyStatus["u"] = new KeyEventTime();
   }
 
+    private int indexForSpellInLine = -1;
   private void updateDisplayInput() {
     // udpate inputTextMesh.text with currentTypedWords
     inputTextMesh.text = "";
@@ -115,6 +116,7 @@ public class InputHandler : MonoBehaviour
     {
       currentTypedWords.Clear();
       currentInputLine = "";
+            indexForSpellInLine = 0;
     }
 
     for (int i = 0; i < currentTypedWords.Count; i++)
@@ -124,13 +126,26 @@ public class InputHandler : MonoBehaviour
     if (toggleSpelling)
     {
       // add letter for spelling mode
-      int lastN = currentInputLine.LastIndexOf(' ');
+      int lastN = Math.Max( currentInputLine.LastIndexOf(' '), indexForSpellInLine-1 );
       if (lastN + 1 < currentInputLine.Length)
       {
         print("[spelling mode] display:" + lastN + " " + currentInputLine.Substring(lastN + 1));
         inputTextMesh.text += currentInputLine.Substring(lastN + 1);
       }        
     }
+        if (toggleCursor)
+        {
+            inputTextMesh.text = "";
+            for (int i = 0; i < currentTypedWords.Count - cursorPos; i++)
+            {
+                inputTextMesh.text += currentTypedWords[i] + " ";
+            }
+            inputTextMesh.text += "<color=blue>I</color> ";
+            for (int i = currentTypedWords.Count - cursorPos; i < currentTypedWords.Count; i++)
+            {
+                inputTextMesh.text += currentTypedWords[i] + " ";
+            }
+        }
   }
 
   private void retrieveInputStringFromLine() {
@@ -314,7 +329,13 @@ public class InputHandler : MonoBehaviour
   }
 
   private bool toggleSpelling = false;
-  private Dictionary<string, KeyEventTime> spellingKeyStatus = new Dictionary<string, KeyEventTime>();
+    private bool toggleCursor = false;
+    public void SetCursorMode(bool b)
+    {
+        toggleCursor = b;
+        cursorPos = 0;
+    }
+    private Dictionary<string, KeyEventTime> spellingKeyStatus = new Dictionary<string, KeyEventTime>();
   bool hitSpellKey = false;
   private bool updateSpellingMode() {
     // t and u
@@ -353,6 +374,7 @@ public class InputHandler : MonoBehaviour
         toggleSpelling = !toggleSpelling;
         print("change spell mode:" + toggleSpelling);
         hitSpellKey = false;
+                indexForSpellInLine = currentInputLine.Length;
         spellingModeText.text = "mode:" + (toggleSpelling ? "spelling" : "word");
         return true;
       }
@@ -725,8 +747,9 @@ public class InputHandler : MonoBehaviour
         // select current letter or type space
         if (Time.frameCount - lastSpellTime >= spellTimeUp)
         {
-          // type space
-          currentInputString = currentInputLine.Substring(currentInputLine.LastIndexOf(" ") + 1);
+                    // type space
+                    int lastN = Math.Max(currentInputLine.LastIndexOf(' '), indexForSpellInLine - 1);
+                    currentInputString = currentInputLine.Substring(lastN + 1);
           currentInputLine += " ";
 
           // check if correct
@@ -793,11 +816,26 @@ public class InputHandler : MonoBehaviour
     //inputTextMesh.text = currentInputLine;
   }
 
+    int cursorPos = 0;
   private void HandleNewKeyboard() {
     bool isSpellKeyDown = updateSpellingMode();
     //print("isSpellKeyDown:" + isSpellKeyDown);
     if (isSpellKeyDown)
       return;
+
+        //
+        if (toggleCursor)
+        {
+            if (Input.GetKeyDown(KeyCode.U))
+            {
+                ++cursorPos;
+            }else if (Input.GetKeyDown(KeyCode.Alpha0))
+            {
+                --cursorPos;
+            }
+            updateDisplayInput();
+            return;
+        }
 
     // type in spell mode
     if (toggleSpelling)
@@ -861,11 +899,13 @@ public class InputHandler : MonoBehaviour
       } else if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TRAINING)
       {
         HandleNewKeyboard();
-      } else if (measurement.allowInput)
-      {
-        HandleNewKeyboard();
       }
-    } else
+      //      else if (measurement.allowInput)
+      //{
+      //  HandleNewKeyboard();
+      //}
+            HandleNewKeyboard();
+        } else
     {
       if (measurement.allowInput)
         HandleTouchInput();

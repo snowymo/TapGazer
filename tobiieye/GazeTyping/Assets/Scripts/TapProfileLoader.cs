@@ -7,7 +7,7 @@ public class TapProfileLoader : ProfileLoader
 {
   void Awake() {
     profile = curProfile;
-    wordlistLoader.wordlistPath = "30k-result" + profile + ".json";
+    wordlistLoader.wordlistPath = "top0.9-result" + profile + ".json";
     typingMode = curTypingMode;
     inputMode = curInputMode;
     session_number = curSessionNumber;

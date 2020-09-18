@@ -60,7 +60,7 @@ public class ProfileLoader : MonoBehaviour {
   // Start is called before the first frame update
   void Awake() {
     profile = curProfile;
-    wordlistLoader.wordlistPath = "30k-result" + profile + ".json";
+    wordlistLoader.wordlistPath = "top0.9-result" + profile + ".json";
     typingMode = curTypingMode;
     inputMode = curInputMode;
     session_number = curSessionNumber;
@@ -126,7 +126,20 @@ public class ProfileLoader : MonoBehaviour {
         letterMap[item.Value].Add(item.Key[0]);
       }
     }
-  }
+        // hack for symbols
+        letterMap["a"].Add('1');
+        letterMap["a"].Add('!');
+        letterMap["s"].Add('2');
+        letterMap["d"].Add('3');
+        letterMap["f"].Add('4');
+        letterMap["f"].Add('5');
+        letterMap[";"].Add('9');
+        letterMap[";"].Add('0');
+        letterMap[";"].Add(';');
+        letterMap[";"].Add('-');
+        letterMap[";"].Add('(');
+        letterMap[";"].Add(')');
+    }
 
   protected void updateRenderTexture() {
     renderTextureIndices = new int[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
