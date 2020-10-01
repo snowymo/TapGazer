@@ -1,0 +1,9 @@
+participant, method, gaze, completion, cur_finger, prev_finger, type, duration_ms, cand_total, cand_index, time_since_1970_ms
+zhenyi,TapGazer,MS,NC,b,,tap,0.0000,0,0,1599324128928.1200
+zhenyi,TapGazer,MS,NC,e,b,tap,466.5975,0,0,1599324129394.7100
+zhenyi,TapGazer,MS,NC,t,e,tap,342.3432,0,0,1599324129737.0600
+zhenyi,TapGazer,MS,NC,t,t,tap,342.7404,0,0,1599324130079.8000
+zhenyi,TapGazer,MS,NC,e,t,tap,436.0334,0,0,1599324130515.8300
+zhenyi,TapGazer,MS,NC,r,e,tap,436.2120,0,0,1599324130952.0400
+zhenyi,TapGazer,MS,NC,space,r,selection,1837.8287,0,0,1599324132789.8700
+zhenyi,TapGazer,MS,NC,Space,space,selection,2089.2087,2,0,1599324134879.0800

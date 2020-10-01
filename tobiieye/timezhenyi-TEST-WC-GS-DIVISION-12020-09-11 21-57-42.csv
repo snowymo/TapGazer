@@ -1,0 +1,21 @@
+participant, method, gaze, completion, cur_finger, prev_finger, type, duration_ms, cand_total, cand_index, time_since_1970_ms
+zhenyi,TapGazer,GS,WC,w,,tap,0.0000,0,0,1599861395471.5700
+zhenyi,TapGazer,GS,WC,e,w,tap,1655.6842,0,0,1599861397127.2600
+zhenyi,TapGazer,GS,WC,l,e,tap,1159.6968,0,0,1599861398286.9500
+zhenyi,TapGazer,GS,WC,c,l,tap,650.3505,0,0,1599861398937.3000
+zhenyi,TapGazer,GS,WC,space,c,selection,778.8714,5,-1,1599861399716.1700
+zhenyi,TapGazer,GS,WC,t,space,tap,1044.0090,0,0,1599861400760.1800
+zhenyi,TapGazer,GS,WC,o,t,tap,3681.0570,0,0,1599861404441.2400
+zhenyi,TapGazer,GS,WC,space,o,selection,2551.7059,10,2,1599861406992.9500
+zhenyi,TapGazer,GS,WC,c,space,tap,615.3638,0,0,1599861407608.3100
+zhenyi,TapGazer,GS,WC,h,c,tap,911.2588,0,0,1599861408519.5700
+zhenyi,TapGazer,GS,WC,i,h,tap,513.5582,0,0,1599861409033.1300
+zhenyi,TapGazer,GS,WC,space,i,selection,597.3015,10,-1,1599861409630.4300
+zhenyi,TapGazer,GS,WC,d,space,tap,2579.3456,0,0,1599861412209.7700
+zhenyi,TapGazer,GS,WC,space,d,selection,645.9158,10,-1,1599861412855.6900
+zhenyi,TapGazer,GS,WC,i,,tap,0.0000,0,0,1599861413948.7900
+zhenyi,TapGazer,GS,WC,n,i,tap,1689.3428,0,0,1599861415639.1300
+zhenyi,TapGazer,GS,WC,space,n,selection,2241.6069,10,-1,1599861417880.7300
+zhenyi,TapGazer,GS,WC,s,space,tap,795.2770,0,0,1599861418676.0100
+zhenyi,TapGazer,GS,WC,u,s,tap,2061.1488,0,0,1599861420737.1600
+zhenyi,TapGazer,GS,WC,space,u,selection,41602.2221,10,-1,1599861462339.3800
