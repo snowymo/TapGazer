@@ -18,7 +18,7 @@ public class CandidateHandler : MonoBehaviour
   int CandidateCount = 11;
   float CandidateWidth; // roughly it fits for 5-character word
   float CandidateStartHeight = -2.1f;
-  float CandidateHeight = -0.36f;
+  float CandidateHeight = -0.5f;
   int CandidatePerRow;
   public int GazedCandidate = 0; // index of the candidate being gazed
   float perWidth;
@@ -66,12 +66,8 @@ public class CandidateHandler : MonoBehaviour
     set { screenGazeOffset = value; }
   }
 
-  private int curGazedDivision;
-  public int CurGazedDivision
-  {
-    get { return curGazedDivision; }
-    set { curGazedDivision = value; }
-  }
+  public int curGazedDivision;
+
   // map btw regular keys and input string
   Dictionary<char, int> mapKey2Column = new Dictionary<char, int>()
     {
@@ -127,8 +123,8 @@ public class CandidateHandler : MonoBehaviour
       CandidateCount = 13;
       CandidatePerRow = 4;
 
-      CandidateCount = 7;
-      CandidatePerRow = 3;
+      //CandidateCount = 7;
+      //CandidatePerRow = 3;
       CreateRowLayout();
       // order the candidates by lexical order
     }
@@ -272,14 +268,15 @@ public class CandidateHandler : MonoBehaviour
 
   private void CreateWordCloudLayout()
   {
-    // let's use a 4x4 here
-    // first, we can show some candidates with high freq, but let's do it next
-    //
-    isEllipsis = true;
+        // let's use a 4x4 here
+        // first, we can show some candidates with high freq, but let's do it next
+        //
+        // hack
+        //isEllipsis = true;
     CandidateCount = 16;
     int maxLength = 10;
     CandidatePerRow = 4;
-    perWidth = 0.75f;
+        perWidth = 0.75f / 4f;
     CandidateWidth = perWidth * maxLength;
     for (int i = 0; i < CandidateCount; i++)
     {
@@ -322,8 +319,9 @@ public class CandidateHandler : MonoBehaviour
     // let's use 16-x for now?
     index = Mathf.Min(15, index);
     //float answer = (54.0f - index) / 54.0f * 10.0f;
-    float answer = 200.0f - index * 8.5f;
-    return answer;
+    float answer = (200.0f - index * 8.5f);
+        answer = (7 - index * 0.35f);
+        return answer;
   }
 
   int[] priorityIndices = new int[] { 5, 10, 9, 6, 0, 15, 12, 3, 1, 14, 8, 7, 2, 13, 4, 11 };
@@ -708,12 +706,13 @@ public class CandidateHandler : MonoBehaviour
       UpdateFanLayoutCandidate(cachedCandidates, progress);
     else if (candidateLayout == ProfileLoader.CandLayout.LEXIC)
     {
-      int totalNumber = 13;
-      string[] newCand = ReorgCandidates(cachedCandidates, totalNumber, completedCand);
-      //for (int i = 0; i < newCand.Length; i++) {
-      //    Debug.Log("newCand[" + i + "]:" + newCand[i]);
-      //}
-      UpdateLexicalCandidate(newCand, progress);
+            CandidateCount = 13;
+            PrepareCandidates(candidates, CandidateCount, completedCand);
+            string[] newCand = ReorgCandidates(candidates, CandidateCount, completedCand);
+            //for (int i = 0; i < newCand.Length; i++) {
+            //    Debug.Log("newCand[" + i + "]:" + newCand[i]);
+            //}
+            UpdateLexicalCandidate(newCand, progress);
     }
     else if (candidateLayout == ProfileLoader.CandLayout.BYCOL)
     {
@@ -721,17 +720,20 @@ public class CandidateHandler : MonoBehaviour
     }
     else if (candidateLayout == ProfileLoader.CandLayout.WORDCLOUD)
     {
-      int totalNumber = 16;
-      string[] newCand = ReorgCandidates(cachedCandidates, totalNumber, completedCand, false);
-      UpdateWordCloudLayout(newCand, cachedCandidates, progress);
+            CandidateCount = 16;
+            PrepareCandidates(candidates, CandidateCount, completedCand);
+            string[] newCand = ReorgCandidates(candidates, CandidateCount, completedCand, false);
+      UpdateWordCloudLayout(newCand, candidates, progress);
     }
     else if (candidateLayout == ProfileLoader.CandLayout.DIVISION)
     {
-      UpdateDivisionLayout(cachedCandidates, progress, 0);
+            PrepareCandidates(candidates, CandidateCount, completedCand);
+            UpdateDivisionLayout(candidates, progress, 0);
     }
     else if (candidateLayout == ProfileLoader.CandLayout.DIVISION_END)
     {
-      UpdateDivisionLayout(cachedCandidates, progress, 1);
+            PrepareCandidates(candidates, CandidateCount, completedCand);
+            UpdateDivisionLayout(candidates, progress, 1);
     }
     else if (candidateLayout == ProfileLoader.CandLayout.ONE)
     {
@@ -874,8 +876,8 @@ public class CandidateHandler : MonoBehaviour
   }
   private string[] ReorgCandidates(string[] candidates, int totalNumber, string[] completedCand, bool remainFirst = true)
   {
-    // instead of getting only totalNumber candidates ready for current page, we should get all of them ready for next/prev page to access
-    int newCandLen = completedCand.Length;
+        // instead of getting only totalNumber candidates ready for current page, we should get all of them ready for next/prev page to access
+        int newCandLen = Math.Min(totalNumber, candidates.Length);
     //if (newCandLen > totalNumber)      newCandLen = totalNumber;
     //Math.Max(totalNumber, completedCand.Length);
 
@@ -888,11 +890,11 @@ public class CandidateHandler : MonoBehaviour
     for (int i = 0; i < newCandLen; i++)
       newCand[i] = "";
 
-    if (completeCandNumber == 0)
-    {
-      // no completed candidates then we just return candidates directly            
-      return newCand;
-    }
+    //if (completeCandNumber == 0)
+    //{
+    //  // no completed candidates then we just return candidates directly            
+    //  return newCand;
+    //}
     // put complete cand first, then following with incomplete candidates
     // there still exists completed candidates in candidates array so we need to skip them
     //// a simple trick: because all the candidates will be sorted via lexcial order later, we just need to put all the completed candidates first, and then the top (n-m) incompleted candidates
