@@ -793,11 +793,11 @@ let sumFirstCand = (wordList) => {
          continue;
       
       if(Object.values(firstWordComplete).indexOf(word) == -1){
-         console.log("[warning] word " + word + " won't be shown at the first candidate all the time");
+         //console.log("[warning] word " + word + " won't be shown at the first candidate all the time");
       }else{
          score += (firstInputString[word].length) * wordnfreq[word];
          sumFreq += wordnfreq[word];
-         console.log("\t" + word + "," + firstInputString[word]);
+         // console.log("\t" + word + "," + wordnfreq[word] + "," + firstInputString[word].length + "," + firstInputString[word]);
       }      
    }
    score /= sumFreq;
@@ -907,11 +907,16 @@ else if (stageStartLevel == 3) {
 
 // eval the models
 mapping = ['qaz', 'wsx', 'edc', 'rfvtgb', 'yhnuj', 'mik', 'ol', 'p'];
+// mapping = ['uvxyh','rt','kzqpo','bdi','jwef','mcn','agl','s'];
 evalModels(mapping);
 
 // eval the results
 //load stage3result from stage3.json
-// let stage3Result = JSON.parse(fs.readFileSync('stage3.json'));
+let stage3Result = JSON.parse(fs.readFileSync('stage3.json'));
+Object.keys(stage3Result).forEach(function (key) {
+   evalModels(key);
+});
+
 // Object.keys(stage3Result).forEach(function (key) {
 //    bestMappings.add(key.split(","), stage3Result[key]);
 // });

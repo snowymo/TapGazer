@@ -18,6 +18,8 @@ config = {'q': 'a', 'a': 'a', 'z': 'a',
     'o': 'l', 'l': 'l',
     'p': ';'}
 
+configGKD = {"b": "a", "m": "a", "f": "a", "q": "s", "y": "s", "u": "s", "p": "d", "z": "d", "w": "d", "c": "f", "s": "f", "o": "f", "r": "f", "i": "f", "n": "f", "j": "j", "t": "j", "a": "j", "e": "j", "h": "j", "v": "k", "x": "k", "g": "k", "d": "l", "k": "l", "l": ";"}
+configGKT = {"q": "a", "z": "a", "c": "a", "d": "s", "r": "s", "e": "s", "w": "d", "f": "d", "x": "d", "s": "f", "a": "f", "h": "f", "o": "f", "t": "f", "v": "f", "i": "j", "n": "j", "m": "j", "y": "j", "g": "j", "u": "k", "k": "k", "b": "k", "j": "l", "l": "l", "p": ";"}
 configP = {"a": "s", "s": "s", "x": "s", "z": "s", "e": "d", "f": "d", "q": "d", "r": "d", "w": "d", "c": "f", "d": "f", "v": "f", "b": "j", "g": "j", "h": "j", "j": "j", "m": "j", "n": "j", "t": "j", "y": "j", "i": "k", "k": "k", "o": "k", "p": "k", "u": "k", "l": "l"}
 # try nine fingers
 configAZ = {"a":"a","b":"a","c":"a",
@@ -87,6 +89,9 @@ configKen1 = {"m":"a","n":"a","h":"a",
               "b":"l","t":"l",
               "l":";","d":";"}
 
+#
+# config = configAZ
+
 freq_dict = get_frequency_dict("en", wordlist='best')
 
 dictionaryFileName = "top0.9"
@@ -98,7 +103,7 @@ configFileName = "classic"
 def change_config():
     # use regular input to change the configuration
     print("Do you want to change the configuration? Default key mapping is: ")
-    print("qaz;\twsx;\tedc;\trfvtgb;\tyhnuj;\ttikm;\tol;\tp")
+    print("qaz;\twsx;\tedc;\trfvtgb;\tyhnuj;\tikm;\tol;\tp")
     print("Type y if you want to, type anything else if you prefer the default one")
     answer = input()
     mapFinger2Name = {'a': "left pinky",

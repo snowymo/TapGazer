@@ -7,6 +7,15 @@ top10k = top_n_list('en', 1000000, wordlist="large")
 print(len(top10k))
 
 top40k =top_n_list('en', 40145, wordlist="large")
+
+missing_words = ["if", "our", "then"]
+mw_freq = 0
+for mw in missing_words:
+    print( mw, word_frequency(mw,"en", "large"))
+    mw_freq += word_frequency(mw,"en", "large")
+print(mw_freq)
+
+
 with open('top40k.txt', 'w', encoding='utf-8') as filehandle:
     for word in top40k:
         word = word.lower()
