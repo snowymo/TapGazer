@@ -954,7 +954,7 @@ MonoBehaviour:
   pageTextMesh: {fileID: 627741587}
   enableWordCompletion: 1
   enableDeleteEntire: 1
-  enableChordSelection: 1
+  enableChordSelection: 0
   candidateObjects: []
   defaultWord: 
   CurrentGazedText: 
@@ -5057,7 +5057,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curTypingMode: 1
-  curProfile: zhenyi
+  curProfile: classic
   curSessionNumber: 1
   wordlistLoader: {fileID: 132433878}
   dynamicHandKey: {fileID: 1008559595}
@@ -5071,11 +5071,11 @@ MonoBehaviour:
   showGridHint: 0
   regularInput: {fileID: 94866699}
   newKeyboardInput: {fileID: 1057379355}
-  curOutputMode: 2
+  curOutputMode: 0
   curInputMode: 0
-  curEnterMode: 1
+  curEnterMode: 0
   curWcMode: 0
-  curSelectionMode: 0
+  curSelectionMode: 1
   curCandidateLayout: 7
 --- !u!4 &840372617
 Transform:

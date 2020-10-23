@@ -84,10 +84,14 @@ public class CandidateHandler : MonoBehaviour
   void Start()
   {
     //
-    secondFingerAss[1].text = ProfileLoader.mapInputString2Letter["d"][0] + "-LMid";
-    secondFingerAss[2].text = ProfileLoader.mapInputString2Letter["k"][0] + "-RMid";
-    secondFingerAss[3].text = ProfileLoader.mapInputString2Letter["f"][0] + "-LInd";
-    secondFingerAss[4].text = ProfileLoader.mapInputString2Letter["j"][0] + "-RInd";
+    if(ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS)
+        {
+            secondFingerAss[1].text = ProfileLoader.mapInputString2Letter["d"][0] + "-LMid";
+            secondFingerAss[2].text = ProfileLoader.mapInputString2Letter["k"][0] + "-RMid";
+            secondFingerAss[3].text = ProfileLoader.mapInputString2Letter["f"][0] + "-LInd";
+            secondFingerAss[4].text = ProfileLoader.mapInputString2Letter["j"][0] + "-RInd";
+        }
+    
 
     pageTextMesh.enabled = ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST && ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS;
 

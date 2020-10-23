@@ -122,7 +122,7 @@ public class InputHandler : MonoBehaviour
 		deletionKeys = new string[] { "b", "n" };
 		spellingKeyStatus["t"] = new KeyEventTime();
 		spellingKeyStatus["u"] = new KeyEventTime();
-		capslockTextMesh = GameObject.Find("capslock").GetComponent<TMPro.TextMeshPro>();
+		//capslockTextMesh = GameObject.Find("capslock").GetComponent<TMPro.TextMeshPro>();
 	}
 
 	private void updateDisplayInput()

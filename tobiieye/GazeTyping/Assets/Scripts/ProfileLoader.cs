@@ -140,7 +140,7 @@ public class ProfileLoader : MonoBehaviour {
     inputMode = curInputMode;
     session_number = curSessionNumber;
     outputMode = curOutputMode;
-    curEnterMode = EnterMode.BOTH_THUMB;
+    //curEnterMode = EnterMode.BOTH_THUMB;
     enterMode = curEnterMode;
     wcMode = curWcMode;
     selectionMode = curSelectionMode;
