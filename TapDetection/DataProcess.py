@@ -18,7 +18,7 @@ with open("C:\\Projects\\sensel-api\\sensel-examples\\sensel-c\\example-4-multi\
     for line in fd:
         fGroundTruth.append(line)
 
-
+ 
 # data format
 # timestamp, 3 floats x 5 fingers, contact or not for each finger
 # TODO timestamp, 3 floats x 5 fingers, one int represents which finger is down, -1 means no contacts
