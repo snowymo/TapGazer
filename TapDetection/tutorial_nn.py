@@ -279,7 +279,6 @@ for epoch in range(epochs):
     model.train()
     for xb, yb in train_dl:
         pred = model(xb)
-        print(pred.shape)
         loss = loss_func(pred, yb)
 
         loss.backward()
@@ -299,8 +298,8 @@ for epoch in range(epochs):
 # We pass an optimizer in for the training set, and use it to perform backprop.
 # For the validation set, we don’t pass an optimizer, so the method doesn’t perform backprop.
 def loss_batch(model, loss_func, xb, yb, opt=None):
-    modelxb = model(xb)
-    print(modelxb.shape)
+    # modelxb = model(xb)
+    # print(modelxb.shape)
     loss = loss_func(model(xb), yb)
 
     if opt is not None:
@@ -336,7 +335,7 @@ def get_data(train_ds, valid_ds, bs):
 print("=====Create fit() and get_data()=====")
 train_dl, valid_dl = get_data(train_ds, valid_ds, bs)
 model, opt = get_model()
-fit(epochs, model, loss_func, opt, train_dl, valid_dl)
+fit(epochs=1, model=model, loss_func=loss_func, opt=opt, train_dl=train_dl, valid_dl=valid_dl)
 
 
 # ##########Let’s see if we can use them to train a convolutional neural network (CNN)!
@@ -364,6 +363,7 @@ lr = 0.1
 model = Mnist_CNN()
 opt = optim.SGD(model.parameters(), lr=lr, momentum=0.9)#SGD?
 print("===CNN===")
+epochs = 1
 fit(epochs, model, loss_func, opt, train_dl, valid_dl)
 
 from datetime import datetime
@@ -397,6 +397,7 @@ model = nn.Sequential(
 )
 print("====NN sequential====")
 opt = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
+epochs = 1
 fit(epochs, model, loss_func, opt, train_dl, valid_dl)
 
 ### wrapping data loader===
@@ -467,5 +468,6 @@ model.to(dev)
 print("======GPU=====")
 opt = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
 curTime = datetime.now()
+epochs = 6
 fit(epochs, model, loss_func, opt, train_dl, valid_dl)
 print("Current Time =", str(datetime.now()-curTime))

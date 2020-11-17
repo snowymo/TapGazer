@@ -34,7 +34,10 @@ dev = torch.device(
 # Let’s update preprocess to move batches to the GPU:
 # not really necessary here
 def preprocess(x, y):
-    # return x.view(-1, 1, 28, 28).to(dev), y.to(dev)
+    # print(x.shape)
+    x = torch.unsqueeze(x, dim=1)
+    # print(x.shape)
+    # return x.view(-1, -1, 1).to(dev), y.to(dev)
     return x.to(dev), y.to(dev)
 
 # to load all kinds of func
@@ -74,6 +77,26 @@ valid_dl = WrappedDataLoader(valid_dl, preprocess)
 # we can move our model to the GPU.
 # MODEL DESIGN
 model = nn.Sequential(
+    nn.Conv1d(in_channels=1,out_channels=8,kernel_size=3),# output bs x 8 x 13=104
+    # nn.Conv1d(in_channels=64,out_channels=128,kernel_size=3),
+    nn.BatchNorm1d(8),
+    nn.Flatten(),
+    nn.Linear(104, 104),
+    nn.ReLU(),
+    nn.Linear(104, 64),
+    # nn.Conv2d(16, 16, kernel_size=3, stride=2, padding=1),
+    nn.ReLU(),
+    nn.Linear(64,32),
+    # nn.Conv1d(5,1,kernel_size=2),
+    # nn.Conv2d(16, 10, kernel_size=3, stride=2, padding=1),
+    nn.ReLU(),
+    nn.Linear(32,16),
+    nn.Linear(16,6),
+    nn.Linear(6,6),
+    # nn.AdaptiveAvgPool2d(1),
+    # Lambda(lambda x: x.view(x.size(0), -1)),
+)
+model2 = nn.Sequential(
     nn.Linear(15,10),
     nn.ReLU(),
     nn.Linear(10,6),
@@ -94,7 +117,7 @@ model.to(dev)
 # So we can even remove the activation function from our model.
 
 loss_func = F.cross_entropy
-lr = 0.3  # learning rate
+lr = 0.03  # learning rate
 epochs = 10  # how many epochs to train for
 opt = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
 # We’ll now do a little refactoring of our own.
@@ -104,7 +127,8 @@ opt = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
 # We pass an optimizer in for the training set, and use it to perform backprop.
 # For the validation set, we don’t pass an optimizer, so the method doesn’t perform backprop.
 def loss_batch(model, loss_func, xb, yb, opt=None):
-    loss = loss_func(model(xb), yb)
+    modelxb = model(xb)
+    loss = loss_func(modelxb, yb)
 
     if opt is not None:
         loss.backward()
@@ -113,13 +137,24 @@ def loss_batch(model, loss_func, xb, yb, opt=None):
 
     return loss.item(), len(xb)
 
+def accuracy(out, yb):
+    preds = torch.argmax(out, dim=1)
+    return (preds == yb).float().mean()
+
 def fit(epochs, model, loss_func, opt, train_dl, valid_dl):
     for epoch in range(epochs):
         # train mode
+        model.zero_grad()
         model.train()
+        iteration = 0
         for xb, yb in train_dl:
-            loss_batch(model, loss_func, xb, yb, opt)
+            iteration += 1
+            train_loss,_ = loss_batch(model, loss_func, xb, yb, opt)
+            if iteration % 1 == 0:
+                print("train_loss", iteration, train_loss)
 
+        acc = accuracy(model(xb), yb)
+        print("acc", epoch, acc)
         # evaluation mode
         model.eval()
         with torch.no_grad():
@@ -128,7 +163,7 @@ def fit(epochs, model, loss_func, opt, train_dl, valid_dl):
             )
         val_loss = np.sum(np.multiply(losses, nums)) / np.sum(nums)
 
-        print(epoch, val_loss)
+        print("val_loss", epoch, val_loss)
 
 curTime = datetime.now()
 fit(epochs, model, loss_func, opt, train_dl, valid_dl)
