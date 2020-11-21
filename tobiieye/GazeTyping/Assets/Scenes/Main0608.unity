@@ -4760,7 +4760,7 @@ MonoBehaviour:
   curOutputMode: 0
   curInputMode: 0
   curEnterMode: 0
-  curWcMode: 1
+  curWcMode: 0
   curSelectionMode: 1
   curCandidateLayout: 7
 --- !u!4 &840372617

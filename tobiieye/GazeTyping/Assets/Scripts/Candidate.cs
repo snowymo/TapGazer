@@ -29,7 +29,7 @@ public class Candidate : MonoBehaviour {
   // Update is called once per frame
   void Update() {
     if (ProfileLoader.outputMode == ProfileLoader.OutputMode.Devkit) {
-      if (handlerFocusAtGaze.GetGaze()) {
+      if (handlerFocusAtGaze.GetGaze() && pureText.Length > 0) {
         CandText.fontStyle = TMPro.FontStyles.Underline;
         candidateHandler.GazedCandidate = candidateIndex;
         candidateHandler.CurrentGazedText = pureText;// TODO: TESTING removeFormat(CandText.text);

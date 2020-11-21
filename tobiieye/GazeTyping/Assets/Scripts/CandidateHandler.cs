@@ -416,7 +416,7 @@ public class CandidateHandler : MonoBehaviour
     {
       GameObject go = pentagonArea.Find(prefix + i.ToString()).gameObject;
       go.GetComponent<Candidate>().SetCandidateText("");
-      go.GetComponent<Candidate>().candidateIndex = i;
+      go.GetComponent<Candidate>().candidateIndex = i-1;
       go.GetComponent<Candidate>().candidateHandler = this;
       candidateObjects.Add(go);
     }

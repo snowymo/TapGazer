@@ -519,8 +519,10 @@ public class InputHandler : MonoBehaviour
 				break;
 			case ProfileLoader.SelectionMode.GSE:
 			case ProfileLoader.SelectionMode.GSR:
-				candIndex = handleSelection(-1, ProfileLoader.mapInputString2Letter["n"][0]);
-				break;
+                // ZH
+                //candIndex = handleSelection(-1, ProfileLoader.mapInputString2Letter["n"][0]);
+                candIndex = handleSelection(candidateHandler.GazedCandidate, ProfileLoader.mapInputString2Letter["n"][0]);
+                break;
 			default:
 				break;
 		}
@@ -531,7 +533,7 @@ public class InputHandler : MonoBehaviour
 
 	private void typeInWordModeNoChord_LT(string str)
 	{
-    if (currentInputString.Length == 0)
+    if (currentInputLine.Length == 0)
     {
       Debug.Log("no input string");
       return;
