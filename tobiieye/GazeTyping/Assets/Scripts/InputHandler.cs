@@ -521,7 +521,7 @@ public class InputHandler : MonoBehaviour
 			case ProfileLoader.SelectionMode.GSR:
                 // ZH
                 //candIndex = handleSelection(-1, ProfileLoader.mapInputString2Letter["n"][0]);
-                candIndex = handleSelection(candidateHandler.GazedCandidate, ProfileLoader.mapInputString2Letter["n"][0]);
+                candIndex = handleSelection(ProfileLoader.isSimulated ? -1 : candidateHandler.GazedCandidate, ProfileLoader.mapInputString2Letter["n"][0]);
                 break;
 			default:
 				break;

@@ -4743,7 +4743,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curTypingMode: 1
-  curProfile: zhenyi
+  curProfile: zhenyi10
   curSessionNumber: 1
   wordlistLoader: {fileID: 132433878}
   dynamicHandKey: {fileID: 1008559595}
@@ -4757,12 +4757,13 @@ MonoBehaviour:
   showGridHint: 0
   regularInput: {fileID: 94866699}
   newKeyboardInput: {fileID: 1057379355}
-  curOutputMode: 0
+  curOutputMode: 2
   curInputMode: 0
   curEnterMode: 0
-  curWcMode: 0
+  curWcMode: 1
   curSelectionMode: 1
   curCandidateLayout: 7
+  curIsSimulated: 1
 --- !u!4 &840372617
 Transform:
   m_ObjectHideFlags: 0
@@ -7994,8 +7995,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1424680672}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.13, y: 0.74, z: 0}
-  m_LocalScale: {x: 1.4, y: 1, z: 0.19252771}
+  m_LocalPosition: {x: -0.13, y: 0.06, z: 0}
+  m_LocalScale: {x: 1.4, y: 1, z: 0.2993505}
   m_Children: []
   m_Father: {fileID: 132433877}
   m_RootOrder: 0

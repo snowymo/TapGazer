@@ -82,6 +82,9 @@ public class ProfileLoader : MonoBehaviour {
   public static Dictionary<string, List<string>> mapInputString2Letter;
   public static bool enableDeletion = true;
 
+    public bool curIsSimulated;
+    public static bool isSimulated;
+
   // profile.name includes
   // name
   // typing seconds
@@ -145,6 +148,7 @@ public class ProfileLoader : MonoBehaviour {
     wcMode = curWcMode;
     selectionMode = curSelectionMode;
     candidateLayout = curCandidateLayout;
+        isSimulated = curIsSimulated;
     Debug.Log("typing mode:" + typingMode);
     loadConfigFile();
     if (showHandModel) {

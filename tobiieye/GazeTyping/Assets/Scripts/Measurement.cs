@@ -223,6 +223,7 @@ public class Measurement : MonoBehaviour
     // name should include profile (aka user name), mode (regular, or test), layout and session
     string name = ProfileLoader.profile + "-" + ProfileLoader.typingMode.ToString() + "-" + (ProfileLoader.wcMode == ProfileLoader.WordCompletionMode.WC ? "WC" : "NC")
        + "-" + (ProfileLoader.selectionMode == ProfileLoader.SelectionMode.MS ? "MS" : "GS")
+       + "-" + (ProfileLoader.isSimulated ? "SimulatedSetUp" : "RealSetUp")
       + "-" + ProfileLoader.candidateLayout.ToString() + "-" + ProfileLoader.session_number.ToString();
     File.AppendAllText(destination, DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "," + name + "," + totalC.ToString() + "," + totalINF.ToString() + "," + totalIF.ToString() + "," + totalF.ToString() + "," + WPM.ToString() + ","
         + correctGazeSelection.ToString() + "," + totalGazeSelection.ToString() + ","

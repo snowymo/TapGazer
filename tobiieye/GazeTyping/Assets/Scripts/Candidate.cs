@@ -28,6 +28,8 @@ public class Candidate : MonoBehaviour {
   [SerializeField] float pw, ph;
   // Update is called once per frame
   void Update() {
+        if (ProfileLoader.isSimulated)
+            return;
     if (ProfileLoader.outputMode == ProfileLoader.OutputMode.Devkit) {
       if (handlerFocusAtGaze.GetGaze() && pureText.Length > 0) {
         CandText.fontStyle = TMPro.FontStyles.Underline;
