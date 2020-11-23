@@ -4757,13 +4757,13 @@ MonoBehaviour:
   showGridHint: 0
   regularInput: {fileID: 94866699}
   newKeyboardInput: {fileID: 1057379355}
-  curOutputMode: 2
-  curInputMode: 0
+  curOutputMode: 0
+  curInputMode: 1
   curEnterMode: 0
-  curWcMode: 1
+  curWcMode: 0
   curSelectionMode: 1
   curCandidateLayout: 7
-  curIsSimulated: 1
+  curIsSimulated: 0
 --- !u!4 &840372617
 Transform:
   m_ObjectHideFlags: 0

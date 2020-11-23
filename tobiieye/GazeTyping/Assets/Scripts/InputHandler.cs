@@ -177,73 +177,22 @@ public class InputHandler : MonoBehaviour
 				handModel.PressRightFingers(index - 5);
 			helpInfo.SetActive(false);
 			switch (index)
-			{
-				case 4:
-					// b
-					// delete  
-					if (currentInputLine.Length > 1)
-					{
-						// if delete 'n', we need to remove the last typed word
-						if (currentInputLine[currentInputLine.Length - 1] == 'n')
-						{
-							currentTypedWords.RemoveAt(currentTypedWords.Count - 1);
-							// curTypingPhrase should move back to previous word too
-							if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST || ProfileLoader.typingMode == ProfileLoader.TypingMode.TAPPING)
-								phraseLoader.PreviousWord();
-						}
-						currentInputLine = currentInputLine.Substring(0, currentInputLine.Length - 1); // b won't be put inside currentLine, n will, behave as space
-						retrieveInputStringFromLine();
-						if (currentInputString.Length > 0)
-							wordListLoader.UpdateCandidates(currentInputString);
-						else
-							candidateHandler.ResetCandidates();
-					}
-					else
-					{
-						currentInputLine = "";
-						currentInputString = "";
-						candidateHandler.ResetCandidates();
-					}
-					break;
-				case 5:
-					// n
-					{
-						string presented = phraseLoader.GetCurWord().ToLower();
-						// enter
-						currentInputLine += 'n';
-						measurement.AddTapItem("n", "selection");
-						string curWord = "null";
-						if (wordListLoader.currentCandidates.Length > 0 && wordListLoader.currentCandidates[0] != null)
-						{
-							curWord = candidateHandler.CurrentGazedText == "" ? wordListLoader.currentCandidates[0] : candidateHandler.CurrentGazedText;// wordListLoader.currentCandidates[candidateHandler.GazedCandidate]; // 0 for now, 0 should be replaced by gaze result                        
-						}
-						// check if correct
-						curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
-						Debug.Log("cur word:" + curWord);
-						currentTypedWords.Add(curWord);
-						// pass corredsponding parameter to measurement
-						// currentInputString is the input stream for current word, without 'n'
-						// candidateHandler.GazedCandidate is the index of the candidates
-						// the combination of the currentInputString and index is the entire input of the transribed=C+INF, presented is retrieved from PhraseLoader
-						// the correct index of the candidates, we'd better find a way to get index from wordListLoader.currentCandidates
-						measurement.UpdateTestMeasure(presented, currentInputString, curWord.Contains("=green"));
-						// flush input
-						currentInputString = "";
-						candidateHandler.ResetCandidates();
-					}
-					break;
-				default:
-					// regular input
-					measurement.StartClock();
-					currentInputLine += mapInput2InputString[curMessage];
-					//measurement.AddTapDurationItem(mapInput2InputString[curMessage]);
-					measurement.AddTapItem(mapInput2InputString[curMessage], "tap");
-					retrieveInputStringFromLine();
-					Debug.Log("input string:" + currentInputString);
-					wordListLoader.UpdateCandidates(currentInputString);
-					break;
-			}
-			updateDisplayInput();
+            {
+                case 4:
+                    // b
+                    // delete  
+                    typeInWordModeNoChord_LT(curMessage);
+                    break;
+                case 5:
+                    // n
+                    typeInWordModeNoChord_RT();
+                    break;
+                default:
+                    // regular input
+                    typeInWordModeNoChord_otherT_GUI(curMessage);
+                    break;
+            }
+            updateDisplayInput();
 		}
 	}
 
