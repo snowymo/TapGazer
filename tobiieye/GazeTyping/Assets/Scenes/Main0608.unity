@@ -4757,8 +4757,8 @@ MonoBehaviour:
   showGridHint: 0
   regularInput: {fileID: 94866699}
   newKeyboardInput: {fileID: 1057379355}
-  curOutputMode: 0
-  curInputMode: 1
+  curOutputMode: 2
+  curInputMode: 0
   curEnterMode: 0
   curWcMode: 0
   curSelectionMode: 1
@@ -4777,6 +4777,7 @@ Transform:
   m_Children:
   - {fileID: 1147604414}
   - {fileID: 315223949}
+  - {fileID: 926596941}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5511,6 +5512,49 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 903488025}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &926596940
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 926596941}
+  - component: {fileID: 926596942}
+  m_Layer: 0
+  m_Name: gloveSerial
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &926596941
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926596940}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 840372617}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &926596942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926596940}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed1f805831cb6bc488185085dbe277ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &928098386
 GameObject:
   m_ObjectHideFlags: 0
@@ -5674,6 +5718,7 @@ MonoBehaviour:
   measurement: {fileID: 257319247}
   tcpNetwork4Sensel: {fileID: 547203080}
   tcpNetwork4Gaze: {fileID: 315223950}
+  serialComm4Glove: {fileID: 926596942}
   spellingModeText: {fileID: 1767883262}
   condition: {fileID: 887339601}
 --- !u!1 &991865613

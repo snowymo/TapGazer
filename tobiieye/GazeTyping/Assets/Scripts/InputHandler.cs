@@ -28,6 +28,7 @@ public class InputHandler : MonoBehaviour
 	public Measurement measurement;
 
 	public Network tcpNetwork4Sensel, tcpNetwork4Gaze;
+    public SerialCommunication serialComm4Glove;
 
 	private string[] selectionKeys; // ||
 	private string[] deletionKeys; // &&
@@ -97,7 +98,11 @@ public class InputHandler : MonoBehaviour
 		{
 			tcpNetwork4Sensel.enabled = true;
 			tcpNetwork4Sensel.ConnectServer();
-		}
+		}else if(ProfileLoader.inputMode == ProfileLoader.InputMode.GLOVE)
+        {
+            serialComm4Glove.enabled = true;
+            serialComm4Glove.Open();
+        }
 
 		if (ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar)
 		{
@@ -1462,11 +1467,15 @@ public class InputHandler : MonoBehaviour
 				HandleNewKeyboard();
 			}
 		}
-		else
+		else if(ProfileLoader.inputMode == ProfileLoader.InputMode.TOUCH)
 		{
 			if (measurement.allowInput)
 				HandleTouchInput();
-		}
+		}else if(ProfileLoader.inputMode == ProfileLoader.InputMode.GLOVE)
+        {
+            if (measurement.allowInput)
+                HandleGloveInput();
+        }
 
 		if (ProfileLoader.outputMode == ProfileLoader.OutputMode.Trackerbar)
 		{
@@ -1478,7 +1487,43 @@ public class InputHandler : MonoBehaviour
 		secondKeyHelpInfo.SetActive(readyForSecondKey);
 	}
 
-	public void HandleScreenGaze()
+    private void HandleGloveInput()
+    {
+        // receive serial communication every frame
+        // parsing the msg to know which is up which is down or nothing happened
+        // assign it to somewhere so HandleNewKeyboard could use that
+        int curMessage;
+        while (serialComm4Glove.serialMessage.TryDequeue(out curMessage))
+        {
+            // deal with this curMessage
+            if (curMessage == -1)
+                continue;
+            if (curMessage < 5)
+                handModel.PressLeftFingers(curMessage);
+            else
+                handModel.PressRightFingers(curMessage - 5);
+            helpInfo.SetActive(false);
+            switch (curMessage)
+            {
+                case 4:
+                    // b
+                    // delete  
+                    typeInWordModeNoChord_LT(inputStringTemplate[curMessage]);
+                    break;
+                case 5:
+                    // n
+                    typeInWordModeNoChord_RT();
+                    break;
+                default:
+                    // regular input
+                    typeInWordModeNoChord_otherT_GUI(inputStringTemplate[curMessage]);
+                    break;
+            }
+            updateDisplayInput();
+        }
+    }
+
+    public void HandleScreenGaze()
 	{
 		// receive tcp package from tracker bar
 		// parsing the msg to know the screen coordinates

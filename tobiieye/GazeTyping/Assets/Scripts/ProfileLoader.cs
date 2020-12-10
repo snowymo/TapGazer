@@ -42,7 +42,7 @@ public class ProfileLoader : MonoBehaviour {
   // regular is regular keyboard + keep typing
   public enum TypingMode { TRAINING, TEST, REGULAR, TAPPING };
   public enum OutputMode { Devkit, Trackerbar, Screen };
-  public enum InputMode { KEYBOARD, TOUCH };
+  public enum InputMode { KEYBOARD, TOUCH, GLOVE };
   public static InputMode inputMode;
   public InputMode curInputMode;
   /// <summary>
