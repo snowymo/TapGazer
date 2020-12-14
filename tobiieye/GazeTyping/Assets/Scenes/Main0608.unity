@@ -4760,10 +4760,11 @@ MonoBehaviour:
   curOutputMode: 2
   curInputMode: 0
   curEnterMode: 0
-  curWcMode: 0
+  curWcMode: 1
   curSelectionMode: 1
   curCandidateLayout: 7
   curIsSimulated: 0
+  worddict: kenphrase
 --- !u!4 &840372617
 Transform:
   m_ObjectHideFlags: 0
@@ -5555,6 +5556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed1f805831cb6bc488185085dbe277ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prevFingers: 0000000000
 --- !u!1 &928098386
 GameObject:
   m_ObjectHideFlags: 0

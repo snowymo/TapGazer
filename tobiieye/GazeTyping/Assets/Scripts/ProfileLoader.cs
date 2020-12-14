@@ -85,6 +85,8 @@ public class ProfileLoader : MonoBehaviour {
     public bool curIsSimulated;
     public static bool isSimulated;
 
+    public string worddict;
+
   // profile.name includes
   // name
   // typing seconds
@@ -138,7 +140,7 @@ public class ProfileLoader : MonoBehaviour {
   void Awake() {
     loadFromProfileName();
 
-    wordlistLoader.wordlistPath = "top0.9-result" + profile + ".json";
+    wordlistLoader.wordlistPath = worddict + "-result" + profile + ".json";
     typingMode = curTypingMode;
     inputMode = curInputMode;
     session_number = curSessionNumber;
