@@ -18,7 +18,8 @@ public class GridHintKeyboard : MonoBehaviour
       tm.text = "";
   }
 
-  public void SetFinger(Dictionary<string, string> configMap) {
+    //TBD: multiple color
+  public void SetFinger(Dictionary<string, List<string>> configMap) {
     setup();
     int charA = 'a';
     for (int i = 0; i < 26; i++)
@@ -26,7 +27,9 @@ public class GridHintKeyboard : MonoBehaviour
       int objIndex = i / 9;
       char curChar = System.Convert.ToChar(charA + i);
       string curStr = "" + curChar;
-      string curFinger = input2index[configMap[curStr]] < 4 ? "L" + (input2index[configMap[curStr]] + 1).ToString() : "R" + (input2index[configMap[curStr]] - 3).ToString();
+      string curFinger = input2index[configMap[curStr][0]] < 4 ? "L" 
+                + (input2index[configMap[curStr][0]] + 1).ToString() : "R" 
+                + (input2index[configMap[curStr][0]] - 3).ToString();
       finger2key.Add(curStr, curFinger+"  ");
       // update to textMeshPro
       gridKeyObjects[objIndex].text += "<color=yellow>" + curStr + "</color>:<color=orange>" + curFinger + "</color>  ";

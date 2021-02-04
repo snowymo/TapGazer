@@ -59,12 +59,13 @@ public class Keyboard : MonoBehaviour
         // apply configuration
     }
 
-    public void SetFinger(Dictionary<string,string> configMap)
+    // TBD, multiple color?
+    public void SetFinger(Dictionary<string,List<string>> configMap)
     {
         Setup();
         for (int i = 0; i < keyObjects.Count; i++)
         {
-            keyObjects[i].GetComponent<Renderer>().material = keyColors[input2index[configMap[keyObjects[i].name]]];
+            keyObjects[i].GetComponent<Renderer>().material = keyColors[input2index[configMap[keyObjects[i].name][0]]];
         }
     }
 }

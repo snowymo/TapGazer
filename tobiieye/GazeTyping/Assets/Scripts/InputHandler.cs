@@ -201,16 +201,29 @@ public class InputHandler : MonoBehaviour
 		}
 	}
 
+    //TBD
 	private string classifyWord(string word)
 	{
 		string fingerSeq = "";
 		word = word.ToLower();
 		for (int i = 0; i < word.Length; i++)
 		{
-			fingerSeq += ProfileLoader.configMap[word[i].ToString()];
+			//fingerSeq += ProfileLoader.configMap[word[i].ToString()];
 		}
 		return fingerSeq;
 	}
+
+    private bool isOneClassifyWord(string word, string inputString)
+    {
+        for(int i = 0; i < Mathf.Min(word.Length, inputString.Length); i++)
+        {
+            if(!ProfileLoader.configMap[word[i].ToString()].Contains(inputString[i].ToString()))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
 	private void delete()
 	{
@@ -276,9 +289,11 @@ public class InputHandler : MonoBehaviour
 		{
 			// classify the word to type
 			// TODO: once we support paging, we need to know if the correct word is at the current page
-			string correctFingerSeq = classifyWord(presented);
-			curWord = (correctFingerSeq.Equals(currentInputString) ? presented : curWord);
-			curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
+            // TBD: if we have multiple supported, aka one letter may have mapped to multiple fingers
+			//string correctFingerSeq = classifyWord(presented);
+			//curWord = (correctFingerSeq.Equals(currentInputString) ? presented : curWord);
+            curWord = isOneClassifyWord(presented, currentInputLine) ? presented : curWord;
+            curWord = (phraseLoader.IsCurrentTypingCorrect(curWord, ProfileLoader.typingMode) ? "<color=green>" : "<color=red>") + curWord + "</color>";
 		}
 		else
 		{

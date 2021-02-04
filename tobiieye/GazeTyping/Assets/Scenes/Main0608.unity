@@ -4764,7 +4764,7 @@ MonoBehaviour:
   curSelectionMode: 1
   curCandidateLayout: 7
   curIsSimulated: 0
-  worddict: kenphrase
+  worddict: top0.9
 --- !u!4 &840372617
 Transform:
   m_ObjectHideFlags: 0

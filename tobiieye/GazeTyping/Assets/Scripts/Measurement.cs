@@ -168,10 +168,24 @@ public class Measurement : MonoBehaviour
     bool isCurrentTypingCorrect = true;
     for (int i = 0; i < Mathf.Min(presented.Length, transribed.Length); i++)
     {
-      if (ProfileLoader.configMap.ContainsKey(presented[i].ToString()) && transribed[i] == (ProfileLoader.configMap[presented[i].ToString()][0]))
-        C += 1;
-      else
-        isCurrentTypingCorrect = false;
+            // iterate all possible configMap
+            bool curLetterCorrect = false;
+            foreach(string configValue in ProfileLoader.configMap[presented[i].ToString()])
+            {
+                if (ProfileLoader.configMap.ContainsKey(presented[i].ToString())
+                && transribed[i] == (configValue[0]))
+                {
+                    C += 1;
+                    curLetterCorrect = true;
+                    break;
+                }                    
+            }
+            isCurrentTypingCorrect = isCurrentTypingCorrect && curLetterCorrect;
+      //if (ProfileLoader.configMap.ContainsKey(presented[i].ToString()) 
+      //          && transribed[i] == (ProfileLoader.configMap[presented[i].ToString()][0]))
+      //  C += 1;
+      //else
+      //  isCurrentTypingCorrect = false;
     }
     if (isCurrentTypingCorrect)
     {

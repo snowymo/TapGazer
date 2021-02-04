@@ -5,7 +5,7 @@ import json
 from wordfreq import *
 from collections import OrderedDict
 from termcolor import colored
-
+import copy
 
 config = {'q': 'a', 'a': 'a', 'z': 'a',
     'w': 's', 's': 's', 'x': 's',
@@ -95,6 +95,7 @@ configKen1 = {"m":"a","n":"a","h":"a",
 freq_dict = get_frequency_dict("en", wordlist='best')
 
 dictionaryFileName = "top0.9"
+# dictionaryFileName = "kenphrase"
 
 tapping_dict = {}
 word_rank = {}
@@ -125,7 +126,10 @@ def change_config():
             print("type your " + mapFinger2Name[entry] + " keys, press enter when you finished")
             keys = input()
             for currentKey in keys:
-                config[currentKey] = entry
+                # currentKey has multiple values
+                config.setdefault(currentKey, [])
+                config[currentKey].append(entry)
+                # config[currentKey] = entry
     print("new config ")
     print(json.dumps(config, indent = 4))
     f = open("config" + configFileName + ".json", "w")
@@ -151,6 +155,11 @@ def add_to_map(typing, word):
         tapping_dict[typing][word] = word_frequency(word, 'en')#freq_dict[word.lower()]
     else:
         tapping_dict[typing] = {word: word_frequency(word, 'en')}#freq_dict[word.lower()]}
+    # choose the smallest one for now
+    if word in word_rank:
+        word_rank[word] = min(word_rank[word], len(tapping_dict[typing]))
+    else:
+        word_rank[word] = len(tapping_dict[typing])
 
 def generate_tap_map(test_dict, count, config=config):
     # go through the dictionary (300k words), add each one to its one-tap two-tap until n-tap buckets, and sort it with the freq
@@ -178,24 +187,34 @@ def generate_tap_map(test_dict, count, config=config):
         if not_supported:
             continue
         # print("processing", word)
-        cur_typing = ""
+        cur_typing = [""]
         for _, char in enumerate(word):
             # find the corresponding finger based on the char
             cur_finger = find_finger(char, config)
-            cur_typing += cur_finger
-            add_to_map(cur_typing, word)
+            # cur_finger is a list, since we support one letter has mapped to multiple fingers
+            num_cur_typing = len(cur_typing)
+            tmp = copy.deepcopy(cur_typing)
+            for i in range(len(cur_finger)-1):
+                cur_typing.extend(tmp)
+            for fidx, cur_single_finger in enumerate(cur_finger):
+                for tidx in range(num_cur_typing):
+                    cur_typing[fidx * num_cur_typing + tidx] += cur_single_finger
+                    # print("word", word, fidx * num_cur_typing + tidx, cur_typing[fidx * num_cur_typing + tidx])
+                    add_to_map(cur_typing[fidx * num_cur_typing + tidx], word)
 
         # sorted(tapping_dict[cur_typing], reverse=True)
-        word_rank[word] = len(tapping_dict[cur_typing])
-        if len(word) == len(cur_typing):
-            if cur_typing in completed_numbers:
-                completed_numbers[cur_typing].append(word)
-                # record the largest list number in this dictionary
-                if len(completed_numbers[cur_typing]) > largest_cand_number:
-                    largest_cand_number = len(completed_numbers[cur_typing])
-                    largest_cand_input_string = cur_typing
-            else:
-                completed_numbers[cur_typing] = [word]
+        # added to add_to_map
+        # word_rank[word] = len(tapping_dict[cur_typing])
+        if len(word) == len(cur_typing[0]):
+            for cur_single_typing in cur_typing:
+                if cur_single_typing in completed_numbers:
+                    completed_numbers[cur_single_typing].append(word)
+                    # record the largest list number in this dictionary
+                    if len(completed_numbers[cur_single_typing]) > largest_cand_number:
+                        largest_cand_number = len(completed_numbers[cur_single_typing])
+                        largest_cand_input_string = cur_single_typing
+                else:
+                    completed_numbers[cur_single_typing] = [word]
         # if len(word) == len(cur_typing) and word_rank[word] > 9 and len(word) > 1:
         #     print("dangerous word\t" + cur_typing +"\t"+ word +"\t"+ str(word_rank[word]))
         if cur_count == count:
@@ -205,10 +224,11 @@ def generate_tap_map(test_dict, count, config=config):
     #     check if we have more than 10-homograph
     # with open("phrases2.txt", encoding="utf-8") as f:
     #     phrasesDict = f.read().splitlines()
-    for cur_typing in completed_numbers:
-        if len(completed_numbers[cur_typing]) > 10:
-            print("[risk]" + cur_typing + " has more than 10 homographs " + str(len(completed_numbers[cur_typing])))
-            print(*completed_numbers[cur_typing], sep = ", ")
+
+    for cur_single_typing in completed_numbers:
+        if len(completed_numbers[cur_single_typing]) > 10:
+            print("[risk]" + cur_single_typing + " has more than 10 homographs " + str(len(completed_numbers[cur_single_typing])))
+            print(*completed_numbers[cur_single_typing], sep = ", ")
     #         check phrase2.txt
     #         for index in range(10, len(completed_numbers[cur_typing])):
     #             if completed_numbers[cur_typing][index] in phrasesDict:
@@ -249,36 +269,49 @@ def check_with_phrases(filename, config=config):
         for idx2, currentWord in enumerate(currentPhrase):
             # check the rank of currentWord
             # add missing word in phrases2.txt to dict?
-            cur_typing = ""
+            cur_typing = [""]
             for _, char in enumerate(currentWord):
                 # find the corresponding finger based on the char
                 cur_finger = find_finger(char, config)
                 if cur_finger is None:
                     print("\t\tword not supported: " + currentWord)
                     break
-                cur_typing += cur_finger
-            if len(cur_typing) != len(currentWord):
+                #     cur_finger is a list now
+                num_cur_typing = len(cur_typing)
+                tmp = copy.deepcopy(cur_typing)
+                for i in range(len(cur_finger) - 1):
+                    cur_typing.extend(tmp)
+                for fidx, cur_single_finger in enumerate(cur_finger):
+                    for tidx in range(num_cur_typing):
+                        cur_typing[fidx * num_cur_typing + tidx] += cur_single_finger
+                        # print("word", currentWord, fidx * num_cur_typing + tidx, cur_typing[fidx * num_cur_typing + tidx])
+
+                # cur_typing += cur_finger
+            if len(cur_typing[0]) != len(currentWord):
                 continue
-            inputString = cur_typing
+            #     need to check each of them and get maybe the smallest one
+            # minlen3 = 1000
+            for inputString in cur_typing:
+            # inputString = cur_typing
             # go through the result of inputString in completed_numbers,
             # if currentWord == "nor":
             #     print(currentWord)
-            if inputString not in completed_numbers:
-                print(currentWord + " not in the dictionary")
-                # print(currentWord)
-                continue
-            for idx3, candidate in enumerate(completed_numbers[inputString]):
-                if candidate.lower() == currentWord.lower():
-                    # idx3 is the rank
-                    if idx3 > 10:
-                        print(colored("word: " + currentWord + " : " + str(idx3), 'red'))
-                    if len(inputString) == 2:
-                        minimumCandNum["2"] = max(minimumCandNum["2"], idx3)
-                    elif len(inputString) == 3:
-                        minimumCandNum["3"] = max(minimumCandNum["3"], idx3)
-                    else:
-                        minimumCandNum["4"] = max(minimumCandNum["4"], idx3)
-                    break
+                if inputString not in completed_numbers:
+                    print(currentWord + " not in the dictionary")
+                    # print(currentWord)
+                    continue
+                for idx3, candidate in enumerate(completed_numbers[inputString]):
+                    if candidate.lower() == currentWord.lower():
+                        # idx3 is the rank
+                        if idx3 > 10:
+                            print(colored("word: " + currentWord + " : " + str(idx3), 'red'))
+                        if len(inputString) == 2:
+                            minimumCandNum["2"] = max(minimumCandNum["2"], idx3)
+                        elif len(inputString) == 3:
+                            minimumCandNum["3"] = max(minimumCandNum["3"], idx3)
+                        else:
+                            minimumCandNum["4"] = max(minimumCandNum["4"], idx3)
+                        break
     print(minimumCandNum)
 
 def process_config(noswear10k, curConfig, configFileName):
@@ -325,8 +358,8 @@ def process_config(noswear10k, curConfig, configFileName):
                              "k": [], "l": [], ";": []}
     if inplace == 'y':
         #     inplace typing then we have 10 letters for 10 fingers
-        key2fingerMapping = {"a": ["q"], "s": ["3"], "d": ["4"], "f": ["t"], "g": ["b"], "h": [","], "j": ["o"],
-                             "k": ["-"], "l": ["="], ";": ["\\"]}
+        key2fingerMapping = {"a": ["q"], "s": ["3"], "d": ["4"], "f": ["t"], "g": ["b"], "h": ["n"], "j": ["u"],
+                             "k": ["9"], "l": ["0"], ";": ["["]}
     else:
     #     not inplace typing then we have 26 letters + space for 10 fingers
         for letter in config:
