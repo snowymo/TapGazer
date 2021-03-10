@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using Tobii.XR.Examples;
 using UnityEngine;
+using System;
 
 // take care of the vive controller action
 
 public class ControllerHandler : MonoBehaviour
 {
+    public Measurement measurement;
 
     public Transform TypingSection;
 
@@ -33,6 +35,14 @@ public class ControllerHandler : MonoBehaviour
         if (UnityEngine.XR.XRSettings.enabled && ControllerManager.Instance.GetButtonPressDown(ControllerButton.Trigger))
         {
             updateTypingSection();
+        }
+
+        if (UnityEngine.XR.XRSettings.enabled && ControllerManager.Instance.GetButtonPressDown(ControllerButton.Menu))
+        {
+            measurement.startMeasure = true;
+            measurement.menuTime = DateTime.Now;
+            print("menu start");
+            measurement.AddTapItem("menu", "start");
         }
     }
 }

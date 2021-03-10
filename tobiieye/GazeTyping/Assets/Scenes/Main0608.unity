@@ -1290,6 +1290,7 @@ MonoBehaviour:
   typingSeconds: 60
   finishedSeconds: 0
   allowInput: 0
+  startMeasure: 0
   clock: {fileID: 579708453}
   candidateHandler: {fileID: 132433879}
   wpmText: {fileID: 1245357083}
@@ -4717,6 +4718,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0874afbc2405b54181fbb2e0b4f938f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  measurement: {fileID: 257319247}
   TypingSection: {fileID: 1476959234}
 --- !u!1 &840372615
 GameObject:
@@ -4763,7 +4765,7 @@ MonoBehaviour:
   regularInput: {fileID: 94866699}
   newKeyboardInput: {fileID: 1057379355}
   curOutputMode: 0
-  curInputMode: 0
+  curInputMode: 1
   curEnterMode: 0
   curWcMode: 1
   curSelectionMode: 1
@@ -11848,6 +11850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0874afbc2405b54181fbb2e0b4f938f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  measurement: {fileID: 0}
   TypingSection: {fileID: 1476959234}
 --- !u!114 &2136903523
 MonoBehaviour:

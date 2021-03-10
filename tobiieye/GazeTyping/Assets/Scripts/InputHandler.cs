@@ -5,6 +5,7 @@ using System;
 
 public class InputHandler : MonoBehaviour
 {
+
 	public TMPro.TextMeshPro inputTextMesh;
 	public WordlistLoader wordListLoader;
 	public PhraseLoader phraseLoader;
