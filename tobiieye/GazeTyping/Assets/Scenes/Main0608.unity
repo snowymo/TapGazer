@@ -1058,6 +1058,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: rightDivision
       objectReference: {fileID: 0}
+    - target: {fileID: 1511602799334177326, guid: 9778d384a31e27b468fc4461a7efa86c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1792253112131553300, guid: 9778d384a31e27b468fc4461a7efa86c,
         type: 3}
       propertyPath: candHandler
@@ -4757,7 +4762,7 @@ MonoBehaviour:
   showGridHint: 0
   regularInput: {fileID: 94866699}
   newKeyboardInput: {fileID: 1057379355}
-  curOutputMode: 2
+  curOutputMode: 0
   curInputMode: 0
   curEnterMode: 0
   curWcMode: 1
@@ -4995,6 +5000,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: leftDivision
+      objectReference: {fileID: 0}
+    - target: {fileID: 5560274180753419733, guid: 0fbc393a49d8ac243939a7e616ec2eec,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8016477940132612918, guid: 0fbc393a49d8ac243939a7e616ec2eec,
         type: 3}
@@ -8356,6 +8366,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: midDivision
+      objectReference: {fileID: 0}
+    - target: {fileID: 560213281397317047, guid: 403fcba39fe13794f80a8d09b02d0da9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2714554416969415508, guid: 403fcba39fe13794f80a8d09b02d0da9,
         type: 3}

@@ -13,7 +13,7 @@ public class HandleDivisionGaze : MonoBehaviour, IGazeFocusable
     if (hasFocus)
     {
       candHandler.UpdateDivisionGaze(DivisionNumber);
-      print("gaze at " + divisionName[DivisionNumber] + " division");
+      //print("gaze at " + divisionName[DivisionNumber] + " division");
     }
   }
 }

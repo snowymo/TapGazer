@@ -170,7 +170,7 @@ public class Measurement : MonoBehaviour
     {
             // iterate all possible configMap
             bool curLetterCorrect = false;
-            foreach(string configValue in ProfileLoader.configMap[presented[i].ToString()])
+            foreach(string configValue in ProfileLoader.configMap[presented[i].ToString().ToLower()])
             {
                 if (ProfileLoader.configMap.ContainsKey(presented[i].ToString())
                 && transribed[i] == (configValue[0]))
