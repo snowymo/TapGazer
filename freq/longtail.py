@@ -70,6 +70,8 @@ get_freq_until(0.97)
 
 # get_freq_until(0.99)
 
+get_sum_freq(10)
+
 get_sum_freq(100)
 
 get_sum_freq(1000)

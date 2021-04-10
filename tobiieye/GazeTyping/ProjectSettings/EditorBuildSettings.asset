@@ -11,7 +11,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/TobiiXR/Examples/Example_GettingStarted.unity
     guid: 221a337531f80eb4eb510b1cd2874c53
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MTcollect.unity
     guid: e86e1141c4c92614695d156f8e781a8a
+  - enabled: 1
+    path: Assets/Scenes/Main0608.unity
+    guid: 7243ee9dd8e590749ad535e5272b2ddf
   m_configObjects: {}
