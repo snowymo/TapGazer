@@ -149,7 +149,7 @@ public class InputHandler : MonoBehaviour
         if (toggleSpelling)
         {
             // add letter for spelling mode
-            int lastN = currentInputLine.LastIndexOf(' ');
+            int lastN = currentInputLine.LastIndexOf('n');
             if (lastN + 1 < currentInputLine.Length)
             {
                 print("[spelling mode] display:" + lastN + " " + currentInputLine.Substring(lastN + 1));
@@ -322,34 +322,48 @@ public class InputHandler : MonoBehaviour
     bool hitSpellKey = false;
     private bool updateSpellingMode()
     {
-        // t and u
-        foreach (KeyValuePair<string, KeyEventTime> eachKey in spellingKeyStatus)
+        // temp
+        bool isTemp = true;
+        bool curHitSpellKey = true;
+        if (isTemp)
         {
-            //
-            spellingKeyStatus[eachKey.Key].duration = 0;
-            if (Input.GetKeyDown(eachKey.Key))
+            if (Input.GetKeyDown(KeyCode.Tab))
+                curHitSpellKey = true;
+            else
+                curHitSpellKey = false;
+        }
+        else
+        {
+            // t and u
+            foreach (KeyValuePair<string, KeyEventTime> eachKey in spellingKeyStatus)
             {
-                //print(eachKey.Key + " down");
-                spellingKeyStatus[eachKey.Key].setDown();
+                //
+                spellingKeyStatus[eachKey.Key].duration = 0;
+                if (Input.GetKeyDown(eachKey.Key))
+                {
+                    //print(eachKey.Key + " down");
+                    spellingKeyStatus[eachKey.Key].setDown();
+                }
+                if (Input.GetKey(eachKey.Key))
+                {
+                    //print(eachKey.Key + " hold");
+                    spellingKeyStatus[eachKey.Key].setHold();
+                }
+                if (Input.GetKeyUp(eachKey.Key))
+                {
+                    //print(eachKey.Key + " up");
+                    spellingKeyStatus[eachKey.Key].setUp();
+                }
             }
-            if (Input.GetKey(eachKey.Key))
+            foreach (KeyValuePair<string, KeyEventTime> eachKey in spellingKeyStatus)
             {
-                //print(eachKey.Key + " hold");
-                spellingKeyStatus[eachKey.Key].setHold();
-            }
-            if (Input.GetKeyUp(eachKey.Key))
-            {
-                //print(eachKey.Key + " up");
-                spellingKeyStatus[eachKey.Key].setUp();
+                curHitSpellKey = curHitSpellKey && eachKey.Value.isPressed;
+                //print(eachKey.Value.ToString());
             }
         }
 
-        bool curHitSpellKey = true;
-        foreach (KeyValuePair<string, KeyEventTime> eachKey in spellingKeyStatus)
-        {
-            curHitSpellKey = curHitSpellKey && eachKey.Value.isPressed;
-            //print(eachKey.Value.ToString());
-        }
+
+        
         if (curHitSpellKey)
         {
             toggleSpelling = !toggleSpelling;
@@ -1125,7 +1139,7 @@ public class InputHandler : MonoBehaviour
     private void HandleNewKeyboard()
     {
         //TODO: use non chord for spelling mode later
-        //bool isSpellKeyDown = updateSpellingMode();
+        bool isSpellKeyDown = updateSpellingMode();
         ////print("isSpellKeyDown:" + isSpellKeyDown);
         //if (isSpellKeyDown)
         //  return;
