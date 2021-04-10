@@ -3292,7 +3292,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 3.38}
+  m_AnchoredPosition: {x: 0, y: 2.714}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &579708453
@@ -4773,8 +4773,8 @@ MonoBehaviour:
   curOutputMode: 0
   curInputMode: 0
   curEnterMode: 0
-  curWcMode: 1
-  curSelectionMode: 0
+  curWcMode: 0
+  curSelectionMode: 1
   curCandidateLayout: 7
   curIsSimulated: 0
   worddict: top0.9

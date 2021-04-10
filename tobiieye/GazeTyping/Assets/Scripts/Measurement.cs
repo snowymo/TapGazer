@@ -124,8 +124,17 @@ public class Measurement : MonoBehaviour
         // update the clock
         if (allowInput)
         {
-            float curTime = passedTime + ((startTime == DateTime.MinValue || menuTime == DateTime.MinValue) ? 0f : (float)(DateTime.Now - startTime).TotalSeconds);
-            clock.text = ((int)(curTime / 60)).ToString("00") + ":" + (curTime % 60).ToString("00");
+            if (ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
+            {
+                float curTime = passedTime + ((startTime == DateTime.MinValue || menuTime == DateTime.MinValue) ? 0f : (float)(DateTime.Now - startTime).TotalSeconds);
+                clock.text = ((int)(curTime / 60)).ToString("00") + ":" + (curTime % 60).ToString("00");
+            }
+            else
+            {
+
+                float curTime = passedTime + ((startTime == DateTime.MinValue) ? 0f : (float)(DateTime.Now - startTime).TotalSeconds);
+                clock.text = ((int)(curTime / 60)).ToString("00") + ":" + (curTime % 60).ToString("00");
+            }
         }
         else if (!allowInput)
             clock.text = "<color=red>" + (finishedSeconds / 60).ToString("00") + ":" + (finishedSeconds % 60).ToString("00");
@@ -142,13 +151,13 @@ public class Measurement : MonoBehaviour
 
     public void AddWPM(int curWC)
     {
-        if (menuTime != DateTime.MinValue)
+        if (menuTime != DateTime.MinValue || ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR)
             words += curWC + 1; // including the 'n' key, aka space
     }
 
     public void StartClock()
     {
-        if (menuTime == DateTime.MinValue)
+        if (menuTime == DateTime.MinValue && ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
             return;
         if (startTime == DateTime.MinValue)
             startTime = DateTime.Now;
@@ -156,7 +165,7 @@ public class Measurement : MonoBehaviour
 
     public void PauseClock()
     {
-        if (menuTime == DateTime.MinValue)
+        if (menuTime == DateTime.MinValue && ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
             return;
         // pause the clock
         passedTime += (float)(DateTime.Now - startTime).TotalSeconds;
@@ -170,7 +179,7 @@ public class Measurement : MonoBehaviour
 
     public void UpdateTestMeasure(string presented, string transribed, bool isGazeCorrect)
     {
-        if (menuTime == DateTime.MinValue)
+        if (menuTime == DateTime.MinValue && ProfileLoader.typingMode == ProfileLoader.TypingMode.TEST)
             return;
         // handle presented, from words to inputString
         C = 0;
@@ -315,7 +324,7 @@ public class Measurement : MonoBehaviour
         {
             if (curText.Remove(curText.Length - 1).Split(new char[] { ' ' }).Length == correctString.Split(new char[] { ' ' }).Length)
             {
-                if (menuTime != DateTime.MinValue)
+                if (menuTime != DateTime.MinValue || ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR)
                 {
                     // calculate C and INF
                     string transribed = curText;// we need to count space curText.Replace(" ", string.Empty);
@@ -360,7 +369,7 @@ public class Measurement : MonoBehaviour
         {
             if (curText.Remove(curText.Length - 1).Split(new char[] { ' ' }).Length == correctString.Split(new char[] { ' ' }).Length)
             {
-                if (menuTime == DateTime.MinValue)
+                if (menuTime != DateTime.MinValue || ProfileLoader.typingMode == ProfileLoader.TypingMode.REGULAR)
                 {
                     // calculate C and INF
                     string transribed = curText;// we need to count space curText.Replace(" ", string.Empty);
@@ -477,7 +486,7 @@ public class Measurement : MonoBehaviour
             tapDuration.Add(new TimeCollection(fingerID, lastFingerID,
               (DateTime.Now - lastTapTime).TotalMilliseconds, (DateTime.Now - JanFirst1970).TotalMilliseconds, type, candCount, candIndex));
         }
-        if(fingerID == "menu")
+        if (fingerID == "menu")
         {
             tapDuration.Add(new TimeCollection(fingerID, "",
               (menuTime - JanFirst1970).TotalMilliseconds, (DateTime.Now - JanFirst1970).TotalMilliseconds, type, candCount, candIndex));

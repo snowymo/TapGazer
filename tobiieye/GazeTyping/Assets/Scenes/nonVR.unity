@@ -1430,6 +1430,7 @@ MonoBehaviour:
   typingSeconds: 60
   finishedSeconds: 0
   allowInput: 0
+  startMeasure: 0
   clock: {fileID: 579708453}
   candidateHandler: {fileID: 132433879}
   wpmText: {fileID: 1245357083}
@@ -5056,7 +5057,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52a82dbc4a2dc4b44ab15abbc3c81ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curTypingMode: 1
+  curTypingMode: 2
   curProfile: classic
   curSessionNumber: 1
   wordlistLoader: {fileID: 132433878}
@@ -5077,6 +5078,8 @@ MonoBehaviour:
   curWcMode: 0
   curSelectionMode: 1
   curCandidateLayout: 7
+  curIsSimulated: 0
+  worddict: top0.9
 --- !u!4 &840372617
 Transform:
   m_ObjectHideFlags: 0
@@ -5943,6 +5946,7 @@ MonoBehaviour:
   measurement: {fileID: 257319247}
   tcpNetwork4Sensel: {fileID: 547203080}
   tcpNetwork4Gaze: {fileID: 315223950}
+  serialComm4Glove: {fileID: 0}
   spellingModeText: {fileID: 1767883262}
   condition: {fileID: 369249260}
 --- !u!1 &971261749

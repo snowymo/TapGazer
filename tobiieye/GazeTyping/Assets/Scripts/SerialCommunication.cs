@@ -9,7 +9,7 @@ public class SerialCommunication : MonoBehaviour
 {
     public ConcurrentQueue<int> serialMessage;
 
-    private SerialPort handStream = new SerialPort("COM7", 9600);
+    private SerialPort handStream = new SerialPort("COM9", 9600);
 
     public string prevFingers;
 
